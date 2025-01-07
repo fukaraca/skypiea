@@ -1,0 +1,7 @@
+server:
+  address: ""
+  port: "8080"
+  maxBodySizeMB: 25
+log:
+  level: "debug"
+  addSource: false
