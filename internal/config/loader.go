@@ -1,24 +1,26 @@
 package config
 
 import (
-	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/spf13/viper"
 )
 
-func LoadConfig(filename, path string) (*model.Config, error) {
+func NewConfig() *Config {
+	return &Config{}
+}
+
+func (c *Config) Load(filename, path string) error {
 	v := viper.New()
 	v.SetConfigName(filename)
 	v.SetConfigType("yml")
 	v.AddConfigPath(path)
 	err := v.ReadInConfig()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var config model.Config
-	err = v.Unmarshal(&config)
+	err = v.Unmarshal(c)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &config, nil
+	return nil
 }

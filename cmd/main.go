@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/fukaraca/skypiea/internal/config"
+	service "github.com/fukaraca/skypiea/internal/server"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/spf13/cobra"
 	_ "github.com/spf13/cobra"
 	"log"
 	"log/slog"
+	"slices"
 )
 
 var configName, mode string
@@ -35,19 +38,18 @@ func RootCommand() *cobra.Command {
 	return rootCmd
 }
 
-func runService(mode string) error {
-	log.Printf("mode: %s", mode)
-	return nil
-}
-
 func initialize(mode string) error {
-	cfg, err := config.LoadConfig(configName, "./configs")
+	if !slices.Contains([]string{config.ModeHttpServer, config.ModeBackgroundWorker}, mode) {
+		return fmt.Errorf("invalid mode: %s", mode)
+	}
+	cfg := config.NewConfig()
+	err := cfg.Load(configName, "./configs")
 	if err != nil {
 		return err
 	}
 	logg.New(cfg.Log).Info("config loaded", slog.Any("config", cfg))
-	runService(mode)
-	return nil
+	cfg.RunningMode = mode
+	return service.Start(context.Background(), cfg)
 }
 
 func loadConfig() *cobra.Command {
@@ -55,7 +57,8 @@ func loadConfig() *cobra.Command {
 		Use:   "load-config",
 		Short: "load config",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cfg, err := config.LoadConfig(configName, "./configs")
+			cfg := config.NewConfig()
+			err := cfg.Load(configName, "./configs")
 			if err != nil {
 				return err
 			}
