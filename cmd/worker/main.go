@@ -1,9 +1,8 @@
 package main
 
 import (
-	"context"
 	"github.com/fukaraca/skypiea/internal/config"
-	service "github.com/fukaraca/skypiea/internal/server"
+	"github.com/fukaraca/skypiea/internal/worker"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/spf13/cobra"
 	_ "github.com/spf13/cobra"
@@ -38,6 +37,6 @@ func initialize() error {
 		return err
 	}
 	logg.New(cfg.Log).Info("worker initialized", slog.Any("config", cfg))
-	cfg.RunningMode = config.ModeBackgroundWorker
-	return service.Start(context.Background(), cfg)
+	cfg.ServiceMode = config.ModeBackgroundWorker
+	return worker.Start(cfg)
 }

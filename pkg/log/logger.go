@@ -1,6 +1,8 @@
 package logg
 
 import (
+	"github.com/gin-gonic/gin"
+	sloggin "github.com/samber/slog-gin"
 	"log/slog"
 	"os"
 )
@@ -32,4 +34,11 @@ func New(cfg Config) *slog.Logger {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &opt))
 	slog.SetDefault(logger)
 	return logger
+}
+
+func GinMiddleware(logger *slog.Logger) gin.HandlerFunc {
+	return sloggin.NewWithConfig(logger, sloggin.Config{
+		WithUserAgent: true,
+		WithRequestID: true,
+	})
 }

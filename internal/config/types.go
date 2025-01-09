@@ -8,7 +8,7 @@ const (
 )
 
 type Config struct {
-	RunningMode string
+	ServiceMode string
 	Server      Server
 	Log         logg.Config
 }
@@ -17,4 +17,5 @@ type Server struct {
 	Address       string `yaml:"server.address"`
 	Port          string `yaml:"server.port"`
 	MaxBodySizeMB int    `yaml:"server.maxBodySizeMB"`
+	GinMode       string `yaml:"server.ginMode"`
 }

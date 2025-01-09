@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/fukaraca/skypiea/internal/config"
 	service "github.com/fukaraca/skypiea/internal/server"
@@ -42,8 +41,8 @@ func initialize() error {
 		return err
 	}
 	logg.New(cfg.Log).Info("server initialized", slog.Any("config", cfg))
-	cfg.RunningMode = config.ModeHttpServer
-	return service.Start(context.Background(), cfg)
+	cfg.ServiceMode = config.ModeHttpServer
+	return service.Start(cfg)
 }
 
 func loadConfig() *cobra.Command {
