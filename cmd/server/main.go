@@ -10,10 +10,9 @@ import (
 	_ "github.com/spf13/cobra"
 	"log"
 	"log/slog"
-	"slices"
 )
 
-var configName, mode string
+var configName string
 
 func main() {
 	if err := RootCommand().Execute(); err != nil {
@@ -23,32 +22,27 @@ func main() {
 
 func RootCommand() *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:   "skypiea",
-		Short: "skypiea",
+		Use:   "skypiea-server",
+		Short: "skypiea-server",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return initialize(mode)
+			return initialize()
 		},
 	}
 	rootCmd.PersistentFlags().StringVar(&configName, "config", "config.example.yml", "config file name in configs folder")
-	rootCmd.Flags().StringVar(&mode, "mode", "", "Mode to run the application (server or worker)")
-	rootCmd.MarkFlagRequired("mode")
 
 	rootCmd.AddCommand(loadConfig())
 	rootCmd.AddCommand(migrate())
 	return rootCmd
 }
 
-func initialize(mode string) error {
-	if !slices.Contains([]string{config.ModeHttpServer, config.ModeBackgroundWorker}, mode) {
-		return fmt.Errorf("invalid mode: %s", mode)
-	}
+func initialize() error {
 	cfg := config.NewConfig()
 	err := cfg.Load(configName, "./configs")
 	if err != nil {
 		return err
 	}
-	logg.New(cfg.Log).Info("config loaded", slog.Any("config", cfg))
-	cfg.RunningMode = mode
+	logg.New(cfg.Log).Info("server initialized", slog.Any("config", cfg))
+	cfg.RunningMode = config.ModeHttpServer
 	return service.Start(context.Background(), cfg)
 }
 
@@ -62,7 +56,7 @@ func loadConfig() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			logg.New(cfg.Log).Info("config loadedddd", slog.Any("config", cfg))
+			logg.New(cfg.Log).Info("config loaded", slog.Any("config", cfg))
 			fmt.Printf("%+v\n", *cfg)
 			return nil
 		},
