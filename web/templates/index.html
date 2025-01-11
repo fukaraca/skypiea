@@ -1,0 +1,13 @@
+{{template "base.html" .}}
+
+{{define "title"}}index{{end}}
+
+{{define "content"}}
+<h2>Welcome to Skypiea AI</h2>
+<form hx-post="/api/query" hx-target="#response">
+    <label for="query">Ask something:</label>
+    <input type="text" id="query" name="query">
+    <button type="submit">Send</button>
+</form>
+<div id="response"></div>
+{{ end }}

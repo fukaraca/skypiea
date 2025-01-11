@@ -6,6 +6,8 @@ import (
 	"log/slog"
 )
 
+const V1 = "/v1"
+
 type Server struct {
 	Config *config.Config
 	engine *gin.Engine

@@ -9,7 +9,7 @@ const (
 
 type Config struct {
 	ServiceMode string
-	Server      Server
+	Server      *Server
 	Log         logg.Config
 }
 
