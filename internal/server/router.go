@@ -13,7 +13,7 @@ import (
 func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) *gin.Engine {
 	gin.SetMode(cfg.GinMode)
 	e := gin.New(opts...)
-	e.LoadHTMLGlob("./web/templates/*.html")
+	e.LoadHTMLGlob("./web/templates/**/*.html")
 	e.Use(commonMiddlewares(logger)...)
 	return e
 }

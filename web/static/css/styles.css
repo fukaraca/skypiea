@@ -1,21 +1,107 @@
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
-
 header, footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
     background-color: #333;
     color: white;
-    padding: 1rem 0;
 }
-
-nav a {
+header a, footer a {
     color: white;
     text-decoration: none;
-    margin-right: 15px;
+    margin: 0 10px;
+}
+header .nav-links {
+    display: flex;
+    gap: 15px;
+}
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+.burger-menu div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 3px 0;
+}
+.nav-links {
+    display: flex;
+}
+.main {
+    text-align: center;
+    padding: 50px 20px;
+    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+    flex: 1;
+}
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-items: center;
+    margin: 40px 0;
+}
+.feature-box {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 250px;
+    border-radius: 8px;
+}
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+footer .social-links {
+    display: flex;
+    gap: 15px;
+}
+@media (max-width: 800px) {
+    .nav-links {
+        display: none;
+    }
+    .burger-menu {
+        display: flex;
+    }
+    .burger-menu.active + .nav-links {
+        display: flex;
+        flex-direction: column;
+        background-color: #333;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        padding: 10px 0;
+    }
+    .nav-links a {
+        padding: 10px;
+        text-align: center;
+    }
+    .auth-buttons {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+    footer .social-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+}
+header {
+    height: 50px;
 }
 
-nav a:hover {
-    text-decoration: underline;
+.logo img {
+    
 }
