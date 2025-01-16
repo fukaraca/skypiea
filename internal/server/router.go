@@ -21,7 +21,7 @@ func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) 
 func commonMiddlewares(logger *slog.Logger) []gin.HandlerFunc {
 	return []gin.HandlerFunc{
 		gin.Recovery(),
-		static.Serve("/", static.LocalFile("./web/static", false)),
+		static.Serve("/web/static", static.LocalFile("./web/static", false)),
 		logg.GinMiddleware(logger.With("via", "rest")),
 	}
 }
@@ -35,7 +35,7 @@ func (s *Server) bindRoutes() {
 		})
 	})
 	s.engine.GET("/home", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{
+		c.HTML(http.StatusOK, "base.html", gin.H{
 			"title": "Welcome to Aquila AI",
 		})
 	})

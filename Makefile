@@ -7,7 +7,7 @@ CONFIG_FLAG ?= --config=$(DEFAULT_CONFIG)
 CURRENT_DIR ?= $(shell pwd)
 TIMESTAMP := $(shell date +%s)
 
-run-server:
+run:
 	go run ./cmd/server/main.go $(CONFIG_FLAG)
 
 run-worker:

@@ -1,13 +1,8 @@
-{{template "layouts/base.html" .}}
+{{ define "title" }}Home - Skypiea{{ end }}
 
-{{define "title"}}index{{end}}
-
-{{define "content"}}
-<h2>Welcome to Skypiea AI</h2>
-<form hx-post="/api/query" hx-target="#response">
-    <label for="query">Ask something:</label>
-    <input type="text" id="query" name="query">
-    <button type="submit">Send</button>
-</form>
-<div id="response"></div>
+{{ define "content" }}
+<h1>Welcome to Skypiea</h1>
+<p>This is a demo of HTMX with Go templates.</p>
+<button hx-get="/load-more" hx-target="#more-content">Load More</button>
+<div id="more-content"></div>
 {{ end }}
