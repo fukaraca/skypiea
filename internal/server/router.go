@@ -1,19 +1,21 @@
 package service
 
 import (
-	"log/slog"
-	"net/http"
-
 	"github.com/fukaraca/skypiea/internal/config"
+	"github.com/fukaraca/skypiea/internal/service/templater"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"log/slog"
+	"net/http"
 )
 
 func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) *gin.Engine {
 	gin.SetMode(cfg.GinMode)
 	e := gin.New(opts...)
-	e.LoadHTMLGlob("./web/templates/**/*.html")
+	templates := templater.New()
+	templates.LoadHTMLGlob("./web/templates")
+	e.HTMLRender = templates
 	e.Use(commonMiddlewares(logger)...)
 	return e
 }
@@ -33,6 +35,12 @@ func (s *Server) bindRoutes() {
 		c.HTML(http.StatusOK, "index", gin.H{
 			"Title":   "Home",
 			"CSSFile": "index.css",
+		})
+	})
+	s.engine.GET("/pricing", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "pricing", gin.H{
+			"Title": "Pricing",
+			//"CSSFile": "index.css",
 		})
 	})
 }
