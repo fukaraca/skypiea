@@ -1,0 +1,57 @@
+/* Hero Section */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 65vh;
+    min-height: 400px;
+    background: url('/web/static/img/hero-bg.webp') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Dark overlay for better text visibility */
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+}
+
+.container-hero {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-logo-text {
+    height: auto;
+    vertical-align: middle;
+    margin-left: -2.8rem;
+    margin-top: 0.3rem;
+}
+
+
+.btn-warning:hover {
+    background-color: #e6a700;
+    color: #fff;
+}
+
+/* Skill section */
+.skills-section {
+    padding: 40px 0;
+    background-color: transparent;
+}
+
+.skill-badge {
+    width: auto;
+    max-height: 80px;
+    filter: brightness(0.9) contrast(1.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+.skill-badge:hover {
+    transform: scale(1.1);
+}
