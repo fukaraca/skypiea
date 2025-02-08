@@ -1,0 +1,67 @@
+{{ define "login" }}
+{{ template "base" . }}
+{{ end }}
+{{ define "content" }}
+<section class="d-flex flex-column justify-content-center align-items-center min-vh-100" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                <div class="card shadow" style="border-radius: 1rem;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 50px;" />
+                        </div>
+                        <h5 class="fw-normal mb-3" style="letter-spacing: 1px;"> Welcome back! Please login to your account </h5>
+                        <!-- HTMX form (if you want ajax-like submission), or standard form action="/login" -->
+                        <form id="loginForm" hx-post="/login" hx-target="#loginStatus" hx-swap="inner" class="needs-validation" novalidate>
+                            <!-- Email Field -->
+                            <div class="mb-3">
+                                <label for="loginEmail" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="loginEmail" name="email" placeholder="name@example.com" required />
+                                <div class="invalid-feedback"> Please provide a valid email. </div>
+                            </div>
+                            <!-- Password Field -->
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Enter your password" required />
+                                <div class="invalid-feedback"> Password is required. </div>
+                            </div>
+                            <!-- Submit Button -->
+                            <div class="mb-3 pt-2">
+                                <button type="submit" class="btn btn-primary w-100"> Login </button>
+                            </div>
+                            <!-- Forgot Password & Sign Up -->
+                            <div class="d-flex justify-content-between">
+                                <a href="/forgot-password" class="small">Forgot password?</a>
+                                <span class="small"> Don’t have an account? <a href="/signup" class="link-primary text-decoration-none">Sign up</a>
+                </span>
+                            </div>
+                        </form>
+                        <!-- Area to display server response via HTMX (e.g., success/error) -->
+                        <div id="loginStatus" class="mt-3"></div>
+                    </div>
+                    <!-- end .card-body -->
+                </div>
+                <!-- end .card -->
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{{ end }}

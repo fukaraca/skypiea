@@ -40,7 +40,21 @@ func (s *Server) bindRoutes() {
 	s.engine.GET("/pricing", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "pricing", gin.H{
 			"Title": "Pricing",
-			//"CSSFile": "index.css",
+		})
+	})
+	s.engine.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login", gin.H{
+			"Title": "Login",
+		})
+	})
+	s.engine.GET("/signup", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "signup", gin.H{
+			"Title": "Sign Up",
+		})
+	})
+	s.engine.GET("/forgot-password", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "forgot-password", gin.H{
+			"Title": "Recover your password",
 		})
 	})
 }
