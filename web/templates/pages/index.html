@@ -2,48 +2,151 @@
 {{- template "base" . }}
 {{ end }}
 {{- define "content" }}
-<main class="main">
-    <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center text-center">
-        <div class="container-hero">
-            <h1 class="display-4 text-warning"> Welcome to <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" class="hero-logo-text d-inline-block">
-            </h1>
-            <p class="lead text-white">Your AI-powered assistant for smarter conversations.</p>
-            <a href="/pricing" class="btn btn-warning btn-lg">Learn More</a>
-        </div>
-    </section>
-    <hr>
-    <section class="skills-section text-center">
-        <div class="container">
-            <h2 class="text-white mb-4">Powered By</h2>
-            <div class="row justify-content-center">
-                <div class="col-6 col-sm-3 d-flex justify-content-center mb-4">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" alt="Go" title="Go" class="skill-badge img-fluid">
+{{ if .LoggedIn }}
+<div class="vh-100 d-flex">
+    <!-- Top Nav -->
+    <nav class="navbar navbar-dark bg-dark px-3">
+        <!-- Sidebar Toggle for small screens -->
+        <button class="btn btn-outline-light d-md-none" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
+            <span class="navbar-toggler-icon"></span>
+            <!-- or an icon/text of your choice -->
+        </button>
+    </nav>
+    <div class="flex-grow-1 d-flex">
+        <!-- Offcanvas Sidebar (shown on small screens) -->
+        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarOffcanvas">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Chats</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <button class="btn btn-outline-light w-100 mb-3">+ New Chat</button>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Chat Title 1</span>
+                    <div class="dropdown">
+                        <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#">Delete Chat</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://raw.githubusercontent.com/gin-gonic/logo/master/color.png" alt="Gin" title="Gin-Gonic" class="skill-badge img-fluid">
-                </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://raw.githubusercontent.com/bigskysoftware/htmx/master/www/static/img/htmx_logo.1.png" alt="HTMX" title="HTMX" class="skill-badge img-fluid">
-                </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original-wordmark.svg" alt="Bootstrap" title="Bootstrap" class="skill-badge img-fluid">
-                </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg" alt="AWS" title="Amazon Web Services" class="skill-badge img-fluid">
-                </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-original-wordmark.svg" alt="Kubernetes" title="Kubernetes" class="skill-badge img-fluid">
-                </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/helm/helm-original.svg" alt="Helm" title="Helm" class="skill-badge img-fluid">
-                </div>
-                <div class="col-6 col-sm-3 d-flex justify-content-center">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg" alt="GitHub Actions" title="Github Actions" class="skill-badge img-fluid">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Chat Title 2</span>
+                    <div class="dropdown">
+                        <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#">Delete Chat</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
-    <hr>
-</main>
+        <!-- Sidebar for medium+ screens -->
+        <div class="d-none d-md-flex flex-column p-3 bg-dark text-white" style="width: 240px; overflow-y:auto;">
+            <button class="btn btn-outline-light w-100 mb-3">+ New Chat</button>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Chat Title 1</span>
+                <div class="dropdown">
+                    <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#">Delete Chat</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Chat Title 2</span>
+                <div class="dropdown">
+                    <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#">Delete Chat</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Chat Section -->
+        <div class="flex-grow-1 d-flex flex-column align-items-center">
+            <div class="flex-grow-1 w-100 d-flex justify-content-center overflow-auto">
+                <div class="p-3" style="max-width:700px; width:100%;" id="chatMessages">
+                    <!-- Sample User Message -->
+                    <div class="p-2 rounded-3 mb-2 ms-auto" style="max-width:80%; background-color: slategray;">
+                        <strong> ></strong> Hello
+                    </div>
+                    <!-- Sample AI Response -->
+                    <div class="p-2 mb-2 me-auto"> How can I help? </div>
+                </div>
+            </div>
+            <!-- Sticky Input -->
+            <div class="border-top w-100" style="position:sticky; bottom:0; z-index:10;">
+                <form class="d-flex p-3" style="max-width:700px; margin:auto;" hx-post="/chat/send" hx-target="#chatMessages" hx-swap="beforeend">
+                    <textarea id="chatInput" name="message" class="form-control me-2" rows="1" style="resize:none; overflow:hidden; max-height:12rem;" placeholder="Type your message..." required></textarea>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const txt = document.getElementById('chatInput');
+            if (!txt) return;
+            txt.addEventListener('input', function() {
+                this.style.height = 'auto';
+                const maxHeightPx = 96;
+                this.style.height = Math.min(this.scrollHeight, maxHeightPx) + 'px';
+            });
+        });
+    </script>
+{{ else }}
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero-section d-flex align-items-center text-center">
+            <div class="container-hero">
+                <h1 class="display-4 text-warning"> Welcome to <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" class="hero-logo-text d-inline-block">
+                </h1>
+                <p class="lead text-white">Your AI-powered assistant for smarter conversations.</p>
+                <a href="/pricing" class="btn btn-warning btn-lg">Learn More</a>
+            </div>
+        </section>
+        <hr>
+        <section class="skills-section text-center">
+            <div class="container">
+                <h2 class="text-white mb-4">Powered By</h2>
+                <div class="row justify-content-center">
+                    <div class="col-6 col-sm-3 d-flex justify-content-center mb-4">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" alt="Go" title="Go" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://raw.githubusercontent.com/gin-gonic/logo/master/color.png" alt="Gin" title="Gin-Gonic" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://raw.githubusercontent.com/bigskysoftware/htmx/master/www/static/img/htmx_logo.1.png" alt="HTMX" title="HTMX" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original-wordmark.svg" alt="Bootstrap" title="Bootstrap" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg" alt="AWS" title="Amazon Web Services" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-original-wordmark.svg" alt="Kubernetes" title="Kubernetes" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/helm/helm-original.svg" alt="Helm" title="Helm" class="skill-badge img-fluid">
+                    </div>
+                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg" alt="GitHub Actions" title="Github Actions" class="skill-badge img-fluid">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr>
+    </main>
+{{ end }}
 {{ end }}

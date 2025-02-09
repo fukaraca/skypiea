@@ -33,8 +33,9 @@ func (s *Server) bindRoutes() {
 
 	s.engine.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index", gin.H{
-			"Title":   "Home",
-			"CSSFile": "index.css",
+			"Title":    "Home",
+			"CSSFile":  "index.css",
+			"LoggedIn": false,
 		})
 	})
 	s.engine.GET("/pricing", func(c *gin.Context) {
@@ -55,6 +56,11 @@ func (s *Server) bindRoutes() {
 	s.engine.GET("/forgot-password", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "forgot-password", gin.H{
 			"Title": "Recover your password",
+		})
+	})
+	s.engine.GET("/profile", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "profile", gin.H{
+			"Title": "My Profile",
 		})
 	})
 }

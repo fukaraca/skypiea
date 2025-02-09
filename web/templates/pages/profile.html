@@ -1,0 +1,86 @@
+{{ define "profile" }}
+{{ template "base" . }}
+{{ end }}
+{{ define "content" }}
+<section class="py-5" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <div class="col-lg-6 col-md-12">
+                        <div class="card shadow" style="border-radius: 1rem;">
+                            <div class="card-body p-5">
+                                <div class="text-center mb-4">
+                                    <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 40px;" />
+                                </div>
+                                <h5 class="fw-normal mb-3 text-center" style="letter-spacing: 1px;">Update Your Details</h5>
+                                <form id="updateDetailsForm" hx-post="/profile/update" hx-target="#profileStatus" hx-swap="inner" class="needs-validation" novalidate>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="{{.Name}}" required />
+                                        <div class="invalid-feedback">Please provide a valid name.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="surname" class="form-label">Surname</label>
+                                        <input type="text" class="form-control" id="surname" name="surname" placeholder="{{.Surname}}" required />
+                                        <div class="invalid-feedback">Please provide a valid surname.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="{{.PhoneNumber}}" required />
+                                        <div class="invalid-feedback">Please provide a valid phone number.</div>
+                                    </div>
+                                    <div class="mb-3 pt-2">
+                                        <button type="submit" class="btn btn-primary w-100">Update Details</button>
+                                    </div>
+                                </form>
+                                <div id="profileStatus" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <div class="card shadow" style="border-radius: 1rem;">
+                            <div class="card-body p-5">
+                                <h5 class="fw-normal mb-3 text-center" style="letter-spacing: 1px;">Change Your Password</h5>
+                                <form id="changePasswordForm" hx-post="/profile/password" hx-target="#passwordStatus" hx-swap="inner" class="needs-validation" novalidate>
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword" name="newPassword" required />
+                                        <div class="invalid-feedback">Please provide a new password.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+                                        <div class="invalid-feedback">Please confirm your new password.</div>
+                                    </div>
+                                    <div class="mb-3 pt-2">
+                                        <button type="submit" class="btn btn-primary w-100">Change Password</button>
+                                    </div>
+                                </form>
+                                <div id="passwordStatus" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{{ end }}
