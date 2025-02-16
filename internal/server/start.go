@@ -10,6 +10,7 @@ import (
 func Start(cfg *config.Config) error {
 	logger := logg.New(cfg.Log).With("service mode", cfg.ServiceMode)
 	router := NewRouter(cfg.Server, logger)
+	router.SetTrustedProxies(nil)
 	server := NewServer(cfg, router, logger)
 	server.bindRoutes()
 

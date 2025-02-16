@@ -1,9 +1,11 @@
 package service
 
 import (
-	"github.com/fukaraca/skypiea/internal/config"
-	"github.com/gin-gonic/gin"
 	"log/slog"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/fukaraca/skypiea/internal/config"
 )
 
 const V1 = "/v1"
