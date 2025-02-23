@@ -1,4 +1,4 @@
-package service
+package server
 
 func strictRoutes() RouteMap {
 	routes := NewRouteMap()

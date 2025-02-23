@@ -1,4 +1,4 @@
-package service
+package server
 
 import (
 	"log/slog"
@@ -22,7 +22,10 @@ func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) 
 
 func (s *Server) bindRoutes() {
 	s.engine.NoRoute()
-	s.RegisterRoutes(viewRoutes())
-	s.RegisterRoutes(commonRoutes())
-	s.RegisterRoutes(strictRoutes())
+	// v1 := s.engine.Group(V1)
+	var v1 *gin.RouterGroup
+
+	s.RegisterRoutes(v1, viewRoutes())
+	s.RegisterRoutes(v1, commonRoutes())
+	s.RegisterRoutes(v1, strictRoutes())
 }
