@@ -1,6 +1,9 @@
 package config
 
-import logg "github.com/fukaraca/skypiea/pkg/log"
+import (
+	"github.com/fukaraca/skypiea/pkg/jwt"
+	logg "github.com/fukaraca/skypiea/pkg/log"
+)
 
 const (
 	ModeHttpServer       = "server"
@@ -11,6 +14,7 @@ type Config struct {
 	ServiceMode string
 	Server      *Server
 	Log         logg.Config
+	JWT         *jwt.Config
 }
 
 type Server struct {

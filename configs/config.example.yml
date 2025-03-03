@@ -6,3 +6,5 @@ server:
 log:
   level: "debug"
   addSource: false
+jwt:
+  secret: "secret"
