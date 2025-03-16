@@ -1,17 +1,38 @@
 package session
 
 import (
+	"crypto/rand"
 	"time"
 
 	"github.com/dgraph-io/ristretto/v2"
 )
 
-type Manager struct {
-	cache      *ristretto.Cache[string, *Session]
-	defaultTTL time.Duration
+const DefaultCookieName = "ss_skypiea"
+
+type storage struct {
+	*ristretto.Cache[string, *Session]
 }
 
-type Session struct{}
+type Manager struct {
+	cache      *storage
+	defaultTTL time.Duration
+	cookieName string
+}
+
+type Session struct {
+	id        string
+	data      map[string]any
+	createdAt time.Time
+	updatedAt time.Time
+}
+
+func New() *Session {
+	return &Session{
+		id:        rand.Text(),
+		data:      nil,
+		createdAt: time.Now(),
+	}
+}
 
 func NewSessionManager(maxSize int64, ttl time.Duration) *Manager {
 	c, err := ristretto.NewCache(&ristretto.Config[string, *Session]{
@@ -23,8 +44,9 @@ func NewSessionManager(maxSize int64, ttl time.Duration) *Manager {
 		return nil
 	}
 	return &Manager{
-		cache:      c,
+		cache:      &storage{c},
 		defaultTTL: ttl,
+		cookieName: DefaultCookieName,
 	}
 }
 
