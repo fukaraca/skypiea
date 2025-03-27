@@ -1,61 +1,107 @@
 package session
 
 import (
-	"crypto/rand"
+	"fmt"
+	"github.com/fukaraca/skypiea/pkg/cache"
+	"github.com/fukaraca/skypiea/pkg/gwt"
+	"github.com/google/uuid"
 	"time"
-
-	"github.com/dgraph-io/ristretto/v2"
 )
 
 const DefaultCookieName = "ss_skypiea"
 
-type storage struct {
-	*ristretto.Cache[string, *Session]
-}
+var Cache *Manager
 
 type Manager struct {
-	cache      *storage
+	cache      *cache.Storage
 	defaultTTL time.Duration
-	cookieName string
+	jwtManager gwt.Manager
 }
 
 type Session struct {
-	id        string
-	data      map[string]any
+	ID        string
+	UserID    uuid.UUID
+	token     string
 	createdAt time.Time
 	updatedAt time.Time
+	EOL       time.Time
 }
 
-func New() *Session {
-	return &Session{
-		id:        rand.Text(),
-		data:      nil,
-		createdAt: time.Now(),
+func (sm *Manager) New(userID uuid.UUID) *Session {
+	if uuid.Validate(userID.String()) != nil {
+		userID = uuid.New()
 	}
-}
-
-func NewSessionManager(maxSize int64, ttl time.Duration) *Manager {
-	c, err := ristretto.NewCache(&ristretto.Config[string, *Session]{
-		NumCounters: 10 * maxSize,
-		MaxCost:     maxSize,
-		BufferItems: 64,
-	})
+	t0 := time.Now()
+	id := fmt.Sprintf("%s.%d", userID.String(), t0.UnixNano())
+	// Get user details from DB
+	tkn, err := sm.jwtManager.GenerateToken(userID.String(), "admin")
 	if err != nil {
 		return nil
 	}
-	return &Manager{
-		cache:      &storage{c},
-		defaultTTL: ttl,
-		cookieName: DefaultCookieName,
+	return &Session{
+		ID:        id,
+		UserID:    userID,
+		token:     tkn,
+		createdAt: t0,
+		updatedAt: t0,
 	}
 }
 
-func (sm *Manager) SetSession(userID string, sess *Session, ttl time.Duration) {
-	sm.cache.SetWithTTL(userID, sess, 0, ttl)
-	sm.cache.Wait()
+func (s *Session) Valid() bool {
+	return s.EOL.After(time.Now().Add(-time.Second * 5))
 }
 
-func (sm *Manager) ValidateSession(userID string) bool {
-	v, found := sm.cache.Get(userID)
-	return found && v != nil
+func (s *Session) Token() string {
+	return s.token
+}
+
+func NewManager(jwtConfig *gwt.Config, ttl time.Duration) *Manager {
+	return &Manager{
+		cache:      cache.New(),
+		defaultTTL: ttl,
+		jwtManager: gwt.NewJWTService(jwtConfig),
+	}
+}
+
+func (sm *Manager) Set(sess *Session) {
+	sess.EOL = sess.updatedAt.Add(sm.defaultTTL)
+	sm.cache.Set(sess.ID, sess)
+}
+
+func (sm *Manager) Get(sessionID string) *Session {
+	sess, _ := sm.cache.Get(sessionID).(*Session)
+	return sess
+}
+
+func (sm *Manager) RevokeAllSessions(userID string) {
+	sm.cache.DeleteByPrefix(userID)
+}
+
+func (sm *Manager) RefreshSession(sess *Session) {
+	sess.updatedAt = time.Now()
+	sm.Set(sess)
+}
+
+func (sm *Manager) ValidateSession(sessionID string) bool {
+	sess := sm.Get(sessionID)
+	if sess == nil || !sess.Valid() {
+		return false
+	}
+	sm.RefreshSession(sess)
+	return true
+}
+
+func (sm *Manager) ValidateToken(tkn string) bool {
+	_, err := sm.jwtManager.ValidateToken(tkn)
+	return err == nil
+
+}
+
+func (sm *Manager) GetJWTBySessionID(sessionID string) *gwt.Token {
+	v := sm.Get(sessionID)
+	if v != nil && v.Valid() {
+		tkn, _ := sm.jwtManager.ValidateToken(v.token)
+		return tkn
+	}
+	return nil
 }

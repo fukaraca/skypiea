@@ -6,7 +6,8 @@ import (
 )
 
 var (
-	ErrSomeTest = NewError(1001, "Some test error")
+	ErrSessionNotFound = NewError(1101, "session not found")
+	ErrSessionNotValid = NewError(1101, "session not valid")
 )
 
 type Error struct {
