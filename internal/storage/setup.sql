@@ -1,0 +1,1 @@
+CREATE DATABASE skypiea_ai;

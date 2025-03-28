@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  postgresdb:
+    container_name: skypiea_db
+    image: postgres:16.8-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=local_pg_user
+      - POSTGRES_PASSWORD=local_pg_pass
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./internal/storage/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ~/db/volume:/var/lib/postgresql/data
+
+
+# use postgres with volume, init, migrate with seed, resolve the conn
+# create users, subscriptions, roles table
+# id, name, surname, email, password, role, created,updated at foreign key id
+# user id, plan, valid thru , started at
+# reusable testable interface and methods
+# bind to login

@@ -17,19 +17,16 @@ var envs = []string{
 	"database.postgresql.username",
 	"database.postgresql.password",
 	"database.postgresql.database",
-	"database.dynamodb.region",
-	"database.dynamodb.endpoint",
-	"database.dynamodb.accessKeyId",
-	"database.dynamodb.secretAccessKey",
 }
 
 func (c *Config) Load(filename, path string) error {
 	v := viper.New()
 	v.SetConfigName(filename)
+	v.AddConfigPath(path)
 	v.SetConfigType("yml")
+
 	v.SetDefault("database.postgresql.port", 5432)
 	v.SetDefault("database.postgresql.sslmode", "disable")
-	v.AddConfigPath(path)
 	v.AllowEmptyEnv(true)
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
@@ -38,6 +35,7 @@ func (c *Config) Load(filename, path string) error {
 			return err
 		}
 	}
+
 	err := v.ReadInConfig()
 	if err != nil {
 		return err

@@ -11,14 +11,9 @@ jwt:
 database:
   dialect: "postgresql"
   postgresql:
-    host: "localhost"
+    host: "127.0.0.1"
     port: 5432
-    username: "default_user"
-    password: "default_pass"
-    database: "default_db"
+    username: "local_pg_user"
+    password: "local_pg_pass"
+    database: "skypiea_ai"
     sslmode: "disable"
-  dynamodb:
-    region: "us-west-2"
-    endpoint: "http://localhost:8000"
-    accessKeyId: "default-access-key"
-    secretAccessKey: "default-secret-key"
