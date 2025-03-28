@@ -42,6 +42,7 @@ func initialize() error {
 	}
 	logg.New(cfg.Log).Info("server initialized", slog.Any("config", cfg))
 	cfg.ServiceMode = config.ModeHttpServer
+	fmt.Printf("%+v\n", cfg.Database)
 	return service.Start(cfg)
 }
 

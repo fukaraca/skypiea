@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/fukaraca/skypiea/internal/storage"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 )
 
@@ -13,6 +14,7 @@ type Config struct {
 	ServiceMode string
 	Server      *Server
 	Log         logg.Config
+	Database    *storage.Database
 }
 
 type Server struct {
