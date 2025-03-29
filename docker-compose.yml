@@ -14,9 +14,5 @@ services:
       - ~/db/volume:/var/lib/postgresql/data
 
 
-# use postgres with volume, init, migrate with seed, resolve the conn
-# create users, subscriptions, roles table
-# id, name, surname, email, password, role, created,updated at foreign key id
-# user id, plan, valid thru , started at
 # reusable testable interface and methods
 # bind to login

@@ -94,7 +94,6 @@ func (sm *Manager) ValidateSession(sessionID string) bool {
 func (sm *Manager) ValidateToken(tkn string) bool {
 	_, err := sm.jwtManager.ValidateToken(tkn)
 	return err == nil
-
 }
 
 func (sm *Manager) GetJWTBySessionID(sessionID string) *gwt.Token {

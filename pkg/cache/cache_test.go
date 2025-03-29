@@ -76,7 +76,7 @@ func TestStorage_Concurrency(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(iterations * 2)
 
-	for i := 0; i < iterations; i++ {
+	for i := range iterations {
 		go func(i int) {
 			defer wg.Done()
 			key := fmt.Sprintf("key%d", i)

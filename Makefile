@@ -21,3 +21,12 @@ build-worker:
 
 .PHONY: build
 build: build-server build-worker
+
+migratedb-up:
+	go run ./cmd/server/main.go migration up $(CONFIG_FLAG)
+
+migratedb-down:
+	go run ./cmd/server/main.go migration down $(CONFIG_FLAG)
+
+lint:
+	golangci-lint

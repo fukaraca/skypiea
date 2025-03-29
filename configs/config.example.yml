@@ -9,10 +9,10 @@ log:
 jwt:
   secret: "secret"
 database:
-  dialect: "postgresql"
+  dialect: "postgres"
   postgresql:
     host: "127.0.0.1"
-    port: 5432
+    port: "5432"
     username: "local_pg_user"
     password: "local_pg_pass"
     database: "skypiea_ai"

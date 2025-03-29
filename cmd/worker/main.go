@@ -5,7 +5,6 @@ import (
 	"github.com/fukaraca/skypiea/internal/worker"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/spf13/cobra"
-	_ "github.com/spf13/cobra"
 	"log"
 	"log/slog"
 )

@@ -1,9 +1,7 @@
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
-	"os"
 	"strings"
 )
 
@@ -25,7 +23,7 @@ func (c *Config) Load(filename, path string) error {
 	v.AddConfigPath(path)
 	v.SetConfigType("yml")
 
-	v.SetDefault("database.postgresql.port", 5432)
+	v.SetDefault("database.postgresql.port", "5432")
 	v.SetDefault("database.postgresql.sslmode", "disable")
 	v.AllowEmptyEnv(true)
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
@@ -40,7 +38,6 @@ func (c *Config) Load(filename, path string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(os.Environ())
 
 	err = v.Unmarshal(c)
 	if err != nil {

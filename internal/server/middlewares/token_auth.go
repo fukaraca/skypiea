@@ -34,6 +34,5 @@ func TokenAuthMw() gin.HandlerFunc {
 		}
 		c.Set(gwt.CtxToken, sess.Token())
 		c.Next()
-		return
 	}
 }
