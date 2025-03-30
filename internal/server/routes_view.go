@@ -1,12 +1,11 @@
 package server
 
 import (
-	"github.com/fukaraca/skypiea/internal/server/middlewares"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-
 	"github.com/fukaraca/skypiea/internal/server/handlers"
+	"github.com/fukaraca/skypiea/internal/server/middlewares"
+	"github.com/gin-gonic/gin"
 )
 
 func viewRoutes() RouteMap {

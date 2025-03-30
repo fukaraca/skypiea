@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"errors"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/fukaraca/skypiea/internal/model"

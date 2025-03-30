@@ -1,11 +1,12 @@
 package middlewares
 
 import (
+	"net/http"
+
 	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func TokenAuthMw() gin.HandlerFunc {

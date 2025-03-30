@@ -1,10 +1,11 @@
 package server
 
 import (
-	"github.com/fukaraca/skypiea/pkg/gwt"
-	"github.com/fukaraca/skypiea/pkg/session"
 	"log/slog"
 	"time"
+
+	"github.com/fukaraca/skypiea/pkg/gwt"
+	"github.com/fukaraca/skypiea/pkg/session"
 
 	"github.com/gin-gonic/gin"
 

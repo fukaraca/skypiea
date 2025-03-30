@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/google/uuid"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )

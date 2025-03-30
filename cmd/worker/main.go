@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"log/slog"
+
 	"github.com/fukaraca/skypiea/internal/config"
 	"github.com/fukaraca/skypiea/internal/worker"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/spf13/cobra"
-	"log"
-	"log/slog"
 )
 
 var configName string

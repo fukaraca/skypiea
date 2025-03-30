@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"net"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Dialect string

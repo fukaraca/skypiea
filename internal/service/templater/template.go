@@ -1,10 +1,11 @@
 package templater
 
 import (
-	"github.com/gin-gonic/gin/render"
 	"html/template"
 	"path/filepath"
 	"strings"
+
+	"github.com/gin-gonic/gin/render"
 )
 
 type Templates map[string]*render.HTMLProduction

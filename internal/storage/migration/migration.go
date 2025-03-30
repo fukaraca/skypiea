@@ -3,6 +3,7 @@ package migration
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/rubenv/sql-migrate"

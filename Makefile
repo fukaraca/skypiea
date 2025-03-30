@@ -29,4 +29,4 @@ migratedb-down:
 	go run ./cmd/server/main.go migration down $(CONFIG_FLAG)
 
 lint:
-	golangci-lint
+	golangci-lint run -v

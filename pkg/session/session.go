@@ -2,10 +2,11 @@ package session
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/fukaraca/skypiea/pkg/cache"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	"github.com/google/uuid"
-	"time"
 )
 
 const DefaultCookieName = "ss_skypiea"
