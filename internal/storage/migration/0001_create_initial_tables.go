@@ -23,8 +23,8 @@ var migration0001CreateInitialTablesUp = []string{
     password TEXT,
     role TEXT,
     status TEXT,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
     FOREIGN KEY (role) 
         REFERENCES roles (id)
         ON UPDATE restrict 

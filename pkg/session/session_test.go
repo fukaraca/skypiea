@@ -1,9 +1,11 @@
 package session_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
+	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/google/uuid"
@@ -14,12 +16,12 @@ func TestSessionManager(t *testing.T) {
 	jwtConfig := &gwt.Config{Secret: []byte("secret")}
 
 	ttl := time.Minute * 30
-	manager := session.NewManager(jwtConfig, ttl)
+	manager := session.NewManager(jwtConfig, &storage.DB{}, ttl)
 
 	userID := uuid.New()
 
 	t.Run("Create and Retrieve Session", func(t *testing.T) {
-		sess := manager.New(userID)
+		sess := manager.NewSession(context.TODO(), userID)
 		assert.NotNil(t, sess)
 		assert.Equal(t, userID, sess.UserID)
 
@@ -31,7 +33,7 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Validate Session", func(t *testing.T) {
-		sess := manager.New(userID)
+		sess := manager.NewSession(context.TODO(), userID)
 		manager.Set(sess)
 
 		valid := manager.ValidateSession(sess.ID)
@@ -39,7 +41,7 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Refresh Session", func(t *testing.T) {
-		sess := manager.New(userID)
+		sess := manager.NewSession(context.TODO(), userID)
 		manager.Set(sess)
 
 		oldUpdatedAt := sess.EOL
@@ -52,8 +54,8 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Revoke All Sessions", func(t *testing.T) {
-		sess1 := manager.New(userID)
-		sess2 := manager.New(userID)
+		sess1 := manager.NewSession(context.TODO(), userID)
+		sess2 := manager.NewSession(context.TODO(), userID)
 		manager.Set(sess1)
 		manager.Set(sess2)
 
@@ -64,7 +66,7 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Validate JWT Token", func(t *testing.T) {
-		sess := manager.New(userID)
+		sess := manager.NewSession(context.TODO(), userID)
 		manager.Set(sess)
 
 		valid := manager.ValidateToken(sess.Token())
@@ -72,7 +74,7 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Get JWT by Session ID", func(t *testing.T) {
-		sess := manager.New(userID)
+		sess := manager.NewSession(context.TODO(), userID)
 		manager.Set(sess)
 
 		jwt := manager.GetJWTBySessionID(sess.ID)

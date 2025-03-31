@@ -7,7 +7,9 @@ import (
 
 var (
 	ErrSessionNotFound = NewError(1101, "session not found")
-	ErrSessionNotValid = NewError(1101, "session not valid")
+	ErrSessionNotValid = NewError(1102, "session not valid")
+	ErrIncorrectCred   = NewError(1103, "credentials are wrong")
+	ErrInvalidCred     = NewError(1104, "credentials are not valid")
 )
 
 type Error struct {

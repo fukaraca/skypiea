@@ -18,26 +18,54 @@ const (
 	DialectMySQL    = "mysql"
 )
 
+type Repositories struct {
+	Users UsersRepo
+}
+
+func NewRepositories(db *DB) *Repositories {
+	return &Repositories{
+		Users: NewUsersRepo(db),
+	}
+}
+
 type Database struct {
 	Dialect    Dialect          `yaml:"dialect"`
 	PostgreSQL PostgreSQLConfig `yaml:"postgresql"`
 }
 
 type PostgreSQLConfig struct {
-	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Database string `yaml:"database"`
-	SSLMode  string `yaml:"sslmode"`
+	Host     string        `yaml:"host"`
+	Port     string        `yaml:"port"`
+	Username string        `yaml:"username"`
+	Password string        `yaml:"password"`
+	Database string        `yaml:"database"`
+	SSLMode  string        `yaml:"sslmode"`
+	Timeout  time.Duration `yaml:"timeout"`
 }
 
-type Conn struct {
-	*pgxpool.Pool
+type DB struct {
+	*rw
 	Dialect Dialect
+	conf    *Database
 }
 
-func (d *Database) GetDBConn() (*Conn, error) {
+type rw struct {
+	*ro
+}
+
+func newRW(readOnly *ro) *rw {
+	return &rw{readOnly}
+}
+
+type ro struct {
+	*pgxpool.Pool
+}
+
+func newRO(pool *pgxpool.Pool) *ro {
+	return &ro{pool}
+}
+
+func (d *Database) GetDBConn() (*DB, error) {
 	switch d.Dialect {
 	case DialectPostgres, DialectPgx:
 		dbURL := fmt.Sprintf("postgres://%s:%s@%s/%s",
@@ -45,7 +73,11 @@ func (d *Database) GetDBConn() (*Conn, error) {
 			d.PostgreSQL.Password,
 			net.JoinHostPort(d.PostgreSQL.Host, d.PostgreSQL.Port),
 			d.PostgreSQL.Database)
-		conn, err := pgxpool.New(context.Background(), dbURL)
+		conf, err := pgxpool.ParseConfig(dbURL)
+		if err != nil {
+			return nil, err
+		}
+		conn, err := pgxpool.NewWithConfig(context.Background(), conf)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +85,7 @@ func (d *Database) GetDBConn() (*Conn, error) {
 		if err = conn.Ping(ctx); err != nil {
 			return nil, err
 		}
-		return &Conn{conn, d.Dialect}, nil
+		return &DB{newRW(newRO(conn)), d.Dialect, d}, nil
 	}
 	return nil, errors.New("no dialect was selected to get db connection")
 }

@@ -2,10 +2,6 @@ package server
 
 import (
 	"log/slog"
-	"time"
-
-	"github.com/fukaraca/skypiea/pkg/gwt"
-	"github.com/fukaraca/skypiea/pkg/session"
 
 	"github.com/gin-gonic/gin"
 
@@ -15,7 +11,6 @@ import (
 )
 
 func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) *gin.Engine {
-	session.Cache = session.NewManager(&gwt.Config{Secret: []byte("secret")}, time.Minute*10)
 	gin.SetMode(cfg.GinMode)
 	e := gin.New(opts...)
 	templates := templater.New()
@@ -31,6 +26,6 @@ func (s *Server) bindRoutes() {
 	var v1 *gin.RouterGroup
 
 	s.RegisterRoutes(v1, viewRoutes())
-	s.RegisterRoutes(v1, commonRoutes())
+	s.RegisterRoutes(v1, commonRoutes(s))
 	s.RegisterRoutes(v1, strictRoutes())
 }

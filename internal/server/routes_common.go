@@ -1,6 +1,9 @@
 package server
 
 import (
+	"net/http"
+
+	"github.com/fukaraca/skypiea/internal/server/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +30,11 @@ func (s *Server) RegisterRoutes(rGroup *gin.RouterGroup, routes RouteMap) {
 	}
 }
 
-func commonRoutes() RouteMap {
+func commonRoutes(s *Server) RouteMap {
 	routes := NewRouteMap()
+	h := handlers.Handler2{Repo: s.Repo}
+	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{h.SignIn}
+	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{h.SignUp}
+
 	return routes
 }

@@ -17,3 +17,4 @@ database:
     password: "local_pg_pass"
     database: "skypiea_ai"
     sslmode: "disable"
+    timeout: "15s"

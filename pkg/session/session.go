@@ -1,9 +1,11 @@
 package session
 
 import (
+	"context"
 	"fmt"
 	"time"
 
+	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/fukaraca/skypiea/pkg/cache"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	"github.com/google/uuid"
@@ -15,6 +17,7 @@ var Cache *Manager
 
 type Manager struct {
 	cache      *cache.Storage
+	repo       *storage.Repositories
 	defaultTTL time.Duration
 	jwtManager gwt.Manager
 }
@@ -28,14 +31,18 @@ type Session struct {
 	EOL       time.Time
 }
 
-func (sm *Manager) New(userID uuid.UUID) *Session {
+func (sm *Manager) NewSession(ctx context.Context, userID uuid.UUID) *Session {
 	if uuid.Validate(userID.String()) != nil {
 		userID = uuid.New()
 	}
 	t0 := time.Now()
 	id := fmt.Sprintf("%s.%d", userID.String(), t0.UnixNano())
 	// Get user details from DB
-	tkn, err := sm.jwtManager.GenerateToken(userID.String(), "admin")
+	user, err := sm.repo.Users.GetUserByUUID(ctx, userID)
+	if err != nil {
+		return nil
+	}
+	tkn, err := sm.jwtManager.GenerateToken(userID.String(), user.Role)
 	if err != nil {
 		return nil
 	}
@@ -56,9 +63,10 @@ func (s *Session) Token() string {
 	return s.token
 }
 
-func NewManager(jwtConfig *gwt.Config, ttl time.Duration) *Manager {
+func NewManager(jwtConfig *gwt.Config, db *storage.DB, ttl time.Duration) *Manager {
 	return &Manager{
 		cache:      cache.New(),
+		repo:       storage.NewRepositories(db),
 		defaultTTL: ttl,
 		jwtManager: gwt.NewJWTService(jwtConfig),
 	}
