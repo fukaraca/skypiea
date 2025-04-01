@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *Handler) Login(c *gin.Context) {
+func (h *View) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login", gin.H{
 		"Title": "Login",
 	})
@@ -23,7 +23,7 @@ type SignInReq struct {
 	Password string `form:"password" binding:"required"`
 }
 
-func (h *Handler2) SignIn(c *gin.Context) {
+func (h *Common) SignIn(c *gin.Context) {
 	var in SignInReq
 	if err := c.ShouldBind(&in); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)

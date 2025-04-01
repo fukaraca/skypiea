@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Profile(c *gin.Context) {
+func (h *View) Profile(c *gin.Context) {
 	c.HTML(http.StatusOK, "profile", gin.H{
 		"Title": "My Profile",
 	})

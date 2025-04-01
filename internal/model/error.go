@@ -10,6 +10,7 @@ var (
 	ErrSessionNotValid = NewError(1102, "session not valid")
 	ErrIncorrectCred   = NewError(1103, "credentials are wrong")
 	ErrInvalidCred     = NewError(1104, "credentials are not valid")
+	ErrInvalidToken    = NewError(1105, "auth token is not valid")
 )
 
 type Error struct {

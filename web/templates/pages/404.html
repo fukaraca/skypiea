@@ -1,0 +1,14 @@
+{{ define "404" }}
+{{ template "base" . }}
+{{ end }}
+
+{{ define "content" }}
+<div class="container d-flex flex-column align-items-center justify-content-center vh-100">
+    <h1 class="display-1 fw-bold text-danger">404</h1>
+    <p class="fs-3 text-white"><span class="text-danger">Oops!</span> Page not found.</p>
+    <p class="lead text-white">
+        The page you’re looking for doesn’t exist or an error occurred.
+    </p>
+    <a href="/" class="btn btn-warning">Go Home</a>
+</div>
+{{ end }}

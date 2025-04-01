@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Pricing(c *gin.Context) {
+func (h *View) Pricing(c *gin.Context) {
 	c.HTML(http.StatusOK, "pricing", gin.H{
 		"Title": "Pricing",
 	})

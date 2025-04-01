@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Signup(c *gin.Context) {
+func (h *View) Signup(c *gin.Context) {
 	c.HTML(http.StatusOK, "signup", gin.H{
 		"Title": "Sign Up",
 	})
@@ -22,7 +22,7 @@ type SignUpReq struct {
 	Email     string `form:"email" binding:"required,email"`
 }
 
-func (h *Handler2) SignUp(c *gin.Context) {
+func (h *Common) SignUp(c *gin.Context) {
 	var in SignUpReq
 	if err := c.ShouldBind(&in); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)

@@ -8,7 +8,7 @@ import (
 	"github.com/fukaraca/skypiea/internal/server/middlewares"
 )
 
-func (h *Handler) Features(c *gin.Context) {
+func (h *View) Features(c *gin.Context) {
 	middlewares.GetLoggerFromContext(c).Debug("features")
 	c.AbortWithError(400, os.ErrClosed).SetMeta("features")
 }

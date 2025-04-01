@@ -11,7 +11,10 @@ import (
 	"github.com/google/uuid"
 )
 
-const DefaultCookieName = "ss_skypiea"
+const (
+	DefaultCookieName = "ss_skypiea"
+	CtxLoggedIn       = "logged_in"
+)
 
 var Cache *Manager
 
@@ -91,13 +94,13 @@ func (sm *Manager) RefreshSession(sess *Session) {
 	sm.Set(sess)
 }
 
-func (sm *Manager) ValidateSession(sessionID string) bool {
+func (sm *Manager) ValidateSession(sessionID string) (*Session, bool) {
 	sess := sm.Get(sessionID)
 	if sess == nil || !sess.Valid() {
-		return false
+		return nil, false
 	}
 	sm.RefreshSession(sess)
-	return true
+	return sess, true
 }
 
 func (sm *Manager) ValidateToken(tkn string) bool {
@@ -112,4 +115,8 @@ func (sm *Manager) GetJWTBySessionID(sessionID string) *gwt.Token {
 		return tkn
 	}
 	return nil
+}
+
+func (sm *Manager) Delete(sessionID string) {
+	sm.cache.Del(sessionID)
 }

@@ -1,20 +1,15 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/gin-gonic/gin"
 )
 
-func (h *View) Index(c *gin.Context) {
-	A := "ASDASD"
-	fmt.Println(A)
-
-	c.HTML(http.StatusOK, "index", gin.H{
-		"Title":    "Home",
-		"CSSFile":  "index.css",
+func NoRoute404(c *gin.Context) {
+	c.HTML(http.StatusNotFound, "404", gin.H{
+		"Title":    "Page not exist",
 		"LoggedIn": c.GetBool(session.CtxLoggedIn),
 	})
 }

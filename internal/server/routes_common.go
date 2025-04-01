@@ -18,21 +18,23 @@ func NewRouteMap() RouteMap {
 	return make(RouteMap)
 }
 
-func (s *Server) RegisterRoutes(rGroup *gin.RouterGroup, routes RouteMap) {
-	if rGroup != nil {
-		for k, v := range routes {
-			rGroup.Handle(k.Method, k.Path, v...)
-		}
-	} else {
-		for k, v := range routes {
-			s.engine.Handle(k.Method, k.Path, v...)
+func (s *Server) RegisterRoutes(rGroup *gin.RouterGroup, routes RouteMap, optionalMWs ...gin.HandlerFunc) {
+	for key, chain := range routes {
+		mws := make(gin.HandlersChain, 0)
+		mws = append(mws, optionalMWs...)
+		mws = append(mws, chain...)
+
+		if rGroup != nil {
+			rGroup.Handle(key.Method, key.Path, mws...)
+		} else {
+			s.engine.Handle(key.Method, key.Path, mws...)
 		}
 	}
 }
 
 func commonRoutes(s *Server) RouteMap {
 	routes := NewRouteMap()
-	h := handlers.Handler2{Repo: s.Repo}
+	h := handlers.Common{Repo: s.Repo}
 	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{h.SignIn}
 	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{h.SignUp}
 

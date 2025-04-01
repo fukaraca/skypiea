@@ -2,8 +2,14 @@ package handlers
 
 import "github.com/fukaraca/skypiea/internal/storage"
 
-type Handler struct{}
+type View struct {
+	Repo *storage.Repositories
+}
 
-type Handler2 struct {
+type Common struct {
+	Repo *storage.Repositories
+}
+
+type Strict struct {
 	Repo *storage.Repositories
 }
