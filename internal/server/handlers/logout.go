@@ -14,5 +14,6 @@ func (s *Strict) Logout(c *gin.Context) {
 		return
 	}
 	session.Cache.Delete(ck)
-	c.Redirect(http.StatusPermanentRedirect, "/")
+	c.Header("HX-REDIRECT", "/")
+	c.Status(http.StatusFound)
 }

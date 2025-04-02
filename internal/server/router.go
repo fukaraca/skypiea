@@ -22,13 +22,12 @@ func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) 
 }
 
 func (s *Server) bindRoutes() {
-	s.engine.NoRoute(middlewares.ViewTokenAuth(), handlers.NoRoute404)
+	s.engine.NoRoute(middlewares.CommonAuthMw(), handlers.NoRoute404)
 	// v1 := s.engine.Group(V1)
-	var v1 *gin.RouterGroup
 
-	s.RegisterRoutes(v1, viewRoutes(s), middlewares.ViewTokenAuth())
-	s.RegisterRoutes(v1, commonRoutes(s))
-	s.RegisterRoutes(v1, strictRoutes(s), middlewares.TokenAuthMw())
+	s.RegisterRoutes(nil, viewRoutes(s), middlewares.CommonAuthMw())
+	s.RegisterRoutes(nil, commonRoutes(s), middlewares.CommonAuthMw())
+	s.RegisterRoutes(nil, strictRoutes(s), middlewares.StrictAuthMw())
 }
 
 //

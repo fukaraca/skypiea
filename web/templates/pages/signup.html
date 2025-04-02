@@ -13,7 +13,7 @@
                         </div>
                         <h5 class="fw-normal mb-3" style="letter-spacing: 1px;"> Create your account </h5>
                         <!-- HTMX form (or standard form) -->
-                        <form id="signupForm" hx-post="/signup" hx-target="#signupStatus" hx-swap="inner" class="needs-validation" novalidate>
+                        <form id="signupForm" hx-post="/signup" hx-target="#signupStatus" hx-swap="innerHTML" class="needs-validation" novalidate>
                             <!-- First Name -->
                             <div class="mb-3">
                                 <label for="firstName" class="form-label">First Name</label>

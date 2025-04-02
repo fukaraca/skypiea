@@ -11,7 +11,8 @@ import (
 
 func (h *View) Signup(c *gin.Context) {
 	c.HTML(http.StatusOK, "signup", gin.H{
-		"Title": "Sign Up",
+		"Title":    "Sign Up",
+		"LoggedIn": false,
 	})
 }
 
@@ -43,5 +44,5 @@ func (h *Common) SignUp(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{})
+	c.Redirect(http.StatusCreated, "/profile")
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TokenAuthMw() gin.HandlerFunc {
+func StrictAuthMw() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sCookie, err := c.Request.Cookie(session.DefaultCookieName)
 		if err != nil {
@@ -40,7 +40,7 @@ func TokenAuthMw() gin.HandlerFunc {
 	}
 }
 
-func ViewTokenAuth() gin.HandlerFunc {
+func CommonAuthMw() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sCookie, err := c.Request.Cookie(session.DefaultCookieName)
 		if err != nil || sCookie.Valid() != nil {
@@ -58,5 +58,16 @@ func ViewTokenAuth() gin.HandlerFunc {
 			c.Next()
 			return
 		}
+	}
+}
+
+func NonAuthMw() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.GetBool(session.CtxLoggedIn) {
+			c.Redirect(http.StatusFound, "/")
+			c.Abort()
+			return
+		}
+		c.Next()
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/fukaraca/skypiea/internal/server/handlers"
+	"github.com/fukaraca/skypiea/internal/server/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,8 +36,8 @@ func (s *Server) RegisterRoutes(rGroup *gin.RouterGroup, routes RouteMap, option
 func commonRoutes(s *Server) RouteMap {
 	routes := NewRouteMap()
 	h := handlers.Common{Repo: s.Repo}
-	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{h.SignIn}
-	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{h.SignUp}
+	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignIn}
+	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignUp}
 
 	return routes
 }

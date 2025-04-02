@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,7 +15,8 @@ import (
 
 func (h *View) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login", gin.H{
-		"Title": "Login",
+		"Title":    "Login",
+		"LoggedIn": false,
 	})
 }
 
@@ -26,23 +28,30 @@ type SignInReq struct {
 func (h *Common) SignIn(c *gin.Context) {
 	var in SignInReq
 	if err := c.ShouldBind(&in); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"loginResponse": err.Error(),
+		})
 		return
 	}
 	ctx, cancel := context.WithTimeout(c, time.Second*100)
 	defer cancel()
 	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"loginResponse": fmt.Sprintf("user not found for %q", in.Email),
+		})
 		return
 	}
 	if !encryption.CheckPasswordHash(in.Password, user.Password) {
-		c.AbortWithError(http.StatusUnauthorized, model.ErrIncorrectCred)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"loginResponse": model.ErrIncorrectCred.Message,
+		})
 		return
 	}
 
 	sess := session.Cache.NewSession(ctx, uuid.MustParse(user.UserUUID))
 	session.Cache.Set(sess)
 	c.SetCookie(session.DefaultCookieName, sess.ID, 100, "/", "localhost", false, true)
-	c.JSON(http.StatusAccepted, gin.H{})
+	c.Header("HX-REDIRECT", "/")
+	c.Status(http.StatusFound)
 }
