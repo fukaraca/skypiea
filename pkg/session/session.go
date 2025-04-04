@@ -117,6 +117,15 @@ func (sm *Manager) GetJWTBySessionID(sessionID string) *gwt.Token {
 	return nil
 }
 
+func (sm *Manager) GetUserUUIDByToken(tkn string) *uuid.UUID {
+	t, err := sm.jwtManager.ValidateToken(tkn)
+	if err != nil {
+		return nil
+	}
+	uid := uuid.MustParse(t.UserID)
+	return &uid
+}
+
 func (sm *Manager) Delete(sessionID string) {
 	sm.cache.Del(sessionID)
 }

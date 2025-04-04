@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/gin-gonic/gin"
 )
@@ -44,5 +45,6 @@ func (h *Common) SignUp(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	c.Redirect(http.StatusCreated, "/profile")
+	c.Header(model.HxRedirect, "/login")
+	c.Status(http.StatusCreated)
 }

@@ -22,15 +22,20 @@ func StrictAuthMw() gin.HandlerFunc {
 				c.AbortWithError(http.StatusUnauthorized, model.ErrInvalidToken)
 				return
 			}
-			c.AbortWithError(http.StatusUnauthorized, model.ErrSessionNotFound)
+			c.Header(model.HxRedirect, "/login")
+			c.Status(http.StatusFound)
+			c.Abort()
 			return
 		} else if sCookie.Valid() != nil {
-			c.Redirect(http.StatusFound, "/login")
+			c.Header(model.HxRedirect, "/login")
+			c.Status(http.StatusFound)
+			c.Abort()
 			return
 		}
 		if sess, ok := session.Cache.ValidateSession(sCookie.Value); !ok || sess == nil {
-			c.Error(model.ErrSessionNotValid)
-			c.Redirect(http.StatusFound, "/login")
+			c.Header(model.HxRedirect, "/login")
+			c.Status(http.StatusFound)
+			c.Abort()
 			return
 		} else {
 			c.Set(gwt.CtxToken, sess.Token())
@@ -64,7 +69,12 @@ func CommonAuthMw() gin.HandlerFunc {
 func NonAuthMw() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.GetBool(session.CtxLoggedIn) {
-			c.Redirect(http.StatusFound, "/")
+			refs := c.Request.Header[model.RefererHeader]
+			if len(refs) == 0 || refs[0] == "" {
+				refs = []string{"/"}
+			}
+			c.Header(model.HxRedirect, refs[0])
+			c.Status(http.StatusNotModified)
 			c.Abort()
 			return
 		}

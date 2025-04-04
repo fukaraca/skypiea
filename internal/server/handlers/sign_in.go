@@ -52,6 +52,6 @@ func (h *Common) SignIn(c *gin.Context) {
 	sess := session.Cache.NewSession(ctx, uuid.MustParse(user.UserUUID))
 	session.Cache.Set(sess)
 	c.SetCookie(session.DefaultCookieName, sess.ID, 100, "/", "localhost", false, true)
-	c.Header("HX-REDIRECT", "/")
+	c.Header(model.HxRedirect, "/")
 	c.Status(http.StatusFound)
 }

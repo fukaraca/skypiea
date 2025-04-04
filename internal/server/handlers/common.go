@@ -2,6 +2,10 @@ package handlers
 
 import "github.com/fukaraca/skypiea/internal/storage"
 
+const (
+	HX_REDIRECT = "HX-REDIRECT"
+)
+
 type View struct {
 	Repo *storage.Repositories
 }
