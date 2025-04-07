@@ -16,6 +16,7 @@ const (
 	getUserByUUIDPG  = `SELECT * FROM users WHERE user_uuid = $1;`
 	getUserByEmailPG = `SELECT * FROM users WHERE email = $1;`
 	getPassPG        = `SELECT password FROM users WHERE email = $1;`
+	updatePasswordPG = `UPDATE users SET password = $1 where user_uuid = $2;`
 )
 
 type UsersRepo interface {
@@ -23,6 +24,7 @@ type UsersRepo interface {
 	GetUserByUUID(context.Context, uuid.UUID) (*User, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetHPassword(context.Context, string) (string, error)
+	ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error
 }
 
 type User struct {
@@ -101,4 +103,9 @@ func (u *usersRepoPgx) GetHPassword(ctx context.Context, username string) (strin
 	var out string
 	row := u.QueryRow(ctx, getPassPG, username)
 	return out, row.Scan(&out)
+}
+
+func (u *usersRepoPgx) ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error {
+	_, err := u.Exec(ctx, updatePasswordPG, hPassword, userID.String())
+	return err
 }

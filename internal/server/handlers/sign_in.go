@@ -33,7 +33,7 @@ func (h *Common) SignIn(c *gin.Context) {
 		})
 		return
 	}
-	ctx, cancel := context.WithTimeout(c, time.Second*100)
+	ctx, cancel := context.WithTimeout(c, time.Second*10)
 	defer cancel()
 	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
 	if err != nil {

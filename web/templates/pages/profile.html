@@ -42,15 +42,15 @@
                         <div class="card shadow" style="border-radius: 1rem;">
                             <div class="card-body p-5">
                                 <h5 class="fw-normal mb-3 text-center" style="letter-spacing: 1px;">Change Your Password</h5>
-                                <form id="changePasswordForm" hx-post="/profile/password" hx-target="#passwordStatus" hx-swap="innerHTML" class="needs-validation" novalidate>
+                                <form id="changePasswordForm" hx-post="/password" hx-target="#passwordStatus" hx-swap="innerHTML" class="needs-validation" novalidate>
                                     <div class="mb-3">
                                         <label for="newPassword" class="form-label">New Password</label>
-                                        <input type="password" class="form-control" id="newPassword" name="newPassword" required />
+                                        <input type="password" class="form-control" id="newPassword" name="new_password" required />
                                         <div class="invalid-feedback">Please provide a new password.</div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required />
                                         <div class="invalid-feedback">Please confirm your new password.</div>
                                     </div>
                                     <div class="mb-3 pt-2">
