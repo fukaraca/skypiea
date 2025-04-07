@@ -3,6 +3,9 @@ package server
 import (
 	"log"
 	"net"
+	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/config"
@@ -24,6 +27,29 @@ func Start(cfg *config.Config) error {
 	server.bindRoutes()
 
 	logger.Info("server started")
-	log.Fatal(server.engine.Run(net.JoinHostPort(cfg.Server.Address, cfg.Server.Port)))
+	httpServer := &http.Server{
+		Addr:              net.JoinHostPort(cfg.Server.Address, cfg.Server.Port),
+		Handler:           server.engine,
+		ReadHeaderTimeout: time.Second * 10,
+	}
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	go func() {
+		<-quit
+		logger.Warn("receive interrupt signal")
+		if err := httpServer.Close(); err != nil {
+			log.Fatal("Server Close:", err)
+		}
+	}()
+
+	if err = httpServer.ListenAndServe(); err != nil {
+		if err == http.ErrServerClosed {
+			logger.Warn("Server closed under request")
+		} else {
+			log.Fatal("Server closed unexpect")
+		}
+	}
+
+	logger.Info("Server exiting")
 	return nil
 }
