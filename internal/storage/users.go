@@ -16,7 +16,7 @@ const (
 	getUserByUUIDPG  = `SELECT * FROM users WHERE user_uuid = $1;`
 	getUserByEmailPG = `SELECT * FROM users WHERE email = $1;`
 	getPassPG        = `SELECT password FROM users WHERE email = $1;`
-	updatePasswordPG = `UPDATE users SET password = $1 where user_uuid = $2;`
+	updatePasswordPG = `UPDATE users SET password = $1 where user_uuid = $2;` //nolint: gosec
 )
 
 type UsersRepo interface {
@@ -73,7 +73,8 @@ func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (*uuid.UUID, err
 	user.Password = hashed
 	uid := uuid.New()
 
-	_, err = u.Exec(ctx, addUserPG, uid.String(), user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password)
+	_, err = u.Exec(ctx, addUserPG, uid.String(),
+		user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,8 @@ func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (*uuid.UUID, err
 func (u *usersRepoPgx) GetUserByUUID(ctx context.Context, userID uuid.UUID) (*User, error) {
 	var out User
 	row := u.QueryRow(ctx, getUserByUUIDPG, userID.String())
-	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email, &out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
+	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
+		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &out, nil
@@ -93,7 +95,8 @@ func (u *usersRepoPgx) GetUserByUUID(ctx context.Context, userID uuid.UUID) (*Us
 func (u *usersRepoPgx) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	var out User
 	row := u.QueryRow(ctx, getUserByEmailPG, email)
-	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email, &out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
+	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
+		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &out, nil

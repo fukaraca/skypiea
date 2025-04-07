@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"log"
 	"net"
 	"net/http"
@@ -37,13 +38,13 @@ func Start(cfg *config.Config) error {
 	go func() {
 		<-quit
 		logger.Warn("receive interrupt signal")
-		if err := httpServer.Close(); err != nil {
-			log.Fatal("Server Close:", err)
+		if errInner := httpServer.Close(); errInner != nil {
+			log.Fatal("Server Close:", errInner)
 		}
 	}()
 
 	if err = httpServer.ListenAndServe(); err != nil {
-		if err == http.ErrServerClosed {
+		if errors.Is(err, http.ErrServerClosed) {
 			logger.Warn("Server closed under request")
 		} else {
 			log.Fatal("Server closed unexpect")

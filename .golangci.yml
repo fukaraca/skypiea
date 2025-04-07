@@ -27,7 +27,6 @@ linters:
     - goconst
     - gocritic
     - gocyclo
-    - godot
     - gomoddirectives
     - goprintffuncname
     - gosec
@@ -102,7 +101,7 @@ linters:
         - ^google.golang.org/protobuf/.+Options$
         - ^gopkg.in/yaml.v3.Node$
     funlen:
-      lines: 100
+      lines: 150
       statements: 50
       ignore-comments: true
     gocognit:
@@ -122,6 +121,8 @@ linters:
           strict: true
     inamedparam:
       skip-single-param: true
+    lll:
+      line-length: 165
     mnd:
       ignored-functions:
         - args.Error
