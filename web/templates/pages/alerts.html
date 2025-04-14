@@ -1,0 +1,11 @@
+{{ define "alerts" }}
+<div
+        id="alert-message"
+        class="alert {{ .AlertStyle }} alert-dismissible fade show "
+        role="alert"
+        hx-swap-oob="true"
+        style="display: {{ if .ShowAlert }}block{{ else }}none{{ end }};"
+>
+    {{ .AlertMessage }}
+</div>
+{{ end }}

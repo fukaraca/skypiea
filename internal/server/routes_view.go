@@ -13,6 +13,7 @@ func viewRoutes(s *Server) RouteMap {
 	h := handlers.View{Repo: s.Repo}
 	routes[RouteKey{http.MethodGet, "/"}] = []gin.HandlerFunc{h.Index}
 	routes[RouteKey{http.MethodGet, "/contact"}] = []gin.HandlerFunc{h.Contact}
+	routes[RouteKey{http.MethodGet, "/pricing"}] = []gin.HandlerFunc{h.Pricing}
 	routes[RouteKey{http.MethodGet, "/features"}] = []gin.HandlerFunc{h.Features}
 	routes[RouteKey{http.MethodGet, "/login"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.Login}
 	routes[RouteKey{http.MethodGet, "/faq"}] = []gin.HandlerFunc{h.FAQ}

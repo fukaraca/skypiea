@@ -12,8 +12,11 @@ import (
 )
 
 const (
-	DefaultCookieName = "ss_skypiea"
-	CtxLoggedIn       = "logged_in"
+	DefaultCookieName   = "ss_skypiea"
+	DefaultCookieMaxAge = 100
+	DefaultCookieDomain = "localhost"
+
+	CtxLoggedIn = "logged_in"
 )
 
 var Cache *Manager

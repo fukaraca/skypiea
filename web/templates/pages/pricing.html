@@ -1,8 +1,25 @@
 {{- define "pricing" -}}
     {{- template "base" . }}
 {{ end }}
-{{- define "content" }}
-<main class="main">
-tobecontinued
-</main>
+{{ define "content" }}
+<section class="py-5" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow" style="border-radius: 1rem;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 40px;" />
+                        </div>
+                        <h3 class="text-center mb-4">Pricing</h3>
+                        <p class="text-center mb-5">
+                            Skypiea AI is purely a showcase project, demonstrating the capabilities and skills. There are no costs or commercial plans available.
+                            For inquiries or feedback, please head over to our <a href="/contact">Contact</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {{ end }}

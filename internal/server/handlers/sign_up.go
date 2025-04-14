@@ -24,10 +24,10 @@ type SignUpReq struct {
 	Email     string `form:"email" binding:"required,email"`
 }
 
-func (h *Common) SignUp(c *gin.Context) {
+func (h *Open) SignUp(c *gin.Context) {
 	var in SignUpReq
 	if err := c.ShouldBind(&in); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		h.AlertUI(c, err.Error(), AlertLevelError)
 		return
 	}
 	ctx, cancel := context.WithTimeout(c, time.Second*10)
@@ -42,7 +42,7 @@ func (h *Common) SignUp(c *gin.Context) {
 	}
 	_, err := h.Repo.Users.AddUser(ctx, user)
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		h.AlertUI(c, err.Error(), AlertLevelError)
 		return
 	}
 	c.Header(model.HxRedirect, "/login")

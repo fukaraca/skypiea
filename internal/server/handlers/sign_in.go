@@ -25,33 +25,27 @@ type SignInReq struct {
 	Password string `form:"password" binding:"required"`
 }
 
-func (h *Common) SignIn(c *gin.Context) {
+func (h *Open) SignIn(c *gin.Context) {
 	var in SignInReq
 	if err := c.ShouldBind(&in); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"loginResponse": err.Error(),
-		})
+		h.AlertUI(c, err.Error(), AlertLevelError)
 		return
 	}
 	ctx, cancel := context.WithTimeout(c, time.Second*10)
 	defer cancel()
 	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"loginResponse": fmt.Sprintf("user not found for %q", in.Email),
-		})
+		h.AlertUI(c, fmt.Sprintf("user not found for %q", in.Email), AlertLevelError)
 		return
 	}
 	if !encryption.CheckPasswordHash(in.Password, user.Password) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"loginResponse": model.ErrIncorrectCred.Message,
-		})
+		h.AlertUI(c, model.ErrIncorrectCred.Message, AlertLevelError)
 		return
 	}
 
 	sess := session.Cache.NewSession(ctx, uuid.MustParse(user.UserUUID))
 	session.Cache.Set(sess)
-	c.SetCookie(session.DefaultCookieName, sess.ID, 100, "/", "localhost", false, true)
+	c.SetCookie(session.DefaultCookieName, sess.ID, session.DefaultCookieMaxAge, "/", session.DefaultCookieDomain, false, true)
 	c.Header(model.HxRedirect, "/")
 	c.Status(http.StatusFound)
 }

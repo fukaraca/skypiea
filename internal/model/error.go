@@ -13,9 +13,6 @@ var (
 	ErrInvalidToken    = NewError(1105, "auth token is not valid")
 )
 
-// TODO return UI error html by levels info, warning, error
-// generic failure handler as view supporting different status codes
-
 type Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`

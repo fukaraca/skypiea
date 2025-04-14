@@ -40,7 +40,7 @@ func (t Templates) LoadHTMLGlob(pattern string) {
 		filenames := make([]string, len(layouts))
 		copy(filenames, layouts)
 		filenames = append(filenames, page) //nolint: makezero
-		temp := template.Must(template.New("").ParseFiles(filenames...))
+		temp := template.Must(template.New(filename).ParseFiles(filenames...))
 		t[filename] = &render.HTMLProduction{
 			Template: temp,
 		}

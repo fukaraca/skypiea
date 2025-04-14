@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -26,41 +27,29 @@ func (h *View) ForgotPassword(c *gin.Context) {
 func (s *Strict) ChangePassword(c *gin.Context) {
 	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
 	if userID == nil {
-		c.Error(model.ErrSessionNotFound)
+		s.AlertUI(c, model.ErrSessionNotFound.Message, AlertLevelError)
 		return
 	}
 	var in ChangePasswordReq
 	err := c.ShouldBind(&in)
 	if err != nil {
-		c.Error(err)
+		s.AlertUI(c, err.Error(), AlertLevelError)
 		return
 	}
 	if in.NewPassword == "" || in.NewPassword != in.ConfirmPassword {
-		c.Error(model.ErrIncorrectCred)
+		s.AlertUI(c, model.ErrIncorrectCred.Message, AlertLevelError)
 		return
 	}
 	ctx, cancel := context.WithTimeout(c, time.Second*10)
 	defer cancel()
 	pass, err := encryption.HashPassword(in.ConfirmPassword)
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "failure", gin.H{
-			"Title":         "Internal Error",
-			"LoggedIn":      c.GetBool(session.CtxLoggedIn),
-			"StatusCode":    http.StatusInternalServerError,
-			"StatusHead":    "Password change not succeeded",
-			"StatusMessage": err.Error(),
-		})
+		s.AlertUI(c, fmt.Sprintf("password change not succeeded: %v", err), AlertLevelError)
 		return
 	}
 	err = s.Repo.Users.ChangePassword(ctx, *userID, pass)
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "failure", gin.H{
-			"Title":         "Internal Error",
-			"LoggedIn":      c.GetBool(session.CtxLoggedIn),
-			"StatusCode":    http.StatusInternalServerError,
-			"StatusHead":    "Password change not succeeded",
-			"StatusMessage": err.Error(),
-		})
+		s.AlertUI(c, fmt.Sprintf("password change not succeeded: %v", err), AlertLevelError)
 		return
 	}
 	s.Logout(c)

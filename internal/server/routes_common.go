@@ -33,9 +33,9 @@ func (s *Server) RegisterRoutes(rGroup *gin.RouterGroup, routes RouteMap, option
 	}
 }
 
-func commonRoutes(s *Server) RouteMap {
+func openRoutes(s *Server) RouteMap {
 	routes := NewRouteMap()
-	h := handlers.Common{Repo: s.Repo}
+	h := handlers.Open{Repo: s.Repo}
 	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignIn}
 	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignUp}
 

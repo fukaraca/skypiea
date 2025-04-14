@@ -1,8 +1,30 @@
 {{- define "contact" -}}
     {{- template "base" . }}
 {{ end }}
-{{- define "content" }}
-<main class="main">
-tobecontinued
-</main>
+{{ define "content" }}
+<section class="py-5" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow" style="border-radius: 1rem;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 40px;" />
+                        </div>
+                        <h3 class="text-center mb-4">Contact</h3>
+                        <p class="text-center">
+                            If you have any questions or feedback about Skypiea AI, feel free to reach out:
+                        </p>
+                        <p class="text-center">
+                            <strong>Email:</strong>
+                            <a href="mailto:dummy@hotmail.com">dummy@hotmail.com</a><br />
+                            <strong>LinkedIn:</strong>
+                            <a href="https://www.linkedin.com/in/dummy/">linkedin.com/in/dummy/</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {{ end }}
