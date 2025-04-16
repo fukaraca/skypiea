@@ -1,8 +1,80 @@
-{{- define "about" -}}
-    {{- template "base" . }}
+{{ define "about" }}
+{{ template "base" . }}
 {{ end }}
-{{- define "content" }}
-<main class="main">
-tobecontinued
-</main>
+
+{{ define "content" }}
+<section class="py-5" style="background: linear-gradient(135deg, #65f671 0%, #fda085 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow" style="border-radius: 1rem;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 40px;" />
+                        </div>
+                        <h3 class="text-center mb-4">About Skypiea AI</h3>
+
+                        <p class="text-center mb-5">
+                            Skypiea AI is a demonstration project showcasing robust, production-ready
+                            backend development in Go, cloud-native deployment, and modern DevOps practices.
+                            This application illustrates microservices architecture, containerization,
+                            orchestration, and automated CI/CD pipelines, all while featuring a streamlined UI.
+                        </p>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h5>Our Purpose</h5>
+                                <p> -Prepare for trouble!</p>
+                                <p> -And make it double!</p>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h5>Our Vision</h5>
+                                <p> -To protect the world from devastation!</p>
+                                <p> -To unite all peoples within our nation!</p>
+                                <p> -To denounce the evils of truth and love!</p>
+                                <p> -To extend our reach to the stars above!</p>
+                                <p> -Jessie!</p>
+                                <p> -James!</p>
+                                <p> -Team Rocket blasts off at the speed of light!</p>
+                                <p> -Surrender now, or prepare to fight!</p>
+                                <p> -Meowth!</p>
+                                <p> -That's right!</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h5>Key Technologies</h5>
+                                <ul>
+                                    <li>Go (Golang) for REST APIs and microservices</li>
+                                    <li>Docker & Kubernetes for containerization and orchestration</li>
+                                    <li>Helm for standardized, version-controlled deployments</li>
+                                    <li>AWS (EKS, RDS, S3) for cloud services and infrastructure</li>
+                                    <li>GitHub Actions (or other CI/CD tools) for automated workflows</li>
+                                    <li>HTMX + Go templates for server-side rendered UI</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h5>How You Can Contribute</h5>
+                                <p>
+                                    Feedback and collaboration are always welcome. Review the codebase,
+                                    open issues, or submit pull requests. For direct inquiries, visit our
+                                    <a href="/contact">Contact</a> page.
+                                    Together, we can refine Skypiea AI and continue to showcase
+                                    best practices in building high-quality backend systems.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="text-center mt-4">
+                            Thank you for exploring Skypiea AI. We hope this project provides valuable
+                            insights into professional, scalable Go applications with modern cloud
+                            and DevOps tooling.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {{ end }}

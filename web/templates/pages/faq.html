@@ -1,8 +1,83 @@
-{{- define "faq" -}}
-    {{- template "base" . }}
+{{ define "faq" }}
+{{ template "base" . }}
 {{ end }}
-{{- define "content" }}
-<main class="main">
-tobecontinued
-</main>
+
+{{ define "content" }}
+<section class="py-5" style="background: linear-gradient(135deg, #fffb02 0%, #fda085 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow" style="border-radius: 1rem;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 40px;" />
+                        </div>
+                        <h3 class="text-center mb-4">Frequently Asked Questions (Q&A)</h3>
+
+                        <p class="text-center mb-5">
+                            This FAQ (Q&A) section aims to address the most common questions about Skypiea AI.
+                            Whether you’re a casual observer or a professional, please review these points before
+                            sharing or using any features that involve sensitive or proprietary data.
+                        </p>
+
+                        <ul class="list-group list-group-flush">
+
+                            <!-- Question 1 -->
+                            <li class="list-group-item mb-3">
+                                <h5 class="mb-1">Q: Why does Skypiea AI have a dedicated FAQ page?</h5>
+                                <p class="mb-0">
+                                    <strong>A:</strong>
+                                    Because why not.
+                                </p>
+                            </li>
+
+                            <!-- Question 2 -->
+                            <li class="list-group-item mb-3">
+                                <h5 class="mb-1">Q: Is this a project for professional use?</h5>
+                                <p class="mb-0">
+                                    <strong>A:</strong>
+                                    Yes and No. This is an evidence that the Maintainer can do some stuff.
+                                </p>
+                            </li>
+
+                            <!-- Question 3 -->
+                            <li class="list-group-item mb-3">
+                                <h5 class="mb-1">Q: Should I take extra care when sharing sensitive data?</h5>
+                                <p class="mb-0">
+                                    <strong>A:</strong>
+                                    Absolutely. Whenever you handle or transmit sensitive data, whether internal
+                                    company information or personal user data, follow strict security measures and
+                                    comply with relevant data protection laws (e.g., GDPR, HIPAA). Skypiea AI includes
+                                    safeguards, but responsibility also lies with users to handle data securely.
+                                </p>
+                            </li>
+
+                            <!-- Question 4 -->
+                            <li class="list-group-item mb-3">
+                                <h5 class="mb-1">Q: How will the information on this page be updated?</h5>
+                                <p class="mb-0">
+                                    <strong>A:</strong>
+                                    As Skypiea AI evolves—whether through new features, security enhancements, or
+                                    integration points—this FAQ will be periodically revised. Check back for updates
+                                    and the latest guidelines.
+                                </p>
+                            </li>
+
+                            <!-- Question 5 -->
+                            <li class="list-group-item mb-3">
+                                <h5 class="mb-1">Q: Where can I find further help or contact details?</h5>
+                                <p class="mb-0">
+                                    <strong>A:</strong>
+                                    For additional inquiries or technical support, visit the
+                                    <a href="/contact">Contact</a> page. We encourage you to reach out if you have any
+                                    unanswered questions or need personalized assistance.
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {{ end }}

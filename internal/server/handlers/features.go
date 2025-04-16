@@ -1,14 +1,13 @@
 package handlers
 
 import (
-	"os"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/fukaraca/skypiea/internal/server/middlewares"
 )
 
 func (h *View) Features(c *gin.Context) {
-	middlewares.GetLoggerFromContext(c).Debug("features")
-	c.AbortWithError(400, os.ErrClosed).SetMeta("features")
+	c.HTML(http.StatusOK, "features", gin.H{
+		"Title": "Features",
+	})
 }
