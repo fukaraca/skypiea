@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
-	"time"
 
 	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/pkg/gwt"
@@ -19,7 +17,7 @@ func (h *View) Profile(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	ctx, cancel := context.WithTimeout(c, time.Second*10)
+	ctx, cancel := h.CtxWithTimout(c)
 	defer cancel()
 	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
 	if userID == nil {

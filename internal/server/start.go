@@ -23,7 +23,7 @@ func Start(cfg *config.Config) error {
 	if err != nil {
 		return err
 	}
-	session.Cache = session.NewManager(&gwt.Config{Secret: []byte("secret")}, db, time.Minute*10)
+	session.Cache = session.NewManager(&gwt.Config{Secret: []byte("secret")}, db, cfg.Server.SessionTimeout)
 	server := NewServer(cfg, router, db, logger)
 	server.bindRoutes()
 

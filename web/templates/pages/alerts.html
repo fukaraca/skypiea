@@ -7,5 +7,10 @@
         style="display: {{ if .ShowAlert }}block{{ else }}none{{ end }};"
 >
     {{ .AlertMessage }}
+    <button type="button"
+            class="btn-close"
+            aria-label="Close"
+            hx-on:click="this.closest('.alert').style.display='none'">
+    </button>
 </div>
 {{ end }}

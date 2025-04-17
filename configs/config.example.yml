@@ -3,6 +3,8 @@ server:
   port: "8080"
   maxBodySizeMB: 25
   ginMode: "debug" # test, release, debug
+  sessionTimeout: 10m
+  defaultRequestTimeout: 10s
 log:
   level: "debug"
   addSource: false

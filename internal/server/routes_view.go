@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func viewRoutes(s *Server) RouteMap {
+func viewRoutes(s *Server, common *handlers.Common) RouteMap {
 	routes := NewRouteMap()
-	h := handlers.View{Repo: s.Repo}
+	h := handlers.NewViewHandler(common, s.Repo)
 	routes[RouteKey{http.MethodGet, "/"}] = []gin.HandlerFunc{h.Index}
 	routes[RouteKey{http.MethodGet, "/contact"}] = []gin.HandlerFunc{h.Contact}
 	routes[RouteKey{http.MethodGet, "/pricing"}] = []gin.HandlerFunc{h.Pricing}

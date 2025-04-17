@@ -81,7 +81,7 @@ func (d *Database) GetDBConn() (*DB, error) {
 		if err != nil {
 			return nil, err
 		}
-		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second) //nolint: govet
+		ctx, _ := context.WithTimeout(context.Background(), d.PostgreSQL.Timeout) //nolint: govet
 		if err = conn.Ping(ctx); err != nil {
 			return nil, err
 		}

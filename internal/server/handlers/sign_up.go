@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
-	"time"
 
 	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/internal/storage"
@@ -30,7 +28,7 @@ func (h *Open) SignUp(c *gin.Context) {
 		h.AlertUI(c, err.Error(), AlertLevelError)
 		return
 	}
-	ctx, cancel := context.WithTimeout(c, time.Second*10)
+	ctx, cancel := h.CtxWithTimout(c)
 	defer cancel()
 	user := &storage.User{
 		Firstname: in.Firstname,

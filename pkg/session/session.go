@@ -16,6 +16,8 @@ const (
 	DefaultCookieMaxAge = 100
 	DefaultCookieDomain = "localhost"
 
+	DefaultSessionEarlyTimeout = -time.Second * 5
+
 	CtxLoggedIn = "logged_in"
 )
 
@@ -62,7 +64,7 @@ func (sm *Manager) NewSession(ctx context.Context, userID uuid.UUID) *Session {
 }
 
 func (s *Session) Valid() bool {
-	return s.EOL.After(time.Now().Add(-time.Second * 5))
+	return s.EOL.After(time.Now().Add(DefaultSessionEarlyTimeout))
 }
 
 func (s *Session) Token() string {

@@ -1,6 +1,8 @@
 package config
 
 import (
+	"time"
+
 	"github.com/fukaraca/skypiea/internal/storage"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 )
@@ -18,8 +20,10 @@ type Config struct {
 }
 
 type Server struct {
-	Address       string `yaml:"server.address"`
-	Port          string `yaml:"server.port"`
-	MaxBodySizeMB int    `yaml:"server.maxBodySizeMB"`
-	GinMode       string `yaml:"server.ginMode"`
+	Address               string        `yaml:"server.address"`
+	Port                  string        `yaml:"server.port"`
+	MaxBodySizeMB         int           `yaml:"server.maxBodySizeMB"`
+	GinMode               string        `yaml:"server.ginMode"`
+	SessionTimeout        time.Duration `yaml:"sessionTimeout"`
+	DefaultRequestTimeout time.Duration `yaml:"defaultRequestTimeout"`
 }

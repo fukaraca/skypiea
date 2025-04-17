@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/pkg/encryption"
@@ -31,7 +29,7 @@ func (h *Open) SignIn(c *gin.Context) {
 		h.AlertUI(c, err.Error(), AlertLevelError)
 		return
 	}
-	ctx, cancel := context.WithTimeout(c, time.Second*10)
+	ctx, cancel := h.CtxWithTimout(c)
 	defer cancel()
 	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
 	if err != nil {

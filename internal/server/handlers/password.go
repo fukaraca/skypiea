@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/pkg/encryption"
@@ -40,7 +38,7 @@ func (s *Strict) ChangePassword(c *gin.Context) {
 		s.AlertUI(c, model.ErrIncorrectCred.Message, AlertLevelError)
 		return
 	}
-	ctx, cancel := context.WithTimeout(c, time.Second*10)
+	ctx, cancel := s.CtxWithTimout(c)
 	defer cancel()
 	pass, err := encryption.HashPassword(in.ConfirmPassword)
 	if err != nil {

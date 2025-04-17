@@ -25,9 +25,10 @@ func (s *Server) bindRoutes() {
 	s.engine.NoRoute(middlewares.CommonAuthMw(), handlers.NoRoute404)
 	// v1 := s.engine.Group(V1)
 
-	s.RegisterRoutes(nil, viewRoutes(s), middlewares.CommonAuthMw())
-	s.RegisterRoutes(nil, openRoutes(s), middlewares.CommonAuthMw())
-	s.RegisterRoutes(nil, strictRoutes(s), middlewares.StrictAuthMw())
+	common := handlers.NewCommonHandler(s.Config)
+	s.RegisterRoutes(nil, viewRoutes(s, common), middlewares.CommonAuthMw())
+	s.RegisterRoutes(nil, openRoutes(s, common), middlewares.CommonAuthMw())
+	s.RegisterRoutes(nil, strictRoutes(s, common), middlewares.StrictAuthMw())
 }
 
 //
