@@ -28,3 +28,5 @@ go.work.sum
 
 # ide files
 .idea/
+
+web/static/js/htmx.js
