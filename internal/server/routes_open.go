@@ -38,6 +38,7 @@ func openRoutes(s *Server, common *handlers.Common) RouteMap {
 	h := handlers.NewOpenHandler(common, s.Repo)
 	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignIn}
 	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignUp}
+	routes[RouteKey{http.MethodPost, "/forgot-password"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.ForgotPassword}
 
 	return routes
 }

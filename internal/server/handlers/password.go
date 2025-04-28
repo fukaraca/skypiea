@@ -9,6 +9,7 @@ import (
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type ChangePasswordReq struct {
@@ -51,4 +52,34 @@ func (s *Strict) ChangePassword(c *gin.Context) {
 		return
 	}
 	s.Logout(c)
+}
+
+type ForgotPasswordReq struct {
+	Email string `form:"email" binding:"required"`
+}
+
+func (h *Open) ForgotPassword(c *gin.Context) {
+	var in ForgotPasswordReq
+	if err := c.ShouldBind(&in); err != nil {
+		h.AlertUI(c, err.Error(), AlertLevelError)
+		return
+	}
+	ctx, cancel := h.CtxWithTimout(c)
+	defer cancel()
+	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
+	if err != nil {
+		h.AlertUI(c, err.Error(), AlertLevelError)
+		return
+	}
+	hPass, err := encryption.HashPassword("iForgotMyPassword")
+	if err != nil {
+		h.AlertUI(c, err.Error(), AlertLevelError)
+		return
+	}
+	err = h.Repo.Users.ChangePassword(ctx, uuid.MustParse(user.UserUUID), hPass)
+	if err != nil {
+		h.AlertUI(c, err.Error(), AlertLevelError)
+		return
+	}
+	h.AlertUI(c, "New Password sent to your email... (kidding its iForgotMyEmail now, go and try now).", AlertLevelInfo)
 }
