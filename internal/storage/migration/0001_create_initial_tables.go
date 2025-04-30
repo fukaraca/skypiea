@@ -44,6 +44,13 @@ var migration0001CreateInitialTablesUp = []string{
         ON UPDATE CASCADE 
         ON DELETE CASCADE    
 	);`,
+
+	`INSERT INTO roles (id, name)
+	VALUES 
+	    ('admin', 'Admin'),
+	    ('user_std', 'Standard User'),
+	    ('user_vip', 'VIP User'),
+	ON CONFLICT (id) DO NOTHING;`,
 }
 
 var migration0001CreateInitialTablesDown = []string{

@@ -25,6 +25,7 @@ func RunMigration(conf *storage.Database, direction migrate.MigrationDirection) 
 func bindMigrations() []*migrate.Migration {
 	return []*migrate.Migration{
 		Mig0001CreateInitialTables,
+		Mig0002AddMessagesAndConversationsTables,
 	}
 }
 

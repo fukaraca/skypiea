@@ -19,12 +19,14 @@ const (
 )
 
 type Repositories struct {
-	Users UsersRepo
+	Users         UsersRepo
+	Conversations ConversationsRepo
 }
 
 func NewRepositories(db *DB) *Repositories {
 	return &Repositories{
-		Users: NewUsersRepo(db),
+		Users:         NewUsersRepo(db),
+		Conversations: NewConversationsRepo(db),
 	}
 }
 
