@@ -37,7 +37,7 @@ type User struct {
 	Status    string
 	Password  string
 	CreatedAt time.Time
-	UpdatedAt time.Time
+	UpdatedAt time.Time // TODO: maybe not needed for now but nullable types matter for pgx>> pgtype..
 }
 
 func (u *User) Convert() *model.User {
