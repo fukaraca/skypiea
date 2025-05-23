@@ -2,12 +2,13 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/pkg/encryption"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 )
 
 const (
@@ -17,14 +18,16 @@ const (
 	getUserByEmailPG = `SELECT * FROM users WHERE email = $1;`
 	getPassPG        = `SELECT password FROM users WHERE email = $1;`
 	updatePasswordPG = `UPDATE users SET password = $1 where user_uuid = $2;` //nolint: gosec
+	deleteUserByUUID = `DELETE FROM users WHERE user_uuid = $1;`
 )
 
 type UsersRepo interface {
-	AddUser(context.Context, *User) (*uuid.UUID, error)
+	AddUser(context.Context, *User) (uuid.UUID, error)
 	GetUserByUUID(context.Context, uuid.UUID) (*User, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetHPassword(context.Context, string) (string, error)
 	ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error
+	DeleteUsersByUUID(context.Context, uuid.UUID) error
 }
 
 type User struct {
@@ -54,21 +57,21 @@ func (u *User) Convert() *model.User {
 }
 
 type usersRepoPgx struct {
-	*pgxpool.Pool
+	dbConn
 }
 
-func NewUsersRepo(db *DB) UsersRepo {
-	switch db.Dialect {
+func NewUsersRepo(dia Dialect, conn dbConn) UsersRepo {
+	switch dia {
 	case DialectPostgres, DialectPgx:
-		return &usersRepoPgx{db.Pool}
+		return &usersRepoPgx{conn}
 	}
 	return nil
 }
 
-func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (*uuid.UUID, error) {
+func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (uuid.UUID, error) {
 	hashed, err := encryption.HashPassword(user.Password)
 	if err != nil {
-		return nil, err
+		return uuid.UUID{}, err
 	}
 	user.Password = hashed
 	uid := uuid.New()
@@ -76,10 +79,10 @@ func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (*uuid.UUID, err
 	_, err = u.Exec(ctx, addUserPG, uid.String(),
 		user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password)
 	if err != nil {
-		return nil, err
+		return uuid.UUID{}, err
 	}
 	// TODO check conflict
-	return &uid, nil
+	return uid, nil
 }
 
 func (u *usersRepoPgx) GetUserByUUID(ctx context.Context, userID uuid.UUID) (*User, error) {
@@ -97,6 +100,9 @@ func (u *usersRepoPgx) GetUserByEmail(ctx context.Context, email string) (*User,
 	row := u.QueryRow(ctx, getUserByEmailPG, email)
 	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
 		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, model.ErrNoSuchEmail
+		}
 		return nil, err
 	}
 	return &out, nil
@@ -110,5 +116,10 @@ func (u *usersRepoPgx) GetHPassword(ctx context.Context, username string) (strin
 
 func (u *usersRepoPgx) ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error {
 	_, err := u.Exec(ctx, updatePasswordPG, hPassword, userID.String())
+	return err
+}
+
+func (u *usersRepoPgx) DeleteUsersByUUID(ctx context.Context, userID uuid.UUID) error {
+	_, err := u.Exec(ctx, deleteUserByUUID, userID.String())
 	return err
 }

@@ -17,7 +17,7 @@ func NewRouter(cfg *config.Server, logger *slog.Logger, opts ...gin.OptionFunc) 
 	templates := templater.New()
 	templates.LoadHTMLGlob("./web/templates")
 	e.HTMLRender = templates
-	e.Use(middlewares.CommonMiddlewares(logger)...)
+	e.Use(middlewares.CommonMiddlewares(logger, cfg)...)
 	return e
 }
 

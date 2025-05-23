@@ -27,17 +27,17 @@ func Start(cfg *config.Config) error {
 	server := NewServer(cfg, router, db, logger)
 	server.bindRoutes()
 
-	logger.Info("server started")
+	logger.Info("Server started")
 	httpServer := &http.Server{
 		Addr:              net.JoinHostPort(cfg.Server.Address, cfg.Server.Port),
 		Handler:           server.engine,
-		ReadHeaderTimeout: time.Second * 10,
+		ReadHeaderTimeout: time.Second * 5,
 	}
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	go func() {
 		<-quit
-		logger.Warn("receive interrupt signal")
+		logger.Warn("received interrupt signal")
 		if errInner := httpServer.Close(); errInner != nil {
 			log.Fatal("Server Close:", errInner)
 		}
@@ -47,10 +47,10 @@ func Start(cfg *config.Config) error {
 		if errors.Is(err, http.ErrServerClosed) {
 			logger.Warn("Server closed under request")
 		} else {
-			log.Fatal("Server closed unexpect")
+			log.Fatal("Server closed unexpectedly")
 		}
 	}
 
-	logger.Info("Server exiting")
+	logger.Info("Server shutting down")
 	return nil
 }

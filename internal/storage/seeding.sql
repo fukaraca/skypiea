@@ -5,8 +5,8 @@ WITH new_users AS (
     INSERT INTO users
         (user_uuid, firstname, lastname, email, password, role, status)
         VALUES
-            (uuid_generate_v4(), 'John', 'Tester', 'johndoe@example.com', 'qweqwe', 'admin', 'active'),
-            (uuid_generate_v4(), 'Jane',   'Tester', 'janedoe@example.com',   'qweqwe', 'user_std', 'active')
+            (uuid_generate_v4(), 'John', 'Tester', 'johndoe@example.com', '$2a$04$jLaYijt7BEcQ2ZRygQdEpe347jdq38zGNQ5QabY9E6FuiI6nCpQq2', 'admin', 'active'),
+            (uuid_generate_v4(), 'Jane',   'Tester', 'janedoe@example.com',   '$2a$04$jLaYijt7BEcQ2ZRygQdEpe347jdq38zGNQ5QabY9E6FuiI6nCpQq2', 'user_std', 'active')
         RETURNING id, user_uuid, firstname
 ),
 

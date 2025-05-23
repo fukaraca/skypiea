@@ -1,15 +1,12 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fukaraca/skypiea/internal/model"
-	"github.com/fukaraca/skypiea/pkg/encryption"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type ChangePasswordReq struct {
@@ -26,29 +23,27 @@ func (h *View) ForgotPassword(c *gin.Context) {
 func (s *Strict) ChangePassword(c *gin.Context) {
 	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
 	if userID == nil {
-		s.AlertUI(c, model.ErrSessionNotFound.Message, AlertLevelError)
+		s.AlertUI(c, model.ErrSessionNotFound.Message, ALError)
 		return
 	}
 	var in ChangePasswordReq
 	err := c.ShouldBind(&in)
 	if err != nil {
-		s.AlertUI(c, err.Error(), AlertLevelError)
+		s.AlertUI(c, err.Error(), ALError)
 		return
 	}
 	if in.NewPassword == "" || in.NewPassword != in.ConfirmPassword {
-		s.AlertUI(c, model.ErrIncorrectCred.Message, AlertLevelError)
+		s.AlertUI(c, model.ErrIncorrectCred.Message, ALError)
 		return
 	}
-	ctx, cancel := s.CtxWithTimout(c)
-	defer cancel()
-	pass, err := encryption.HashPassword(in.ConfirmPassword)
+	ctx := c.Request.Context()
+	user, err := s.UserSvc.GetUser(ctx, *userID)
 	if err != nil {
-		s.AlertUI(c, fmt.Sprintf("password change not succeeded: %v", err), AlertLevelError)
+		s.AlertUI(c, err.Error(), ALError)
 		return
 	}
-	err = s.Repo.Users.ChangePassword(ctx, *userID, pass)
-	if err != nil {
-		s.AlertUI(c, fmt.Sprintf("password change not succeeded: %v", err), AlertLevelError)
+	if err = s.UserSvc.ChangePassword(c.Request.Context(), user.Email, in.NewPassword); err != nil {
+		s.AlertUI(c, err.Error(), ALError)
 		return
 	}
 	s.Logout(c)
@@ -58,28 +53,16 @@ type ForgotPasswordReq struct {
 	Email string `form:"email" binding:"required"`
 }
 
+// TODO a proper password change logic
 func (h *Open) ForgotPassword(c *gin.Context) {
 	var in ForgotPasswordReq
 	if err := c.ShouldBind(&in); err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
+		h.AlertUI(c, err.Error(), ALError)
 		return
 	}
-	ctx, cancel := h.CtxWithTimout(c)
-	defer cancel()
-	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
-	if err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
+	if err := h.UserSvc.ChangePassword(c.Request.Context(), in.Email, "iForgotMyPassword"); err != nil {
+		h.AlertUI(c, err.Error(), ALError)
 		return
 	}
-	hPass, err := encryption.HashPassword("iForgotMyPassword")
-	if err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
-		return
-	}
-	err = h.Repo.Users.ChangePassword(ctx, uuid.MustParse(user.UserUUID), hPass)
-	if err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
-		return
-	}
-	h.AlertUI(c, "New Password sent to your email... (kidding its iForgotMyEmail now, go and try now).", AlertLevelInfo)
+	h.AlertUI(c, "New Password sent to your email... (kidding its iForgotMyPassword now, go and try now).", ALInfo)
 }

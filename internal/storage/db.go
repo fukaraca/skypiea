@@ -4,31 +4,24 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Dialect string
 
 const (
+	defaultTxTimeout = 10 * time.Second
+
 	DialectPgx      = "pgx"
 	DialectPostgres = "postgres"
 	DialectMySQL    = "mysql"
 )
-
-type Repositories struct {
-	Users         UsersRepo
-	Conversations ConversationsRepo
-}
-
-func NewRepositories(db *DB) *Repositories {
-	return &Repositories{
-		Users:         NewUsersRepo(db),
-		Conversations: NewConversationsRepo(db),
-	}
-}
 
 type Database struct {
 	Dialect    Dialect          `yaml:"dialect"`
@@ -46,25 +39,9 @@ type PostgreSQLConfig struct {
 }
 
 type DB struct {
-	*rw
+	*pgxpool.Pool
 	Dialect Dialect
 	conf    *Database
-}
-
-type rw struct {
-	*ro
-}
-
-func newRW(readOnly *ro) *rw {
-	return &rw{readOnly}
-}
-
-type ro struct {
-	*pgxpool.Pool
-}
-
-func newRO(pool *pgxpool.Pool) *ro {
-	return &ro{pool}
 }
 
 func (d *Database) GetDBConn() (*DB, error) {
@@ -87,7 +64,52 @@ func (d *Database) GetDBConn() (*DB, error) {
 		if err = conn.Ping(ctx); err != nil {
 			return nil, err
 		}
-		return &DB{newRW(newRO(conn)), d.Dialect, d}, nil
+		return &DB{conn, d.Dialect, d}, nil
 	}
 	return nil, errors.New("no dialect was selected to get db connection")
+}
+
+// dbConn supports TX, pool, conn etc..
+type dbConn interface {
+	Begin(ctx context.Context) (pgx.Tx, error)
+	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, optionsAndArgs ...interface{}) pgx.Row
+}
+
+type Registry struct {
+	dia           Dialect
+	conn          dbConn
+	Users         UsersRepo
+	Conversations ConversationsRepo
+}
+
+// NewRegistry returns new registry, this can be regular pool of sessions or a transaction registry
+func NewRegistry(dia Dialect, conn dbConn) *Registry {
+	return &Registry{
+		dia:           dia,
+		conn:          conn,
+		Users:         NewUsersRepo(dia, conn),
+		Conversations: NewConversationsRepo(dia, conn),
+	}
+}
+
+func (r *Registry) DoInTx(ctx context.Context, logger *slog.Logger, fn func(reg *Registry) error) error {
+	if logger == nil {
+		logger = slog.Default()
+	}
+	ctx, cancel := context.WithTimeout(ctx, defaultTxTimeout)
+	defer cancel()
+
+	tx, err := r.conn.Begin(ctx) // defaults read committed
+	if err != nil {
+		logger.Error("DoInTx.Begin failed", err)
+		return errors.Join(err, errors.New("DoInTx.Begin failed"))
+	}
+	reg := NewRegistry(r.dia, tx)
+	if err = fn(reg); err != nil {
+		logger.Error("DoInTx.fn() failed", err)
+		return errors.Join(err, tx.Rollback(ctx))
+	}
+	return tx.Commit(ctx)
 }

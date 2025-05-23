@@ -10,7 +10,7 @@ import (
 
 func viewRoutes(s *Server, common *handlers.Common) RouteMap {
 	routes := NewRouteMap()
-	h := handlers.NewViewHandler(common, s.Repo)
+	h := handlers.NewViewHandler(common, s.Service, s.Service)
 	routes[RouteKey{http.MethodGet, "/"}] = []gin.HandlerFunc{h.Index}
 	routes[RouteKey{http.MethodGet, "/contact"}] = []gin.HandlerFunc{h.Contact}
 	routes[RouteKey{http.MethodGet, "/pricing"}] = []gin.HandlerFunc{h.Pricing}

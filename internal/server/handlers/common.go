@@ -1,20 +1,17 @@
 package handlers
 
 import (
-	"context"
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/config"
-	"github.com/fukaraca/skypiea/internal/storage"
-	"github.com/gin-gonic/gin"
 )
 
 const (
 	HX_REDIRECT = "HX-REDIRECT"
 
-	AlertLevelInfo    AlertLevel = "alert-info"
-	AlertLevelError   AlertLevel = "alert-danger"
-	AlertLevelWarning AlertLevel = "alert-warning"
+	ALInfo    AlertLevel = "alert-info"
+	ALError   AlertLevel = "alert-danger"
+	ALWarning AlertLevel = "alert-warning"
 
 	defaultReqTimeout = time.Second * 30
 )
@@ -35,31 +32,29 @@ func NewCommonHandler(s *config.Config) *Common {
 
 type View struct {
 	*Common
-	Repo *storage.Repositories
+	MessageSvc MessageService
+	UserSvc    UserService
 }
 
-func NewViewHandler(c *Common, repo *storage.Repositories) *View {
-	return &View{Common: c, Repo: repo}
+func NewViewHandler(c *Common, msgSvc MessageService, userSvc UserService) *View {
+	return &View{Common: c, MessageSvc: msgSvc, UserSvc: userSvc}
 }
 
 type Open struct {
 	*Common
-	Repo *storage.Repositories
+	UserSvc UserService
 }
 
-func NewOpenHandler(c *Common, repo *storage.Repositories) *Open {
-	return &Open{Common: c, Repo: repo}
+func NewOpenHandler(c *Common, userSvc UserService) *Open {
+	return &Open{Common: c, UserSvc: userSvc}
 }
 
 type Strict struct {
 	*Common
-	Repo *storage.Repositories
+	MessageSvc MessageService
+	UserSvc    UserService
 }
 
-func NewStrictHandler(c *Common, repo *storage.Repositories) *Strict {
-	return &Strict{Common: c, Repo: repo}
-}
-
-func (h *Common) CtxWithTimout(c *gin.Context) (context.Context, context.CancelFunc) {
-	return context.WithTimeout(c, h.reqTimeout)
+func NewStrictHandler(c *Common, msgSvc MessageService, userSvc UserService) *Strict {
+	return &Strict{Common: c, MessageSvc: msgSvc, UserSvc: userSvc}
 }

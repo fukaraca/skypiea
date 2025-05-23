@@ -5,10 +5,7 @@ import (
 	"net/http"
 
 	"github.com/fukaraca/skypiea/internal/model"
-	"github.com/fukaraca/skypiea/pkg/encryption"
-	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func (h *View) Login(c *gin.Context) {
@@ -26,24 +23,16 @@ type SignInReq struct {
 func (h *Open) SignIn(c *gin.Context) {
 	var in SignInReq
 	if err := c.ShouldBind(&in); err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
-		return
-	}
-	ctx, cancel := h.CtxWithTimout(c)
-	defer cancel()
-	user, err := h.Repo.Users.GetUserByEmail(ctx, in.Email)
-	if err != nil {
-		h.AlertUI(c, fmt.Sprintf("user not found for %q", in.Email), AlertLevelError)
-		return
-	}
-	if !encryption.CheckPasswordHash(in.Password, user.Password) {
-		h.AlertUI(c, model.ErrIncorrectCred.Message, AlertLevelError)
+		h.AlertUI(c, err.Error(), ALError)
 		return
 	}
 
-	sess := session.Cache.NewSession(ctx, uuid.MustParse(user.UserUUID))
-	session.Cache.Set(sess)
-	c.SetCookie(session.DefaultCookieName, sess.ID, session.DefaultCookieMaxAge, "/", session.DefaultCookieDomain, false, true)
+	sess, err := h.UserSvc.SignIn(c.Request.Context(), in.Email, in.Password)
+	if err != nil {
+		h.AlertUI(c, fmt.Sprintf("couldn't sign in due to: %v", err), ALError)
+		return
+	}
+	c.SetCookie(sess.Name, sess.Value, sess.MaxAge, sess.Path, sess.Domain, sess.Secure, sess.HTTPOnly)
 	c.Header(model.HxRedirect, "/")
 	c.Status(http.StatusFound)
 }

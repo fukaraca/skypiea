@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const (
@@ -14,6 +13,7 @@ const (
 	addNewConversationPG       = `INSERT INTO conversations(user_uuid,title,metadata) VALUES ($1,$2,$3) RETURNING id;`
 	addNewMessagePG            = `INSERT INTO messages(conv_id,model_id,by_user,message,metadata) VALUES ($1,$2,$3,$4,$5) RETURNING id;`
 	updateMessagePG            = `UPDATE messages SET message = '$1' WHERE id= $2;`
+	deleteConversationByIDPG   = `DELETE FROM conversations WHERE id = $1;`
 )
 
 type Conversation struct {
@@ -36,20 +36,21 @@ type Message struct {
 
 type ConversationsRepo interface {
 	GetConversationsByUserUUID(context.Context, uuid.UUID) ([]*Conversation, error)
-	GetConversationByID(context.Context, int) ([]*Message, error)
+	GetConversationByID(ctx context.Context, conversationID int) ([]*Message, error)
 	NewConversation(ctx context.Context, userID uuid.UUID, title, metadata string) (int, error) // returning conversation id if succeeds
+	DeleteConversation(ctx context.Context, conversationID int) error
 	AppendNewMessage(ctx context.Context, msg *Message) (int, error)
 	UpdateMessage(ctx context.Context, msgID int) error
 }
 
 type conversationsRepoPgx struct {
-	*pgxpool.Pool
+	dbConn
 }
 
-func NewConversationsRepo(db *DB) ConversationsRepo {
-	switch db.Dialect {
+func NewConversationsRepo(dia Dialect, conn dbConn) ConversationsRepo {
+	switch dia {
 	case DialectPostgres, DialectPgx:
-		return &conversationsRepoPgx{db.Pool}
+		return &conversationsRepoPgx{conn}
 	}
 	return nil
 }
@@ -98,6 +99,11 @@ func (c *conversationsRepoPgx) NewConversation(ctx context.Context, userID uuid.
 	return id, nil
 }
 
+func (c *conversationsRepoPgx) DeleteConversation(ctx context.Context, conversationID int) error {
+	_, err := c.Exec(ctx, deleteConversationByIDPG, conversationID)
+	return err
+}
+
 func (c *conversationsRepoPgx) AppendNewMessage(ctx context.Context, msg *Message) (int, error) {
 	var id int
 	if err := c.QueryRow(ctx, addNewMessagePG, msg.ConvID, msg.ModelID, msg.ByUser, msg.MessageText, msg.Metadata).Scan(&id); err != nil {
@@ -106,6 +112,7 @@ func (c *conversationsRepoPgx) AppendNewMessage(ctx context.Context, msg *Messag
 	return id, nil
 }
 
+// TODO: just emptying for now idk
 func (c *conversationsRepoPgx) UpdateMessage(ctx context.Context, msgID int) error {
 	_, err := c.Exec(ctx, updateMessagePG, "", msgID)
 	return err

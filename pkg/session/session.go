@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/fukaraca/skypiea/internal/model"
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/fukaraca/skypiea/pkg/cache"
 	"github.com/fukaraca/skypiea/pkg/gwt"
@@ -25,7 +26,7 @@ var Cache *Manager
 
 type Manager struct {
 	cache      *cache.Storage
-	repo       *storage.Repositories
+	repo       *storage.Registry
 	defaultTTL time.Duration
 	jwtManager gwt.Manager
 }
@@ -37,6 +38,24 @@ type Session struct {
 	createdAt time.Time
 	updatedAt time.Time
 	EOL       time.Time
+}
+
+type Cookie struct {
+	Name, Value, Path, Domain string
+	MaxAge                    int
+	Secure, HTTPOnly          bool
+}
+
+func NewCookie(id string) *Cookie {
+	return &Cookie{
+		Name:     DefaultCookieName,
+		Value:    id,
+		Path:     model.PathMain,
+		Domain:   DefaultCookieDomain,
+		MaxAge:   DefaultCookieMaxAge,
+		Secure:   false,
+		HTTPOnly: true,
+	}
 }
 
 func (sm *Manager) NewSession(ctx context.Context, userID uuid.UUID) *Session {
@@ -74,7 +93,7 @@ func (s *Session) Token() string {
 func NewManager(jwtConfig *gwt.Config, db *storage.DB, ttl time.Duration) *Manager {
 	return &Manager{
 		cache:      cache.New(),
-		repo:       storage.NewRepositories(db),
+		repo:       storage.NewRegistry(db.Dialect, db.Pool),
 		defaultTTL: ttl,
 		jwtManager: gwt.NewJWTService(jwtConfig),
 	}

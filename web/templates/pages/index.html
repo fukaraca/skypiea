@@ -4,105 +4,172 @@
 {{- define "content" }}
 {{ if .LoggedIn }}
 <div class="vh-100 d-flex">
+
     <!-- Top Nav -->
     <nav class="navbar navbar-dark bg-dark px-3">
-        <!-- Sidebar Toggle for small screens -->
-        <button class="btn btn-outline-light d-md-none" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
+        <button class="btn btn-outline-light d-md-none"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#sidebarOffcanvas">
             <span class="navbar-toggler-icon"></span>
-            <!-- or an icon/text of your choice -->
         </button>
     </nav>
+
     <div class="flex-grow-1 d-flex">
-        <!-- Offcanvas Sidebar (shown on small screens) -->
-        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarOffcanvas">
+
+        <!-- Offcanvas Sidebar (small screens) -->
+        <div class="offcanvas offcanvas-start bg-dark text-white"
+             tabindex="-1"
+             id="sidebarOffcanvas">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title">Chats</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="offcanvas"></button>
             </div>
             <div class="offcanvas-body">
-                <button class="btn btn-outline-light w-100 mb-3">+ New Chat</button>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Chat Title 1</span>
+                <button class="btn btn-outline-light w-100 mb-3"
+                        id="btn-new-chat"
+                        hx-on="click:clearChat()">+ New Chat</button>
+
+                <!-- Conversation List -->
+                {{ range .Conversations }}
+                <div class="d-flex justify-content-between align-items-center mb-2"
+                     id="conv-{{ .ID }}">
+                    <a href="#"
+                       class="text-white flex-grow-1 text-truncate"
+                       hx-get="/conversations/{{ .ID }}/messages"
+                       hx-target="#chatMessages"
+                       hx-swap="innerHTML"
+                       hx-push-url="true">
+                        {{ .Title }}
+                    </a>
                     <div class="dropdown">
-                        <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
+                        <button class="btn btn-sm text-white" data-bs-toggle="dropdown">…</button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="#">Delete Chat</a>
+                                <button class="dropdown-item"
+                                        hx-delete="/conversations/{{ .ID }}"
+                                        hx-confirm="Delete chat “{{ .Title }}”?"
+                                        hx-target="#conv-{{ .ID }}"
+                                        hx-swap="outerHTML">
+                                    Delete Chat
+                                </button>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Chat Title 2</span>
-                    <div class="dropdown">
-                        <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="#">Delete Chat</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                {{ end }}
             </div>
         </div>
-        <!-- Sidebar for medium+ screens -->
-        <div class="d-none d-md-flex flex-column p-3 bg-dark text-white" style="width: 240px; overflow-y:auto;">
-            <button class="btn btn-outline-light w-100 mb-3">+ New Chat</button>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>Chat Title 1</span>
+
+        <!-- Sidebar (md+) -->
+        <div class="d-none d-md-flex flex-column p-3 bg-dark text-white"
+             style="width:240px;overflow-y:auto;">
+            <button class="btn btn-outline-light w-100 mb-3"
+                    id="btn-new-chat-md"
+                    hx-on="click:clearChat()">+ New Chat</button>
+
+            {{ range .Conversations }}
+            <div class="d-flex justify-content-between align-items-center mb-2"
+                 id="conv-{{ .ID }}">
+                <a href="#"
+                   class="text-white flex-grow-1 text-truncate"
+                   hx-get="/conversations/{{ .ID }}/messages"
+                   hx-target="#chatMessages"
+                   hx-swap="innerHTML"
+                   hx-push-url="true">
+                    {{ .Title }}
+                </a>
                 <div class="dropdown">
-                    <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
+                    <button class="btn btn-sm text-white" data-bs-toggle="dropdown">…</button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <a class="dropdown-item" href="#">Delete Chat</a>
+                            <button class="dropdown-item"
+                                    hx-delete="/conversations/{{ .ID }}"
+                                    hx-confirm="Delete chat “{{ .Title }}”?"
+                                    hx-target="#conv-{{ .ID }}"
+                                    hx-swap="outerHTML">
+                                Delete Chat
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>Chat Title 2</span>
-                <div class="dropdown">
-                    <button class="btn btn-sm text-white" data-bs-toggle="dropdown">...</button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="#">Delete Chat</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            {{ end }}
         </div>
+
         <!-- Chat Section -->
         <div class="flex-grow-1 d-flex flex-column align-items-center">
             <div class="flex-grow-1 w-100 d-flex justify-content-center overflow-auto">
                 <div class="p-3" style="max-width:700px; width:100%;" id="chatMessages">
-                    <!-- Sample User Message -->
-                    <div class="p-2 rounded-3 mb-2 ms-auto" style="max-width:80%; background-color: slategray;">
-                        <strong> ></strong> Hello
+                    {{ if .CurrentConv }}
+                    {{ range .Messages }}
+                    {{ if .ByUser }}
+                    <div class="p-2 rounded-3 mb-2 ms-auto"
+                         style="max-width:80%;background-color:slategray;">
+                        <strong>></strong> {{ .MessageText }}
                     </div>
-                    <!-- Sample AI Response -->
-                    <div class="p-2 mb-2 me-auto"> How can I help? </div>
+                    {{ else }}
+                    <div class="p-2 mb-2 me-auto">
+                        {{ .MessageText }}
+                    </div>
+                    {{ end }}
+                    {{ end }}
+                    {{ else }}
+                    <p class="text-center text-muted">Select a chat or start a New Chat.</p>
+                    {{ end }}
                 </div>
             </div>
+
             <!-- Sticky Input -->
-            <div class="border-top w-100" style="position:sticky; bottom:0; z-index:10;">
-                <form class="d-flex p-3" style="max-width:700px; margin:auto;" hx-post="/chat/send" hx-target="#chatMessages" hx-swap="beforeend">
-                    <textarea id="chatInput" name="message" class="form-control me-2" rows="1" style="resize:none; overflow:hidden; max-height:12rem;" placeholder="Type your message..." required></textarea>
+            <div class="border-top w-100" style="position:sticky;bottom:0;z-index:10;">
+                <form class="d-flex p-3"
+                      style="max-width:700px;margin:auto;"
+                      hx-post="/message"
+                      hx-target="#chatMessages"
+                      hx-swap="beforeend"
+                      hx-indicator=".loading-indicator">
+                    {{ if .CurrentConv }}
+                    <input type="hidden" name="conv_id" value="{{ .CurrentConv.ID }}">
+                    {{ end }}
+                    <textarea id="chatInput"
+                              name="message"
+                              class="form-control me-2"
+                              rows="1"
+                              style="resize:none;overflow:hidden;max-height:12rem;"
+                              placeholder="Type your message…"
+                              required></textarea>
                     <button type="submit" class="btn btn-primary">Send</button>
+                    <div class="loading-indicator ms-2" style="display:none;">
+                        …
+                    </div>
                 </form>
             </div>
         </div>
+
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const txt = document.getElementById('chatInput');
-            if (!txt) return;
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // auto‑resize
+        const txt = document.getElementById('chatInput');
+        if (txt) {
             txt.addEventListener('input', function() {
                 this.style.height = 'auto';
-                const maxHeightPx = 96;
-                this.style.height = Math.min(this.scrollHeight, maxHeightPx) + 'px';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
             });
-        });
-    </script>
+        }
+
+        // clear pane on New Chat
+        window.clearChat = () => {
+            document.getElementById('chatMessages').innerHTML =
+                '<p class="text-center text-muted">New Chat. Type to start…</p>';
+            // remove conv_id so server creates a new one on first message
+            const hidden = document.querySelector('input[name=conv_id]');
+            if (hidden) hidden.remove();
+        };
+    });
+</script>
 {{ else }}
     <main class="main" style="background: linear-gradient(270deg, #212529 0%, #3a3838 100%);">
         <!-- Hero Section -->

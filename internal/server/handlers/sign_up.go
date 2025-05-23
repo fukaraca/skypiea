@@ -20,29 +20,30 @@ type SignUpReq struct {
 	Firstname string `form:"firstName" binding:"required"`
 	Lastname  string `form:"lastName" binding:"required"`
 	Email     string `form:"email" binding:"required,email"`
+	Role      string `form:"role" binding:"-"`
 }
 
+// TODO use passed role
 func (h *Open) SignUp(c *gin.Context) {
 	var in SignUpReq
 	if err := c.ShouldBind(&in); err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
+		h.AlertUI(c, err.Error(), ALError)
 		return
 	}
-	ctx, cancel := h.CtxWithTimout(c)
-	defer cancel()
 	user := &storage.User{
 		Firstname: in.Firstname,
 		Lastname:  in.Lastname,
 		Email:     in.Email,
 		Password:  in.Password,
-		Role:      "admin",
-		Status:    "New",
+		Role:      model.RoleAdmin,
+		Status:    model.StatusNew,
 	}
-	_, err := h.Repo.Users.AddUser(ctx, user)
+
+	err := h.UserSvc.RegisterNewUser(c.Request.Context(), user)
 	if err != nil {
-		h.AlertUI(c, err.Error(), AlertLevelError)
+		h.AlertUI(c, err.Error(), ALError)
 		return
 	}
-	c.Header(model.HxRedirect, "/login")
+	c.Header(model.HxRedirect, model.PathLogin)
 	c.Status(http.StatusCreated)
 }

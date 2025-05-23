@@ -12,10 +12,10 @@ import (
 func (s *Strict) Logout(c *gin.Context) {
 	ck, err := c.Cookie(session.DefaultCookieName)
 	if err != nil {
-		s.AlertUI(c, fmt.Sprintf("Couldn't log out: %v", err), AlertLevelError)
+		s.AlertUI(c, fmt.Sprintf("Couldn't log out: %v", err), ALError)
 		return
 	}
 	session.Cache.Delete(ck)
-	c.Header(model.HxRedirect, "/")
+	c.Header(model.HxRedirect, model.PathMain)
 	c.Status(http.StatusFound)
 }

@@ -22,18 +22,18 @@ func StrictAuthMw() gin.HandlerFunc {
 				c.AbortWithError(http.StatusUnauthorized, model.ErrInvalidToken)
 				return
 			}
-			c.Header(model.HxRedirect, "/login")
+			c.Header(model.HxRedirect, model.PathLogin)
 			c.Status(http.StatusFound)
 			c.Abort()
 			return
 		} else if sCookie.Valid() != nil {
-			c.Header(model.HxRedirect, "/login")
+			c.Header(model.HxRedirect, model.PathLogin)
 			c.Status(http.StatusFound)
 			c.Abort()
 			return
 		}
 		if sess, ok := session.Cache.ValidateSession(sCookie.Value); !ok || sess == nil {
-			c.Header(model.HxRedirect, "/login")
+			c.Header(model.HxRedirect, model.PathLogin)
 			c.Status(http.StatusFound)
 			c.Abort()
 			return
@@ -66,12 +66,13 @@ func CommonAuthMw() gin.HandlerFunc {
 	}
 }
 
+// NonAuthMw assures that further is guest only
 func NonAuthMw() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.GetBool(session.CtxLoggedIn) {
 			refs := c.Request.Header[model.RefererHeader]
 			if len(refs) == 0 || refs[0] == "" {
-				refs = []string{"/"}
+				refs = []string{model.PathMain}
 			}
 			c.Header(model.HxRedirect, refs[0])
 			c.Status(http.StatusNotModified)
