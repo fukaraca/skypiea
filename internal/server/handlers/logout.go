@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fukaraca/skypiea/internal/model"
@@ -12,7 +11,7 @@ import (
 func (s *Strict) Logout(c *gin.Context) {
 	ck, err := c.Cookie(session.DefaultCookieName)
 	if err != nil {
-		s.AlertUI(c, fmt.Sprintf("Couldn't log out: %v", err), ALError)
+		s.AlertUI(c, err, ALError)
 		return
 	}
 	session.Cache.Delete(ck)

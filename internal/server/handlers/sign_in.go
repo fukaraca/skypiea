@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fukaraca/skypiea/internal/model"
@@ -23,16 +22,16 @@ type SignInReq struct {
 func (h *Open) SignIn(c *gin.Context) {
 	var in SignInReq
 	if err := c.ShouldBind(&in); err != nil {
-		h.AlertUI(c, err.Error(), ALError)
+		h.AlertUI(c, err, ALError)
 		return
 	}
 
 	sess, err := h.UserSvc.SignIn(c.Request.Context(), in.Email, in.Password)
 	if err != nil {
-		h.AlertUI(c, fmt.Sprintf("couldn't sign in due to: %v", err), ALError)
+		h.AlertUI(c, err, ALError)
 		return
 	}
 	c.SetCookie(sess.Name, sess.Value, sess.MaxAge, sess.Path, sess.Domain, sess.Secure, sess.HTTPOnly)
-	c.Header(model.HxRedirect, "/")
+	c.Header(model.HxRedirect, model.PathMain)
 	c.Status(http.StatusFound)
 }

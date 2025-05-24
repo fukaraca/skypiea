@@ -20,26 +20,37 @@ var (
 )
 
 type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Status  int    `json:"status"`
+	Code    int     `json:"code"`
+	Message string  `json:"message"`
+	Stack   []error `json:"stack"`
 }
 
 func NewError(code int, message string) *Error {
-	return &Error{
+	e := &Error{
 		Code:    code,
 		Message: message,
+		Stack:   make([]error, 0),
 	}
+	e.WithError(e)
+	return e
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("%s(code: %d)", e.Message, e.Code)
+	if len(e.Stack) == 1 {
+		return fmt.Sprintf("%s(code: %d)", e.Message, e.Code)
+	}
+	return fmt.Sprintf("%s:%s(code: %d)", e.Message, e.getLastError().Error(), e.Code)
 }
 
 func (e *Error) Is(target error) bool {
 	return errors.Is(e, target)
 }
 
-func (e *Error) SetStatus(status int) {
-	e.Status = status
+func (e *Error) WithError(err error) *Error {
+	e.Stack = append(e.Stack, err)
+	return e
+}
+
+func (e *Error) getLastError() error {
+	return e.Stack[len(e.Stack)-1]
 }

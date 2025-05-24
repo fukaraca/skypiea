@@ -20,13 +20,13 @@ type SendMessageReq struct {
 func (s *Strict) PostMessage(c *gin.Context) {
 	var in SendMessageReq
 	if err := c.ShouldBind(&in); err != nil {
-		s.AlertUI(c, err.Error(), ALError)
+		s.AlertUI(c, err, ALError)
 		return
 	}
 
 	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
 	if userID == nil {
-		s.AlertUI(c, model.ErrSessionNotFound.Message, ALError)
+		s.AlertUI(c, model.ErrSessionNotFound, ALError)
 		return
 	}
 
@@ -34,11 +34,12 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		ConvID:      in.ConversationID,
 		ModelID:     "",
 		ByUser:      true,
-		MessageText: in.MessageText,
+		MessageText: &in.MessageText,
 		CreatedAt:   time.Now(),
 	})
 	if err != nil {
-		s.AlertUI(c, err.Error(), ALError)
+		s.AlertUI(c, err, ALError)
+		return
 	}
 
 	c.Status(http.StatusCreated)
@@ -47,13 +48,13 @@ func (s *Strict) PostMessage(c *gin.Context) {
 func (s *Strict) GetMessagesByConversationID(c *gin.Context) {
 	conversationID, err := strconv.Atoi(c.Param("conv_id"))
 	if err != nil {
-		s.AlertUI(c, err.Error(), ALError)
+		s.AlertUI(c, err, ALError)
 		return
 	}
 
 	messages, err := s.MessageSvc.GetAllMessages(c.Request.Context(), conversationID)
 	if err != nil {
-		s.AlertUI(c, err.Error(), ALError)
+		s.AlertUI(c, err, ALError)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -64,12 +65,12 @@ func (s *Strict) GetMessagesByConversationID(c *gin.Context) {
 func (s *Strict) DeleteConversationByID(c *gin.Context) {
 	conversationID, err := strconv.Atoi(c.Param("conv_id"))
 	if err != nil {
-		s.AlertUI(c, err.Error(), ALError)
+		s.AlertUI(c, err, ALError)
 		return
 	}
 
 	if err = s.MessageSvc.DeleteConversation(c.Request.Context(), conversationID); err != nil {
-		s.AlertUI(c, err.Error(), ALError)
+		s.AlertUI(c, err, ALError)
 		return
 	}
 	c.Status(http.StatusNoContent)

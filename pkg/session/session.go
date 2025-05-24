@@ -14,7 +14,7 @@ import (
 
 const (
 	DefaultCookieName   = "ss_skypiea"
-	DefaultCookieMaxAge = 100
+	DefaultCookieMaxAge = 1000
 	DefaultCookieDomain = "localhost"
 
 	DefaultSessionEarlyTimeout = -time.Second * 5

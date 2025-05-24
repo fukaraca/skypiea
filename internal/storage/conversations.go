@@ -20,7 +20,7 @@ type Conversation struct {
 	ID        int
 	UserUUID  string
 	Title     string
-	Metadata  string
+	Metadata  *string
 	CreatedAt time.Time
 }
 
@@ -29,8 +29,8 @@ type Message struct {
 	ConvID      int
 	ModelID     string
 	ByUser      bool
-	MessageText string
-	Metadata    string
+	MessageText *string
+	Metadata    *string
 	CreatedAt   time.Time
 }
 
@@ -64,7 +64,7 @@ func (c *conversationsRepoPgx) GetConversationsByUserUUID(ctx context.Context, u
 	defer rows.Close()
 	for rows.Next() { // TODO consider using generic solutions to map directly to slice
 		var t Conversation
-		err = rows.Scan(&t.ID, &t.UserUUID, t.Title, t.Metadata, t.CreatedAt)
+		err = rows.Scan(&t.ID, &t.UserUUID, &t.Title, &t.Metadata, &t.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

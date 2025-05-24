@@ -20,12 +20,12 @@ func (h *View) Index(c *gin.Context) {
 	}
 	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
 	if userID == nil {
-		h.AlertUI(c, model.ErrSessionNotFound.Message, ALError)
+		h.AlertUI(c, model.ErrSessionNotFound, ALError)
 		return
 	}
 	convs, err := h.MessageSvc.GetAllConversations(c.Request.Context(), *userID)
 	if err != nil {
-		h.AlertUI(c, model.ErrConversationCouldNotGet.Message, ALError)
+		h.AlertUI(c, model.ErrConversationCouldNotGet, ALError)
 		return
 	}
 

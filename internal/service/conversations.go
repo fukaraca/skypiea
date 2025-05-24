@@ -22,7 +22,7 @@ func (s *Service) ProcessNewMessage(ctx context.Context, userID uuid.UUID, messa
 		})
 		if err != nil {
 			logger.Error("new conversation couldn't be processed", err)
-			return 0, model.ErrNewConversationCouldNotBeAdded
+			return 0, model.ErrNewConversationCouldNotBeAdded.WithError(err)
 		}
 	}
 
@@ -32,8 +32,9 @@ func (s *Service) ProcessNewMessage(ctx context.Context, userID uuid.UUID, messa
 	})
 	if err != nil {
 		logger.Error("new message couldn't be appended", err)
+		return 0, model.ErrNewMessageCouldNotBeAdded.WithError(err)
 	}
-	return message.ID, model.ErrNewMessageCouldNotBeAdded
+	return message.ID, nil
 }
 
 func (s *Service) GetAllMessages(ctx context.Context, convID int) ([]*storage.Message, error) {
@@ -46,7 +47,7 @@ func (s *Service) GetAllMessages(ctx context.Context, convID int) ([]*storage.Me
 			return nil, nil
 		}
 		logger.Error("GetAllMessages failed", err)
-		return nil, model.ErrMessagesCouldNotBeReloaded
+		return nil, model.ErrMessagesCouldNotBeReloaded.WithError(err)
 	}
 	return messages, err
 }
@@ -60,7 +61,7 @@ func (s *Service) GetAllConversations(ctx context.Context, userID uuid.UUID) ([]
 			return nil, nil
 		}
 		logger.Error("GetAllConversations failed", err)
-		return nil, model.ErrConversationCouldNotGet
+		return nil, model.ErrConversationCouldNotGet.WithError(err)
 	}
 	return conversations, err
 }

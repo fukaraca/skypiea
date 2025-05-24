@@ -27,7 +27,7 @@ type SignUpReq struct {
 func (h *Open) SignUp(c *gin.Context) {
 	var in SignUpReq
 	if err := c.ShouldBind(&in); err != nil {
-		h.AlertUI(c, err.Error(), ALError)
+		h.AlertUI(c, err, ALError)
 		return
 	}
 	user := &storage.User{
@@ -41,7 +41,7 @@ func (h *Open) SignUp(c *gin.Context) {
 
 	err := h.UserSvc.RegisterNewUser(c.Request.Context(), user)
 	if err != nil {
-		h.AlertUI(c, err.Error(), ALError)
+		h.AlertUI(c, err, ALError)
 		return
 	}
 	c.Header(model.HxRedirect, model.PathLogin)
