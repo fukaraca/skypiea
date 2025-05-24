@@ -46,6 +46,7 @@ func (e *Error) Is(target error) bool {
 	return errors.Is(e, target)
 }
 
+// WithError is not wrapper
 func (e *Error) WithError(err error) *Error {
 	e.Stack = append(e.Stack, err)
 	return e
