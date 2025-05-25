@@ -28,18 +28,18 @@
             <div class="offcanvas-body">
                 <button class="btn btn-outline-light w-100 mb-3"
                         id="btn-new-chat"
-                        hx-on="click:clearChat()">+ New Chat</button>
+                        hx-on:click="clearChat()">+ New Chat</button>
 
                 <!-- Conversation List -->
                 {{ range .Conversations }}
                 <div class="d-flex justify-content-between align-items-center mb-2"
                      id="conv-{{ .ID }}">
                     <a href="#"
-                       class="text-white flex-grow-1 text-truncate"
+                       class="text-white flex-grow-1 text-truncate conv-link"
                        hx-get="/conversations/{{ .ID }}/messages"
+                       data-conv-id="{{ .ID }}"
                        hx-target="#chatMessages"
-                       hx-swap="innerHTML"
-                       hx-push-url="true">
+                       hx-swap="innerHTML">
                         {{ .Title }}
                     </a>
                     <div class="dropdown">
@@ -66,17 +66,17 @@
              style="width:240px;overflow-y:auto;">
             <button class="btn btn-outline-light w-100 mb-3"
                     id="btn-new-chat-md"
-                    hx-on="click:clearChat()">+ New Chat</button>
+                    hx-on:click="clearChat()">+ New Chat</button>
 
             {{ range .Conversations }}
             <div class="d-flex justify-content-between align-items-center mb-2"
                  id="conv-{{ .ID }}">
                 <a href="#"
-                   class="text-white flex-grow-1 text-truncate"
+                   class="text-white flex-grow-1 text-truncate conv-link"
                    hx-get="/conversations/{{ .ID }}/messages"
+                   data-conv-id="{{ .ID }}"
                    hx-target="#chatMessages"
-                   hx-swap="innerHTML"
-                   hx-push-url="true">
+                   hx-swap="innerHTML">
                     {{ .Title }}
                 </a>
                 <div class="dropdown">
@@ -122,15 +122,15 @@
 
             <!-- Sticky Input -->
             <div class="border-top w-100" style="position:sticky;bottom:0;z-index:10;">
-                <form class="d-flex p-3"
+                <form id="chatForm"
+                      class="d-flex p-3"
                       style="max-width:700px;margin:auto;"
                       hx-post="/message"
                       hx-target="#chatMessages"
                       hx-swap="beforeend"
+                      hx-on:htmx:after-request="this.reset(); document.getElementById('chatInput').style.height='auto';"
                       hx-indicator=".loading-indicator">
-                    {{ if .CurrentConv }}
-                    <input type="hidden" name="conv_id" value="{{ .CurrentConv.ID }}">
-                    {{ end }}
+                    <input type="hidden" name="conv_id" id="conv_id_input" value="{{ if .CurrentConv }}{{ .CurrentConv.ID }}{{ end }}">
                     <textarea id="chatInput"
                               name="messageText"
                               class="form-control me-2"
@@ -160,13 +160,31 @@
             });
         }
 
+        // whenever you click a convo link, set the hidden input
+        document.querySelectorAll('.conv-link').forEach(el => {
+            el.addEventListener('click', () => {
+                const id = el.getAttribute('data-conv-id');
+                document.getElementById('conv_id_input').value = id;
+            });
+        });
+
         // clear pane on New Chat
         window.clearChat = () => {
-            document.getElementById('chatMessages').innerHTML =
-                '<p class="text-center text-muted">New Chat. Type to start…</p>';
-            // remove conv_id so server creates a new one on first message
-            const hidden = document.querySelector('input[name=conv_id]');
-            if (hidden) hidden.remove();
+            // 1) Reset chat pane
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML = '<p class="text-center text-muted">New Chat. Type to start…</p>';
+
+            // 2) Clear the conv_id so the next message creates a new conversation
+            const convInput = document.getElementById('conv_id_input');
+            if (convInput) convInput.value = '';
+
+            // 3) Clear & reset the textarea, then focus it
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+                chatInput.focus();
+            }
         };
     });
 </script>

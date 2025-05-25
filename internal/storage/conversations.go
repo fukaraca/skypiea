@@ -9,7 +9,7 @@ import (
 
 const (
 	getConversationsByUserIDPG = `SELECT * FROM conversations WHERE user_uuid = $1 ORDER BY created_at DESC;`
-	getConversationByIDPG      = `SELECT * FROM messages WHERE conv_id = $1 ORDER BY created_at DESC;`
+	getConversationByIDPG      = `SELECT * FROM messages WHERE conv_id = $1 ORDER BY created_at ASC;`
 	addNewConversationPG       = `INSERT INTO conversations(user_uuid,title,metadata) VALUES ($1,$2,$3) RETURNING id;`
 	addNewMessagePG            = `INSERT INTO messages(conv_id,model_id,by_user,message,metadata) VALUES ($1,$2,$3,$4,$5) RETURNING id;`
 	updateMessagePG            = `UPDATE messages SET message = '$1' WHERE id= $2;`

@@ -29,20 +29,30 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		s.AlertUI(c, model.ErrSessionNotFound, ALError)
 		return
 	}
-
-	_, err := s.MessageSvc.ProcessNewMessage(c.Request.Context(), *userID, &storage.Message{
+	msg := storage.Message{
 		ConvID:      in.ConversationID,
 		ModelID:     "",
 		ByUser:      true,
 		MessageText: &in.MessageText,
 		CreatedAt:   time.Now(),
-	})
+	}
+
+	msgID, err := s.MessageSvc.ProcessNewMessage(c.Request.Context(), *userID, &msg)
 	if err != nil {
 		s.AlertUI(c, err, ALError)
 		return
 	}
+	msg.ID = msgID
+	if in.ConversationID == 0 {
+		c.Status(http.StatusCreated)
+		c.Header(HX_REDIRECT, model.PathMain)
+		return
+	}
 
 	c.Status(http.StatusCreated)
+	c.HTML(http.StatusOK, "chat-panel", gin.H{
+		"Messages": []*storage.Message{&msg},
+	})
 }
 
 func (s *Strict) GetMessagesByConversationID(c *gin.Context) {
@@ -57,7 +67,7 @@ func (s *Strict) GetMessagesByConversationID(c *gin.Context) {
 		s.AlertUI(c, err, ALError)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.HTML(http.StatusOK, "chat-panel", gin.H{
 		"Messages": messages,
 	})
 }
@@ -74,4 +84,5 @@ func (s *Strict) DeleteConversationByID(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusNoContent)
+	c.Header(HX_REDIRECT, model.PathMain)
 }
