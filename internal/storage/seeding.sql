@@ -28,7 +28,7 @@ INSERT INTO messages
 (conv_id, model_id, by_user, message, metadata, created_at)
 SELECT
     c.id,
-    'gpt-4o' AS model_id,
+    'Furkan-GPT' AS model_id,
     (m % 2 = 1) AS by_user,
     CASE WHEN m % 2 = 1
              THEN format('Lorem ipsum question %s?', m)

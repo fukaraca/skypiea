@@ -15,6 +15,7 @@ var migration0002AddMessagesAndConversationsTablesUp = []string{
     title TEXT NOT NULL,
     metadata TEXT,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
         FOREIGN KEY (user_uuid) 
         REFERENCES users (user_uuid)
         ON UPDATE CASCADE 
@@ -29,6 +30,7 @@ var migration0002AddMessagesAndConversationsTablesUp = []string{
     message TEXT,
     metadata TEXT,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+    response_to BIGINT,
     FOREIGN KEY (conv_id) 
         REFERENCES conversations (id)
         ON UPDATE cascade 

@@ -1,0 +1,20 @@
+{{ define "chat-post-post" }}
+{{ range .Messages }}
+<div class="d-flex justify-content-end mb-2">
+    <div class="p-2 rounded-3" style="max-width:80%;background:slategray;">
+        <strong> ></strong> {{ .MessageText }}
+    </div>
+</div>
+{{ end }}
+<div id="spinner-{{ .MsgID }}"
+     class="d-flex justify-content-start mb-2 loading-indicator"
+     hx-get="/message/{{ .ConvID }}/{{ .MsgID }}/response"
+     hx-trigger="every 1s"
+     hx-target="#spinner-{{ .MsgID }}"
+     hx-swap="outerHTML">
+    <div class="spinner-border spinner-border-sm text-secondary"></div>
+    <div class="p-2 rounded-3" style="max-width:80%;background:#2a2a2a;">
+        Thinking...
+    </div>
+</div>
+{{ end }}

@@ -5,6 +5,8 @@ server:
   ginMode: "debug" # test, release, debug
   sessionTimeout: 10m
   defaultRequestTimeout: 30s
+worker:
+  intervalTicker: 10s
 log:
   level: "debug"
   addSource: false

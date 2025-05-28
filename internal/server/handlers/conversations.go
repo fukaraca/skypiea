@@ -31,7 +31,7 @@ func (s *Strict) PostMessage(c *gin.Context) {
 	}
 	msg := storage.Message{
 		ConvID:      in.ConversationID,
-		ModelID:     "",
+		ModelID:     model.GPTFurkan,
 		ByUser:      true,
 		MessageText: &in.MessageText,
 		CreatedAt:   time.Now(),
@@ -49,10 +49,39 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusCreated)
-	c.HTML(http.StatusOK, "chat-panel", gin.H{
+	c.HTML(http.StatusOK, "chat-post-post", gin.H{
 		"Messages": []*storage.Message{&msg},
+		"MsgID":    msg.ID,
+		"ConvID":   msg.ConvID,
 	})
+}
+
+// ResponseOfMessage is complementary of post message
+func (s *Strict) ResponseOfMessage(c *gin.Context) {
+	msgID, err := strconv.Atoi(c.Param("msg_id"))
+	if err != nil {
+		s.AlertUI(c, err, ALError)
+		return
+	}
+	convID, err := strconv.Atoi(c.Param("conv_id"))
+	if err != nil {
+		s.AlertUI(c, err, ALError)
+		return
+	}
+	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
+	if userID == nil {
+		s.AlertUI(c, model.ErrSessionNotFound, ALError)
+		return
+	}
+	resp, err := s.MessageSvc.GetResponseByMessageID(c.Request.Context(), *userID, msgID, convID)
+	if err != nil {
+		s.AlertUI(c, err, ALError)
+		return
+	}
+	c.HTML(http.StatusOK, "chat-panel", gin.H{
+		"Messages": []*storage.Message{resp},
+	})
+
 }
 
 func (s *Strict) GetMessagesByConversationID(c *gin.Context) {

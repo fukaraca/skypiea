@@ -17,7 +17,9 @@ type UserService interface {
 
 type MessageService interface {
 	ProcessNewMessage(ctx context.Context, userID uuid.UUID, message *storage.Message) (int, error)
+	GetResponseByMessageID(ctx context.Context, userID uuid.UUID, msgID, convID int) (*storage.Message, error)
 	GetAllMessages(ctx context.Context, convID int) ([]*storage.Message, error)
+	GetMessage(ctx context.Context, msgID int) (*storage.Message, error)
 	GetAllConversations(ctx context.Context, userID uuid.UUID) ([]*storage.Conversation, error)
 	DeleteConversation(ctx context.Context, convID int) error
 }

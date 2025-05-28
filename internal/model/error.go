@@ -17,6 +17,7 @@ var (
 	ErrMessagesCouldNotBeReloaded     = NewError(1202, "messages could not be reloaded")
 	ErrNewMessageCouldNotBeAdded      = NewError(1203, "message could not be processed")
 	ErrNewConversationCouldNotBeAdded = NewError(1203, "conversation could not be processed")
+	ErrMessageCouldNotGet             = NewError(1204, "message could not be retrieved")
 )
 
 type Error struct {
