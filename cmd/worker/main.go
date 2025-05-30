@@ -36,7 +36,8 @@ func initialize() error {
 	if err != nil {
 		return err
 	}
-	logg.New(cfg.Log).Info("worker initialized", slog.Any("config", cfg))
+	logger := logg.New(cfg.Log)
+	logger.Info("worker initialized", slog.Any("config", cfg))
 	cfg.ServiceMode = config.ModeBackgroundWorker
-	return worker.Start(cfg)
+	return worker.Start(cfg, logger)
 }

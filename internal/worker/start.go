@@ -8,11 +8,9 @@ import (
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/config"
-	logg "github.com/fukaraca/skypiea/pkg/log"
 )
 
-func Start(cfg *config.Config) error {
-	logger := logg.New(cfg.Log).With("service mode", cfg.ServiceMode)
+func Start(cfg *config.Config, logger *slog.Logger) error {
 	logger.Info("start worker")
 
 	ticker := time.NewTicker(cfg.Worker.IntervalTicker)

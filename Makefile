@@ -30,3 +30,22 @@ migratedb-down:
 
 lint:
 	golangci-lint run -v
+
+docker-build-server:
+	docker build -f ./docker/server.Dockerfile -t skypiea-ai-server:latest .
+
+docker-run-server:
+	docker run -d --rm --name skypiea-ai-server -p 8080:8080 -e DATABASE_POSTGRESQL_HOST=host.docker.internal skypiea-ai-server:latest
+
+docker-build-worker:
+	docker build -f ./docker/worker.Dockerfile -t skypiea-ai-worker:latest .
+
+docker-run-worker: #no need to use
+	@echo 'Houston, we are launching'
+	@# docker run -d --rm --name skypiea-ai-worker skypiea-ai-worker:latest
+
+docker-compose-build-up:
+	docker-compose up --build
+
+docker-compose-db-only:
+	docker-compose up postgresdb -d

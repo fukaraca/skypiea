@@ -1,9 +1,13 @@
-version: '3.8'
 services:
   postgresdb:
-    container_name: skypiea_db
+    container_name: skypiea-ai-db
     image: postgres:16.8-alpine
     restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "$(POSTGRES_USER)", "-h", "postgresdb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       - POSTGRES_USER=local_pg_user
       - POSTGRES_PASSWORD=local_pg_pass
@@ -12,7 +16,19 @@ services:
     volumes:
       - ./internal/storage/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ~/db/volume:/var/lib/postgresql/data
-
-
-# reusable testable interface and methods
-# bind to login
+  server:
+    container_name: skypiea-ai-server
+    build:
+      context: .
+      dockerfile: docker/server.Dockerfile
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    ports:
+      - '8080:8080'
+    environment:
+      - DATABASE_POSTGRESQL_HOST=postgresdb
+  worker:
+    container_name: skypiea-ai-worker
+    build:
+      dockerfile: docker/worker.Dockerfile
