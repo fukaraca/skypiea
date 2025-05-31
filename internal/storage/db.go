@@ -103,12 +103,12 @@ func (r *Registry) DoInTx(ctx context.Context, logger *slog.Logger, fn func(reg 
 
 	tx, err := r.conn.Begin(ctx) // defaults read committed
 	if err != nil {
-		logger.Error("DoInTx.Begin failed", err)
+		logger.Error("DoInTx.Begin failed", slog.Any("error", err))
 		return errors.Join(err, errors.New("DoInTx.Begin failed"))
 	}
 	reg := NewRegistry(r.dia, tx)
 	if err = fn(reg); err != nil {
-		logger.Error("DoInTx.fn() failed", err)
+		logger.Error("DoInTx.fn() failed", slog.Any("error", err))
 		return errors.Join(err, tx.Rollback(ctx))
 	}
 	return tx.Commit(ctx)

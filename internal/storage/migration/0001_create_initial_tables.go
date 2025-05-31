@@ -49,7 +49,7 @@ var migration0001CreateInitialTablesUp = []string{
 	VALUES 
 	    ('admin', 'Admin'),
 	    ('user_std', 'Standard User'),
-	    ('user_vip', 'VIP User'),
+	    ('user_vip', 'VIP User')
 	ON CONFLICT (id) DO NOTHING;`,
 }
 
