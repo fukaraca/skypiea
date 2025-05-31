@@ -12,11 +12,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type mockDBRegistery struct{}
+
+func (r *mockDBRegistery) GetUserByUUID(ctx context.Context, userUUID uuid.UUID) (*storage.User, error) {
+	return &storage.User{UserUUID: userUUID.String()}, nil
+}
+
 func TestSessionManager(t *testing.T) {
 	jwtConfig := &gwt.Config{Secret: []byte("secret")}
 
 	ttl := time.Minute * 30
-	manager := session.NewManager(jwtConfig, &storage.DB{}, ttl)
+	manager := session.NewManager(jwtConfig, &mockDBRegistery{}, ttl)
 
 	userID := uuid.New()
 
@@ -36,7 +42,7 @@ func TestSessionManager(t *testing.T) {
 		sess := manager.NewSession(context.TODO(), userID)
 		manager.Set(sess)
 
-		valid := manager.ValidateSession(sess.ID)
+		sess, valid := manager.ValidateSession(sess.ID)
 		assert.True(t, valid)
 	})
 

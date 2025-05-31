@@ -22,11 +22,15 @@ const (
 	CtxLoggedIn = "logged_in"
 )
 
+type UserReader interface {
+	GetUserByUUID(context.Context, uuid.UUID) (*storage.User, error)
+}
+
 var Cache *Manager
 
 type Manager struct {
 	cache      *cache.Storage
-	repo       *storage.Registry
+	repo       UserReader
 	defaultTTL time.Duration
 	jwtManager gwt.Manager
 }
@@ -65,7 +69,7 @@ func (sm *Manager) NewSession(ctx context.Context, userID uuid.UUID) *Session {
 	t0 := time.Now()
 	id := fmt.Sprintf("%s.%d", userID.String(), t0.UnixNano())
 	// Get user details from DB
-	user, err := sm.repo.Users.GetUserByUUID(ctx, userID)
+	user, err := sm.repo.GetUserByUUID(ctx, userID)
 	if err != nil {
 		return nil
 	}
@@ -90,10 +94,10 @@ func (s *Session) Token() string {
 	return s.token
 }
 
-func NewManager(jwtConfig *gwt.Config, db *storage.DB, ttl time.Duration) *Manager {
+func NewManager(jwtConfig *gwt.Config, repo UserReader, ttl time.Duration) *Manager {
 	return &Manager{
 		cache:      cache.New(),
-		repo:       storage.NewRegistry(db.Dialect, db.Pool),
+		repo:       repo,
 		defaultTTL: ttl,
 		jwtManager: gwt.NewJWTService(jwtConfig),
 	}

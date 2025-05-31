@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -26,7 +27,7 @@ func (s *Service) ProcessNewMessage(ctx context.Context, userID uuid.UUID, messa
 			return err
 		})
 		if err != nil {
-			logger.Error("new conversation couldn't be processed", err)
+			logger.Error("new conversation couldn't be processed", slog.Any("error", err))
 			return 0, model.ErrNewConversationCouldNotBeAdded.WithError(err)
 		}
 	}
@@ -46,7 +47,7 @@ func (s *Service) ProcessNewMessage(ctx context.Context, userID uuid.UUID, messa
 		return err
 	})
 	if err != nil {
-		logger.Error("new message couldn't be appended", err)
+		logger.Error("new message couldn't be appended", slog.Any("error", err))
 		return 0, model.ErrNewMessageCouldNotBeAdded.WithError(err)
 	}
 	return message.ID, nil
@@ -71,7 +72,7 @@ func (s *Service) GetAllMessages(ctx context.Context, convID int) ([]*storage.Me
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
-		logger.Error("GetAllMessages failed", err)
+		logger.Error("GetAllMessages failed", slog.Any("error", err))
 		return nil, model.ErrMessagesCouldNotBeReloaded.WithError(err)
 	}
 	return messages, err
@@ -93,7 +94,7 @@ func (s *Service) GetMessage(ctx context.Context, msgID int) (*storage.Message, 
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
-		logger.Error("GetAllMessages failed", err)
+		logger.Error("GetAllMessages failed", slog.Any("error", err))
 		return nil, model.ErrMessagesCouldNotBeReloaded.WithError(err)
 	}
 	return message, err
@@ -141,7 +142,7 @@ func (s *Service) GetAllConversations(ctx context.Context, userID uuid.UUID) ([]
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
-		logger.Error("GetAllConversations failed", err)
+		logger.Error("GetAllConversations failed", slog.Any("error", err))
 		return nil, model.ErrConversationCouldNotGet.WithError(err)
 	}
 	return conversations, err

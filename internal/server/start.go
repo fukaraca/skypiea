@@ -23,9 +23,9 @@ func Start(cfg *config.Config) error {
 	if err != nil {
 		return err
 	}
-	session.Cache = session.NewManager(&gwt.Config{Secret: []byte("secret")}, db, cfg.Server.SessionTimeout)
 	server := NewServer(cfg, router, db, logger)
 	server.bindRoutes()
+	session.Cache = session.NewManager(&gwt.Config{Secret: []byte("secret")}, server.Repo.Users, cfg.Server.SessionTimeout)
 
 	logger.Info("Server started")
 	httpServer := &http.Server{

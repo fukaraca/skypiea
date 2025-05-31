@@ -25,7 +25,7 @@ type UsersRepo interface {
 	AddUser(context.Context, *User) (uuid.UUID, error)
 	GetUserByUUID(context.Context, uuid.UUID) (*User, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
-	GetHPassword(context.Context, string) (string, error)
+	GetHPassword(ctx context.Context, username string) (string, error)
 	ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error
 	DeleteUsersByUUID(context.Context, uuid.UUID) error
 }
@@ -108,9 +108,9 @@ func (u *usersRepoPgx) GetUserByEmail(ctx context.Context, email string) (*User,
 	return &out, nil
 }
 
-func (u *usersRepoPgx) GetHPassword(ctx context.Context, username string) (string, error) {
+func (u *usersRepoPgx) GetHPassword(ctx context.Context, email string) (string, error) {
 	var out string
-	row := u.QueryRow(ctx, getPassPG, username)
+	row := u.QueryRow(ctx, getPassPG, email)
 	return out, row.Scan(&out)
 }
 

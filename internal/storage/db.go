@@ -113,3 +113,11 @@ func (r *Registry) DoInTx(ctx context.Context, logger *slog.Logger, fn func(reg 
 	}
 	return tx.Commit(ctx)
 }
+
+func (r *Registry) Close() {
+	if conn, ok := r.conn.(*pgxpool.Pool); ok {
+		conn.Close()
+		return
+	}
+	return
+}
