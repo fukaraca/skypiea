@@ -81,7 +81,6 @@ func (s *Strict) ResponseOfMessage(c *gin.Context) {
 	c.HTML(http.StatusOK, "chat-panel", gin.H{
 		"Messages": []*storage.Message{resp},
 	})
-
 }
 
 func (s *Strict) GetMessagesByConversationID(c *gin.Context) {

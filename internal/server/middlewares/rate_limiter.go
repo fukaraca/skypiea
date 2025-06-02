@@ -4,7 +4,7 @@ import "github.com/gin-gonic/gin"
 
 func RateLimiterMw() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// rate limiter logic
+		// skip here for now and use AWS api gateway
 		c.Next()
 	}
 }

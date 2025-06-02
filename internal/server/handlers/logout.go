@@ -15,6 +15,6 @@ func (s *Strict) Logout(c *gin.Context) {
 		return
 	}
 	session.Cache.Delete(ck)
-	c.Header(model.HxRedirect, model.PathMain)
 	c.Status(http.StatusFound)
+	c.Header(model.HxRedirect, model.PathMain)
 }

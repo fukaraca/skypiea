@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	getConversationsByUserIDPG  = `SELECT * FROM conversations WHERE user_uuid = $1 ORDER BY created_at DESC;`
+	getConversationsByUserIDPG  = `SELECT * FROM conversations WHERE user_uuid = $1 ORDER BY updated_at DESC;`
 	getConversationByIDPG       = `SELECT * FROM messages WHERE conv_id = $1 ORDER BY created_at ASC;`
 	getMessageByIDPG            = `SELECT * FROM messages WHERE id = $1;`
 	getResponseByIdPG           = `SELECT * FROM messages WHERE response_to = $1;`

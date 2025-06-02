@@ -144,7 +144,6 @@ linters:
         - github.com/jmoiron/sqlx
     sloglint:
       no-global: all
-      context: scope
     usetesting:
       os-temp-dir: true
   exclusions:
@@ -172,9 +171,7 @@ linters:
           - wrapcheck
         path: _test\.go
     paths:
-      - third_party$
-      - builtin$
-      - examples$
+      - _test\.go
 issues:
   max-same-issues: 50
 formatters:

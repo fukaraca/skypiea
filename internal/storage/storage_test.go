@@ -52,7 +52,7 @@ func prepareDB(ctx context.Context, cfg *storage.Database,
 }
 
 func TestStorage(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 	cfg := storage.Database{
 		Dialect: storage.DialectPostgres,
 		PostgreSQL: storage.PostgreSQLConfig{
@@ -101,5 +101,4 @@ func TestStorage(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, msgs)
 	})
-
 }

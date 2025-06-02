@@ -119,5 +119,4 @@ func (r *Registry) Close() {
 		conn.Close()
 		return
 	}
-	return
 }

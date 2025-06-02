@@ -27,7 +27,7 @@ func TestSessionManager(t *testing.T) {
 	userID := uuid.New()
 
 	t.Run("Create and Retrieve Session", func(t *testing.T) {
-		sess := manager.NewSession(context.TODO(), userID)
+		sess := manager.NewSession(t.Context(), userID)
 		assert.NotNil(t, sess)
 		assert.Equal(t, userID, sess.UserID)
 
@@ -39,15 +39,15 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Validate Session", func(t *testing.T) {
-		sess := manager.NewSession(context.TODO(), userID)
+		sess := manager.NewSession(t.Context(), userID)
 		manager.Set(sess)
 
-		sess, valid := manager.ValidateSession(sess.ID)
+		_, valid := manager.ValidateSession(sess.ID)
 		assert.True(t, valid)
 	})
 
 	t.Run("Refresh Session", func(t *testing.T) {
-		sess := manager.NewSession(context.TODO(), userID)
+		sess := manager.NewSession(t.Context(), userID)
 		manager.Set(sess)
 
 		oldUpdatedAt := sess.EOL
@@ -60,8 +60,8 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Revoke All Sessions", func(t *testing.T) {
-		sess1 := manager.NewSession(context.TODO(), userID)
-		sess2 := manager.NewSession(context.TODO(), userID)
+		sess1 := manager.NewSession(t.Context(), userID)
+		sess2 := manager.NewSession(t.Context(), userID)
 		manager.Set(sess1)
 		manager.Set(sess2)
 
@@ -72,7 +72,7 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Validate JWT Token", func(t *testing.T) {
-		sess := manager.NewSession(context.TODO(), userID)
+		sess := manager.NewSession(t.Context(), userID)
 		manager.Set(sess)
 
 		valid := manager.ValidateToken(sess.Token())
@@ -80,7 +80,7 @@ func TestSessionManager(t *testing.T) {
 	})
 
 	t.Run("Get JWT by Session ID", func(t *testing.T) {
-		sess := manager.NewSession(context.TODO(), userID)
+		sess := manager.NewSession(t.Context(), userID)
 		manager.Set(sess)
 
 		jwt := manager.GetJWTBySessionID(sess.ID)

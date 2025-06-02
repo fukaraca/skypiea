@@ -17,6 +17,7 @@ func (h *View) Index(c *gin.Context) {
 			"CSSFile":  "index.css",
 			"LoggedIn": false,
 		})
+		return
 	}
 	userID := session.Cache.GetUserUUIDByToken(c.GetString(gwt.CtxToken))
 	if userID == nil {

@@ -51,13 +51,7 @@ docker-compose-db-only:
 	docker-compose up postgresdb -d
 
 TEST_DIRS = ./internal/... ./cmd/... ./pkg/...
-
-.PHONY: test coverage
-
+.PHONY: test
 test:
-	@go test $(TEST_DIRS)
-
-# Run tests with coverage and print a summary
-coverage:
 	@go test $(TEST_DIRS) -coverprofile=coverage.out
-	@go tool cover -func=coverage.out
+	@go tool cover -func=coverage.out | grep total

@@ -65,9 +65,7 @@ func (s *Service) GetAllMessages(ctx context.Context, convID int) ([]*storage.Me
 		return nil, model.ErrConversationCouldNotGet.WithError(errors.New("conversation is not for this user"))
 	}
 
-	messages := make([]*storage.Message, 0)
-	messages, err = s.Repositories.Conversations.GetConversationByID(ctx, convID)
-
+	messages, err := s.Repositories.Conversations.GetConversationByID(ctx, convID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
@@ -92,7 +90,7 @@ func (s *Service) GetMessage(ctx context.Context, msgID int) (*storage.Message, 
 	message, err := s.Repositories.Conversations.GetMessageByID(ctx, msgID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil
+			return message, nil
 		}
 		logger.Error("GetAllMessages failed", slog.Any("error", err))
 		return nil, model.ErrMessagesCouldNotBeReloaded.WithError(err)
@@ -118,8 +116,9 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 		return nil, err
 	}
 
-	time.Sleep(2 * time.Second) // take it like i'm thinking hard
-	msgTxt := fmt.Sprintf("This is auto generated response for message %d.\nLets see maybe we link it to Gemini or something cheaper in the future just for fun.. ", msgID)
+	time.Sleep(2 * time.Second)
+	// take it like i'm thinking hard
+	msgTxt := fmt.Sprintf("This is auto generated response for message %d.\nLets see maybe we link it to Gemini or something cheaper in the future just for fun.. ", msgID) //nolint: lll
 	message = &storage.Message{
 		ConvID:      convID,
 		ModelID:     model.GPTFurkan,
@@ -136,7 +135,6 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 
 func (s *Service) GetAllConversations(ctx context.Context, userID uuid.UUID) ([]*storage.Conversation, error) {
 	logger := middlewares.GetLoggerFromContext(ctx)
-	conversations := make([]*storage.Conversation, 0)
 	conversations, err := s.Repositories.Conversations.GetConversationsByUserUUID(ctx, userID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -152,7 +150,6 @@ func (s *Service) DeleteConversation(ctx context.Context, convID int) error {
 	return s.Repositories.DoInTx(ctx, middlewares.GetLoggerFromContext(ctx), func(reg *storage.Registry) error {
 		return reg.Conversations.DeleteConversation(ctx, convID)
 	})
-
 }
 
 func TitleFromString(input string, maxWords, maxLen int) string {

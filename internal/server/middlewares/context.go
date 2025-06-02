@@ -10,9 +10,11 @@ import (
 	sloggin "github.com/samber/slog-gin"
 )
 
+type ctxKey string
+
 const (
-	LoggerCtx = "logger"
-	GinCtx    = "GinCtx"
+	LoggerCtx ctxKey = "logger"
+	GinCtx    ctxKey = "GinCtx"
 )
 
 // ContextMW sets up and propagates the request context (adding logger, Gin context, and timeout) for downstream handlers.
@@ -29,7 +31,7 @@ func ContextMW(logger *slog.Logger, cfg *config.Server) gin.HandlerFunc {
 			}
 		}()
 		c.Request = c.Request.WithContext(ctx)
-		c.Set(LoggerCtx, logger)
+		c.Set(string(LoggerCtx), logger)
 		c.Next()
 	}
 }
