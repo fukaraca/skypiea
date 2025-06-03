@@ -27,7 +27,7 @@ jobs:
             | sh -s -- -b "$(go env GOPATH)"/bin v2.0.2
 
       - name: Run linter
-        run: golangci-lint run ./...
+        run: make lint
 
       - name: Run tests
-        run: go test ./... -v
+        run: make test
