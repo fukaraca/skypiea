@@ -53,5 +53,6 @@ docker-compose-db-only:
 TEST_DIRS = ./internal/... ./cmd/... ./pkg/...
 .PHONY: test
 test:
-	@go test $(TEST_DIRS) -coverprofile=coverage.out
-	@go tool cover -func=coverage.out | grep total
+	@go test -v $(TEST_DIRS) -coverprofile=coverage.out
+	@go tool cover -func=coverage.out | grep ^total | sed 's/^/coverage /; s/[[:space:]]\+/ /g'
+

@@ -1,0 +1,33 @@
+name: CI Pipeline
+run-name: Test of PR by @${{ github.actor }}
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh \
+            | sh -s -- -b "$(go env GOPATH)"/bin v1.59.0
+
+      - name: Run linter
+        run: golangci-lint run ./...
+
+      - name: Run tests
+        run: go test ./... -v
