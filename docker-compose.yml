@@ -19,6 +19,8 @@ services:
   server:
     container_name: skypiea-ai-server
     build:
+      args:
+        - FULL_VERSION=local-server
       context: .
       dockerfile: docker/server.Dockerfile
     depends_on:
@@ -31,4 +33,6 @@ services:
   worker:
     container_name: skypiea-ai-worker
     build:
+      args:
+        - FULL_VERSION=local-worker
       dockerfile: docker/worker.Dockerfile

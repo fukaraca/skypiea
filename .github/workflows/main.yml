@@ -31,3 +31,40 @@ jobs:
 
       - name: Run tests
         run: make test
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Compute Base Version & Build Number
+        id: compute-version
+        run: |
+          BASE_VERSION="$(cat .Version | tr -d '[:space:]')"
+          BUILD_NUMBER="${{ github.run_number }}"
+          FULL_VERSION="${BASE_VERSION}.${BUILD_NUMBER}"
+
+          echo "base_version=$BASE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PAT2GHCR }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./docker/server.Dockerfile
+          build-args: |
+            FULL_VERSION=${{ steps.compute-version.outputs.full_version }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/skypiea:${{ steps.compute-version.outputs.full_version }}
+            ghcr.io/${{ github.repository_owner }}/skypiea:latest

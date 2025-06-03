@@ -27,8 +27,10 @@ type Server struct {
 	GinMode               string        `yaml:"server.ginMode"`
 	SessionTimeout        time.Duration `yaml:"sessionTimeout"`
 	DefaultRequestTimeout time.Duration `yaml:"defaultRequestTimeout"`
+	Version               string
 }
 
 type Worker struct {
 	IntervalTicker time.Duration `yaml:"intervalTicker"`
+	Version        string
 }

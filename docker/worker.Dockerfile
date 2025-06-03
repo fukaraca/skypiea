@@ -1,9 +1,11 @@
 FROM golang:1.24-alpine AS builder
 LABEL name="skypiea-ai-worker" \
     maintainer="@fukaraca"
+
+ARG FULL_VERSION="dev"
 WORKDIR /src
 COPY . /src
-RUN go build -v -o /src/worker ./cmd/worker
+RUN go build -v -ldflags="-X 'main.Version=${FULL_VERSION}'" -o /src/worker ./cmd/worker
 
 FROM alpine AS secondbuilder
 COPY --from=builder /src/worker /app/skypiea-ai/

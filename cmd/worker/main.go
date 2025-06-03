@@ -10,7 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configName string
+var (
+	Version    string = "dev"
+	configName string
+)
 
 func main() {
 	if err := RootCommand().Execute(); err != nil {
@@ -25,6 +28,7 @@ func RootCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return initialize()
 		},
+		Version: Version,
 	}
 	rootCmd.PersistentFlags().StringVar(&configName, "config", "config.example.yml", "config file name in configs folder")
 	return rootCmd
@@ -37,7 +41,10 @@ func initialize() error {
 		return err
 	}
 	logger := logg.New(cfg.Log)
-	logger.Info("worker initialized", slog.Any("config", cfg))
+
+	cfg.Worker.Version = Version
 	cfg.ServiceMode = config.ModeBackgroundWorker
+
+	logger.Info("worker initialized", slog.Any("Version", cfg.Worker.Version))
 	return worker.Start(cfg, logger)
 }

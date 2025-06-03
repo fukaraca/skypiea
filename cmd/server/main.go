@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"log/slog"
 
@@ -14,7 +13,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configName string
+var (
+	Version    string = "dev"
+	configName string
+)
 
 func main() {
 	if err := RootCommand().Execute(); err != nil {
@@ -29,6 +31,7 @@ func RootCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return initialize()
 		},
+		Version: Version,
 	}
 	rootCmd.PersistentFlags().StringVar(&configName, "config", "config.example.yml", "config file name in configs folder")
 
@@ -43,9 +46,10 @@ func initialize() error {
 	if err != nil {
 		return err
 	}
-	logg.New(cfg.Log).Info("server initialized", slog.Any("config", cfg))
+	cfg.Server.Version = Version
 	cfg.ServiceMode = config.ModeHttpServer
-	fmt.Printf("%+v\n", cfg.Database)
+
+	logg.New(cfg.Log).Info("server initialized", slog.Any("version", cfg.Server.Version))
 	return service.Start(cfg)
 }
 
@@ -59,8 +63,6 @@ func loadConfig() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			logg.New(cfg.Log).Info("config loaded", slog.Any("config", cfg))
-			fmt.Printf("%+v\n", *cfg)
 			return nil
 		},
 	}
