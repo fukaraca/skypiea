@@ -57,7 +57,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PAT2GHCR }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image for Server
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -66,5 +66,17 @@ jobs:
             FULL_VERSION=${{ steps.compute-version.outputs.full_version }}
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/skypiea:${{ steps.compute-version.outputs.full_version }}
-            ghcr.io/${{ github.repository_owner }}/skypiea:latest
+            ghcr.io/${{ github.repository_owner }}/skypiea-server:${{ steps.compute-version.outputs.full_version }}
+            ghcr.io/${{ github.repository_owner }}/skypiea-server:latest
+
+      - name: Build and push Docker image for Worker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./docker/worker.Dockerfile
+          build-args: |
+            FULL_VERSION=${{ steps.compute-version.outputs.full_version }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/skypiea-worker:${{ steps.compute-version.outputs.full_version }}
+            ghcr.io/${{ github.repository_owner }}/skypiea-worker:latest

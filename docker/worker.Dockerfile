@@ -3,6 +3,7 @@ FROM golang:1.24-alpine AS builder
 ARG FULL_VERSION="dev"
 WORKDIR /src
 COPY . /src
+
 RUN go build -v -ldflags="-X 'main.Version=${FULL_VERSION}'" -o /src/worker ./cmd/worker
 
 FROM alpine AS runtime
