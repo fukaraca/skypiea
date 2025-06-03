@@ -4,6 +4,7 @@ CHART_PATH := $(CURRENT_DIR)/helm/skypiea
 DEFAULT_CONFIG = config.example.yml
 CONFIG_FLAG ?= --config=$(DEFAULT_CONFIG)
 
+VERSION := $(shell cat .Version)
 CURRENT_DIR ?= $(shell pwd)
 TIMESTAMP := $(shell date +%s)
 
@@ -32,13 +33,13 @@ lint:
 	golangci-lint run -v
 
 docker-build-server:
-	docker build -f ./docker/server.Dockerfile -t skypiea-ai-server:latest .
+	docker build -f ./docker/server.Dockerfile --build-arg FULL_VERSION=$(VERSION) -t skypiea-ai-server:latest .
 
 docker-run-server:
 	docker run -d --rm --name skypiea-ai-server -p 8080:8080 -e DATABASE_POSTGRESQL_HOST=host.docker.internal skypiea-ai-server:latest
 
 docker-build-worker:
-	docker build -f ./docker/worker.Dockerfile -t skypiea-ai-worker:latest .
+	docker build -f ./docker/worker.Dockerfile --build-arg FULL_VERSION=$(VERSION) -t skypiea-ai-worker:latest .
 
 docker-run-worker: #no need to use
 	@echo 'Houston, we are launching'
