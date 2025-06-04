@@ -41,6 +41,7 @@ type Message struct {
 	ResponseTo  *int
 }
 
+// TODO: this is conventional and not needed right now. It is better created and implemented on caller side
 type ConversationsRepo interface {
 	GetConversationsByUserUUID(context.Context, uuid.UUID) ([]*Conversation, error)
 	GetConversationByID(ctx context.Context, conversationID int) ([]*Message, error)
@@ -60,7 +61,7 @@ type conversationsRepoPgx struct {
 	dbConn
 }
 
-func NewConversationsRepo(dia Dialect, conn dbConn) ConversationsRepo {
+func NewConversationsRepo(dia Dialect, conn dbConn) *conversationsRepoPgx {
 	switch dia {
 	case DialectPostgres, DialectPgx:
 		return &conversationsRepoPgx{conn}

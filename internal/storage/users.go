@@ -21,6 +21,7 @@ const (
 	deleteUserByUUID = `DELETE FROM users WHERE user_uuid = $1;`
 )
 
+// TODO: this is conventional and not needed right now. It is better created and implemented on caller side
 type UsersRepo interface {
 	AddUser(context.Context, *User) (uuid.UUID, error)
 	GetUserByUUID(context.Context, uuid.UUID) (*User, error)
@@ -60,7 +61,7 @@ type usersRepoPgx struct {
 	dbConn
 }
 
-func NewUsersRepo(dia Dialect, conn dbConn) UsersRepo {
+func NewUsersRepo(dia Dialect, conn dbConn) *usersRepoPgx {
 	switch dia {
 	case DialectPostgres, DialectPgx:
 		return &usersRepoPgx{conn}

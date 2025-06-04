@@ -45,10 +45,10 @@ docker-run-worker: #no need to use
 	@echo 'Houston, we are launching'
 	@# docker run -d --rm --name skypiea-ai-worker skypiea-ai-worker:latest
 
-docker-compose-build-up:
+dc-build-up:
 	docker-compose up --build
 
-docker-compose-db-only:
+dc-db-only:
 	docker-compose up postgresdb -d
 
 TEST_DIRS = ./internal/... ./cmd/... ./pkg/...

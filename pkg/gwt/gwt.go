@@ -11,13 +11,7 @@ const (
 	CtxToken = "Token"
 )
 
-// Generate
-// validate
-// invalidate
-// parsefromRequest
-// parsefromRequestWithClaims
-// parseUser
-
+// TODO: currently we dont need interface here, caller side will be better fit
 type Manager interface {
 	GenerateToken(userID, role string) (string, error)
 	ValidateToken(token string) (*Token, error)
@@ -37,7 +31,7 @@ type Token struct {
 	jwt.RegisteredClaims
 }
 
-func NewJWTService(config *Config) Manager {
+func NewJWTService(config *Config) *Service {
 	if config == nil {
 		panic("gwt config is nil")
 	}
