@@ -17,7 +17,7 @@ LABEL org.opencontainers.image.version="${FULL_VERSION}"
 
 COPY --from=builder /src/server /app/skypiea-ai/
 COPY --from=builder /src/web/ /app/skypiea-ai/web/
-COPY --from=builder /src/configs/config.example.yml /app/skypiea-ai/configs/
+# COPY --from=builder /src/configs/config.example.yml /app/skypiea-ai/configs/
 
 WORKDIR /app/skypiea-ai
 EXPOSE 8080
