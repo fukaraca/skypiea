@@ -16,6 +16,6 @@ LABEL org.opencontainers.image.description="skypiea worker app"
 LABEL org.opencontainers.image.version="${FULL_VERSION}"
 
 COPY --from=builder /src/worker /app/skypiea-ai/
-COPY --from=builder /src/configs/config.example.yml /app/skypiea-ai/configs/
+# COPY --from=builder /src/configs/config.example.yml /app/skypiea-ai/configs/
 WORKDIR /app/skypiea-ai
 ENTRYPOINT ["/app/skypiea-ai/worker"]

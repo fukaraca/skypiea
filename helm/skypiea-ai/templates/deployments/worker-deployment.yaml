@@ -46,7 +46,7 @@ spec:
           command:
             - "/app/skypiea-ai/worker"
             - "--config"
-            - "/app/skypiea-ai/configs/config.yaml"
+            - "config.yaml"
           ports:
             - name: http
               containerPort: {{ .Values.server.port }}

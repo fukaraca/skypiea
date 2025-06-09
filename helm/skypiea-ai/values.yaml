@@ -103,8 +103,8 @@ volumes: []
 
 volumeMounts:
  - name: config-volume
-   mountPath: /app/skypiea-ai/configs/config.yaml
-   subPath: config.yaml
+   mountPath: /app/skypiea-ai/configs
+   readOnly: true
 
 
 server:

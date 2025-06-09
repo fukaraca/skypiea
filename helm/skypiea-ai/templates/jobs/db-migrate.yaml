@@ -43,7 +43,7 @@ spec:
             - "migration"
             - "up"
             - "--config"
-            - "/app/skypiea-ai/configs/config.yaml"
+            - "config.yaml"
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
