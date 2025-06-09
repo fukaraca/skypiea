@@ -62,3 +62,9 @@ test:
 
 helm-template:
 	helm template ./helm/skypiea-ai
+
+helm-pack:
+	helm package ./helm/skypiea-ai --version $(VERSION).0 --app-version $(VERSION).0 --destination ./bin
+
+helm-push:
+	helm push ./bin/skypiea-ai-$(VERSION).0.tgz oci://ghcr.io/fukaraca/helm/
