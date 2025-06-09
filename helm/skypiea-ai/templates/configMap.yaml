@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "skypiea-ai.fullname" . }}-cm
+  labels:
+    {{- include "skypiea-ai.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  configFile: |
+    server:
+      address: ""
+      port: "{{ .Values.server.port }}"
+      maxBodySizeMB: 25
+      ginMode: "{{ .Values.server.ginMode }}"
+      sessionTimeout: 10m
+      defaultRequestTimeout: 30s
+    worker:
+      intervalTicker: {{ .Values.worker.intervalTicker }}
+    log: {{ toYaml .Values.log | nindent 6 }}
+    database: {{ toYaml .Values.database | nindent 6 }}

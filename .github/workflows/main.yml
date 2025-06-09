@@ -32,6 +32,20 @@ jobs:
       - name: Run tests
         run: make test
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: default
+
+      - name: Helm lint chart
+        run: helm lint ./helm/skypiea-ai
+
+      - name: Dry-run chart
+        run: |
+          helm template skypiea-ai ./helm/skypiea-ai \
+            --values ./helm/skypiea-ai/values.yaml \
+            > /dev/null
+
   build-and-push:
     runs-on: ubuntu-latest
     needs: lint-and-test
@@ -80,3 +94,24 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/skypiea-worker:${{ steps.compute-version.outputs.full_version }}
             ghcr.io/${{ github.repository_owner }}/skypiea-worker:latest
+
+      - name: Package chart
+        env:
+          CHART_VERSION: ${{ steps.compute-version.outputs.full_version }}
+        run: |
+          helm package ./helm/skypiea-ai \
+            --version "$CHART_VERSION" \
+            --app-version "$CHART_VERSION" \
+            --destination ./chart-dist
+
+      - name: Push chart to GHCR
+        env:
+          CHART_VERSION: ${{ steps.compute-version.outputs.full_version }}
+          GHCR_REPO: ghcr.io/${{ github.repository_owner }}/helm
+        run: |
+          helm registry login ghcr.io \
+            --username '${{ github.actor }}' \
+            --password '${{ secrets.PAT2GHCR }}'
+
+          helm push ./chart-dist/skypiea-ai-"$CHART_VERSION".tgz \
+            oci://$GHCR_REPO

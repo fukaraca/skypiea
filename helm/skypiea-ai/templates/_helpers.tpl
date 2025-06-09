@@ -60,3 +60,19 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Database secrets
+*/}}
+{{- define "skypiea-ai.secret.db.env" -}}
+- name: DATABASE_{{ .Values.database.dialect | upper }}_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.db_secret }}
+      key: {{ .Values.database.dialect | lower }}_username
+- name: DATABASE_{{ .Values.database.dialect | upper }}_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.db_secret }}
+      key: {{ .Values.database.dialect | lower }}_password
+{{- end -}}
