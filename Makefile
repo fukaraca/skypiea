@@ -36,13 +36,13 @@ lint-helm:
 	helm lint ./helm/skypiea-ai
 
 docker-build-server:
-	docker build -f ./docker/server.Dockerfile --build-arg FULL_VERSION=$(VERSION) -t skypiea-ai-server:latest .
+	docker build -f ./docker/server.Dockerfile --build-arg FULL_VERSION=$(VERSION).0 -t skypiea-ai-server:latest .
 
 docker-run-server:
 	docker run -d --rm --name skypiea-ai-server -p 8080:8080 -e DATABASE_POSTGRESQL_HOST=host.docker.internal skypiea-ai-server:latest
 
 docker-build-worker:
-	docker build -f ./docker/worker.Dockerfile --build-arg FULL_VERSION=$(VERSION) -t skypiea-ai-worker:latest .
+	docker build -f ./docker/worker.Dockerfile --build-arg FULL_VERSION=$(VERSION).0 -t skypiea-ai-worker:latest .
 
 docker-run-worker: #no need to use
 	@echo 'Houston, we are launching'
