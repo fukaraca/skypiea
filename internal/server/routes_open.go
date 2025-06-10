@@ -36,6 +36,7 @@ func (s *Server) RegisterRoutes(rGroup *gin.RouterGroup, routes RouteMap, option
 func openRoutes(s *Server, common *handlers.Common) RouteMap {
 	routes := NewRouteMap()
 	h := handlers.NewOpenHandler(common, s.Service)
+	routes[RouteKey{http.MethodGet, "/healthz"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.Healthz}
 	routes[RouteKey{http.MethodPost, "/login"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignIn}
 	routes[RouteKey{http.MethodPost, "/signup"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.SignUp}
 	routes[RouteKey{http.MethodPost, "/forgot-password"}] = []gin.HandlerFunc{middlewares.NonAuthMw(), h.ForgotPassword}
