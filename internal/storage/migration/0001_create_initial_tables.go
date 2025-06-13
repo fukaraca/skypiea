@@ -47,10 +47,15 @@ var migration0001CreateInitialTablesUp = []string{
 
 	`INSERT INTO roles (id, name)
 	VALUES 
-	    ('admin', 'Admin'),
-	    ('user_std', 'Standard User'),
-	    ('user_vip', 'VIP User')
+		('admin', 'Admin'),
+		('user_std', 'Standard User'),
+		('user_vip', 'VIP User')
 	ON CONFLICT (id) DO NOTHING;`,
+
+	`INSERT INTO users (user_uuid, firstname, lastname, email, password, role, status)
+	VALUES
+		(uuid_generate_v4(), 'Admin', 'Admin', 'admin@example.com', '$2a$04$jLaYijt7BEcQ2ZRygQdEpe347jdq38zGNQ5QabY9E6FuiI6nCpQq2', 'admin', 'active')
+    ON CONFLICT (email) DO NOTHING;`, // admin user bootstrap credentials should be changed after first init
 }
 
 var migration0001CreateInitialTablesDown = []string{
