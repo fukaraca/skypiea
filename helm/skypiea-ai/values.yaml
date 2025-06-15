@@ -62,7 +62,8 @@ ingress:
   className: traefik
   annotations:
     kubernetes.io/ingress.class: "traefik"
-    # kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
   host: will.be.populated.by.workflow
   tls: []
   #  - secretName: chart-example-tls

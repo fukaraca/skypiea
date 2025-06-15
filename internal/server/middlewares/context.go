@@ -45,7 +45,10 @@ func LoggerMw(logger *slog.Logger) gin.HandlerFunc {
 }
 
 func GetLoggerFromContext(ctx context.Context) *slog.Logger {
-	return ctx.Value(string(LoggerCtx)).(*slog.Logger)
+	if v, ok := ctx.Value(string(LoggerCtx)).(*slog.Logger); ok {
+		return v
+	}
+	return slog.Default()
 }
 
 func GetGinCtxFromContext(ctx context.Context) *gin.Context {
@@ -53,7 +56,7 @@ func GetGinCtxFromContext(ctx context.Context) *gin.Context {
 }
 
 var filterToSkipLog sloggin.Filter = func(ctx *gin.Context) bool {
-	if ctx.FullPath() != "/healthz" || ctx.Errors != nil {
+	if ctx.Request.URL.Path != "/healthz" || ctx.Errors != nil {
 		return true
 	}
 	return false

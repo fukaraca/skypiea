@@ -31,7 +31,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "skypiea-ai.fullname" $ }}
+                name: {{ include "skypiea-ai.fullname" $ }}-server
                 port:
                   number: {{ .Values.server.port }}
 {{- end }}
