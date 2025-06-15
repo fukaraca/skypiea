@@ -141,9 +141,10 @@ jobs:
           kubectl get namespace skypiea || kubectl create namespace skypiea
 
       - name: Helm registry login
-        run: helm registry login ghcr.io \
-          --username '${{ github.actor }}' \
-          --password '${{ secrets.PAT2GHCR }}'
+        run: |
+          helm registry login ghcr.io \
+            --username '${{ github.actor }}' \
+            --password '${{ secrets.PAT2GHCR }}'
 
       - name: Sync registry secret
         run: |
