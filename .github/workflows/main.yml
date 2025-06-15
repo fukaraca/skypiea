@@ -115,3 +115,56 @@ jobs:
 
           helm push ./chart-dist/skypiea-ai-"$CHART_VERSION".tgz \
             oci://$GHCR_REPO
+
+  deploy:
+    name: Deploy to k3s
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: azure/setup-helm@v4
+        with: { version: v3.14.4 }
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with: { version: v1.30.0 }
+
+      - name: Write kubeconfig
+        run: |
+          echo "${{ secrets.K3S_KUBECONFIG }}" > kubeconfig
+          echo "KUBECONFIG=$PWD/kubeconfig" >> $GITHUB_ENV
+
+      - name: Ensure namespace exists
+        run: |
+          kubectl get namespace skypiea || kubectl create namespace skypiea
+
+      - name: Helm registry login
+        run: helm registry login ghcr.io \
+          --username '${{ github.actor }}' \
+          --password '${{ secrets.PAT2GHCR }}'
+
+      - name: Sync registry secret
+        run: |
+          kubectl -n skypiea create secret docker-registry ghcr-login-secret \
+              --docker-server=https://ghcr.io \
+              --docker-username='${{ github.actor }}' \
+              --docker-password='${{ secrets.PAT2GHCR }}' \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Sync db creds
+        run: |
+          kubectl -n skypiea create secret generic skypiea-ai-secret-db \
+            --from-literal=postgres_username='${{ secrets.PG_USER }}' \
+            --from-literal=postgres_password='${{ secrets.PG_PASS }}' \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade --install --wait --atomic --timeout 5m --namespace skypiea skypiea \
+            oci://ghcr.io/${{ github.repository_owner }}/helm/skypiea-ai \
+            --set imagePullSecrets[0].name=ghcr-login-secret \
+            --set-string ingress.hosts[0].host=${{ secrets.EC2_IP }} \
+            --set database.postgresql.host='${{ secrets.PG_HOST }}' \
+            --set database.postgresql.port='${{ secrets.PG_PORT }}'
