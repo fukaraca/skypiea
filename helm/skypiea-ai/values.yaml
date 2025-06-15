@@ -63,11 +63,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: "traefik"
     # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: will.be.populated.by.workflow
-      paths:
-        - path: /
-          pathType: Prefix
+  host: will.be.populated.by.workflow
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

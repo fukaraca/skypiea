@@ -163,9 +163,9 @@ jobs:
 
       - name: Helm upgrade
         run: |
-          helm upgrade --install --wait --atomic --timeout 5m --namespace skypiea skypiea \
+          helm upgrade --install --debug --wait --atomic --timeout 5m --namespace skypiea skypiea \
             oci://ghcr.io/${{ github.repository_owner }}/helm/skypiea-ai \
             --set imagePullSecrets[0].name=ghcr-login-secret \
-            --set-string ingress.hosts[0].host=${{ secrets.EC2_IP }} \
+            --set-string ingress.host='${{ vars.EC2_DNS }}' \
             --set database.postgresql.host='${{ secrets.PG_HOST }}' \
             --set database.postgresql.port='${{ secrets.PG_PORT }}'
