@@ -38,7 +38,7 @@ jobs:
           version: 'v3.14.4'
 
       - name: Helm lint chart
-        run: helm lint ./helm/skypiea-ai
+        run: make helm-lint
 
       - name: Dry-run chart
         run: |
@@ -168,4 +168,7 @@ jobs:
             --set imagePullSecrets[0].name=ghcr-login-secret \
             --set-string ingress.host='${{ vars.EC2_DNS }}' \
             --set database.postgresql.host='${{ secrets.PG_HOST }}' \
-            --set database.postgresql.port='${{ secrets.PG_PORT }}'
+            --set database.postgresql.port='${{ secrets.PG_PORT }}' \
+            --set log.level="info" \
+            --set jwt.secret='${{ secrets.JWT_SECRET }}' \
+            --set jwt.domain='${{ secrets.JWT_DOMAIN }}'

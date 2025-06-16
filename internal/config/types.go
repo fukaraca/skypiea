@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/storage"
+	"github.com/fukaraca/skypiea/pkg/gwt"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 )
 
@@ -18,6 +19,7 @@ type Config struct {
 	Worker      *Worker
 	Log         logg.Config
 	Database    *storage.Database
+	JWT         *gwt.Config
 }
 
 type Server struct {

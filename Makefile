@@ -32,9 +32,6 @@ migratedb-down:
 lint:
 	golangci-lint run -v
 
-lint-helm:
-	helm lint ./helm/skypiea-ai
-
 docker-build-server:
 	docker build -f ./docker/server.Dockerfile --build-arg FULL_VERSION=$(VERSION).0 -t skypiea-ai-server:latest .
 
@@ -59,6 +56,9 @@ TEST_DIRS = ./internal/... ./cmd/... ./pkg/...
 test:
 	@go test -v $(TEST_DIRS) -coverprofile=coverage.out
 	@go tool cover -func=coverage.out | grep ^total | sed 's/^/coverage /; s/[[:space:]]\+/ /g'
+
+helm-lint:
+	helm lint ./helm/skypiea-ai
 
 helm-template:
 	helm template ./helm/skypiea-ai

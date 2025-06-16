@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Issuer   = "Skypiea AI"
+	Issuer   = "Skypiea AI Auth"
 	CtxToken = "Token"
 )
 
@@ -18,7 +18,8 @@ type Manager interface {
 }
 
 type Config struct {
-	Secret []byte
+	Secret string `yaml:"jwt.secret"`
+	Domain string `yaml:"jwt.domain"`
 }
 
 type Service struct {
@@ -35,7 +36,7 @@ func NewJWTService(config *Config) *Service {
 	if config == nil {
 		panic("gwt config is nil")
 	}
-	return &Service{secret: config.Secret}
+	return &Service{secret: []byte(config.Secret)}
 }
 
 func (s *Service) GenerateToken(userID, role string) (string, error) {

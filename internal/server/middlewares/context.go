@@ -56,7 +56,7 @@ func GetGinCtxFromContext(ctx context.Context) *gin.Context {
 }
 
 var filterToSkipLog sloggin.Filter = func(ctx *gin.Context) bool {
-	if ctx.Request.URL.Path != "/healthz" || ctx.Errors != nil {
+	if ctx.FullPath() != "/healthz" || ctx.Errors != nil {
 		return true
 	}
 	return false

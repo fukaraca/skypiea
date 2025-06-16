@@ -15,12 +15,13 @@ import (
 const (
 	DefaultCookieName   = "ss_skypiea"
 	DefaultCookieMaxAge = 1000
-	DefaultCookieDomain = "localhost"
 
 	DefaultSessionEarlyTimeout = -time.Second * 5
 
 	CtxLoggedIn = "logged_in"
 )
+
+var CookieDomain = "" // assign on startup
 
 type UserReader interface {
 	GetUserByUUID(context.Context, uuid.UUID) (*storage.User, error)
@@ -55,7 +56,7 @@ func NewCookie(id string) *Cookie {
 		Name:     DefaultCookieName,
 		Value:    id,
 		Path:     model.PathMain,
-		Domain:   DefaultCookieDomain,
+		Domain:   CookieDomain,
 		MaxAge:   DefaultCookieMaxAge,
 		Secure:   false,
 		HTTPOnly: true,
@@ -95,6 +96,7 @@ func (s *Session) Token() string {
 }
 
 func NewManager(jwtConfig *gwt.Config, repo UserReader, ttl time.Duration) *Manager {
+	CookieDomain = jwtConfig.Domain
 	return &Manager{
 		cache:      cache.New(),
 		repo:       repo,

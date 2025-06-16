@@ -8,7 +8,7 @@ import (
 )
 
 func TestJWT(t *testing.T) {
-	testService := NewJWTService(&Config{Secret: []byte("secret")})
+	testService := NewJWTService(&Config{Secret: "secret"})
 	token, err := testService.GenerateToken("1", "admin")
 	require.NoError(t, err)
 	assert.NotNil(t, token)

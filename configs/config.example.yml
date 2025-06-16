@@ -12,6 +12,7 @@ log:
   addSource: false
 jwt:
   secret: "secret"
+  domain: "localhost"
 database:
   dialect: "postgres"
   postgresql:

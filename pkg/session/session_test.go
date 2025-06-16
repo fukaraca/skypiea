@@ -19,7 +19,7 @@ func (r *mockDBRegistery) GetUserByUUID(ctx context.Context, userUUID uuid.UUID)
 }
 
 func TestSessionManager(t *testing.T) {
-	jwtConfig := &gwt.Config{Secret: []byte("secret")}
+	jwtConfig := &gwt.Config{Secret: "secret", Domain: "localhost"}
 
 	ttl := time.Minute * 30
 	manager := session.NewManager(jwtConfig, &mockDBRegistery{}, ttl)

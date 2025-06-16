@@ -63,7 +63,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: "traefik"
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
   host: will.be.populated.by.workflow
   tls: []
   #  - secretName: chart-example-tls
@@ -116,12 +116,16 @@ server:
   defaultRequestTimeout: 30s
 
 worker:
-  replicas: 1
+  replicas: 0
   intervalTicker: 10s
 
 log:
   level: "debug"
   addSource: false
+
+jwt:
+  secret: "secret"
+  domain: "localhost"
 
 database:
   dialect: "postgres"

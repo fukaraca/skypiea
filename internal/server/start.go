@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/config"
-	"github.com/fukaraca/skypiea/pkg/gwt"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/fukaraca/skypiea/pkg/session"
 )
@@ -25,7 +24,7 @@ func Start(cfg *config.Config) error {
 	}
 	server := NewServer(cfg, router, db, logger)
 	server.bindRoutes()
-	session.Cache = session.NewManager(&gwt.Config{Secret: []byte("secret")}, server.Repo.Users, cfg.Server.SessionTimeout)
+	session.Cache = session.NewManager(cfg.JWT, server.Repo.Users, cfg.Server.SessionTimeout)
 
 	logger.Info("Server started")
 	httpServer := &http.Server{
