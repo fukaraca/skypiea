@@ -149,6 +149,14 @@
 </div>
 
 <script>
+
+    document.getElementById('chatInput').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // Prevent newline
+        this.form.requestSubmit(); // Submit the form
+    }
+    });
+
     document.addEventListener('htmx:afterSwap', e => {
         if (e.detail.target.id === 'chatMessages') {
             const box = document.getElementById('chatContainer');
