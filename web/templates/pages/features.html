@@ -17,7 +17,7 @@
                         <p class="text-center mb-5">
                             Skypiea AI is built to showcase robust backend development with Go, containerization,
                             cloud deployments, and more. Below are some of the key features that highlight
-                            the project's capabilities (To be re-visited):
+                            the project's capabilities:
                         </p>
 
                         <ul class="list-group list-group-flush">
@@ -34,7 +34,7 @@
                             <li class="list-group-item mb-3">
                                 <h5 class="mb-1">2. Microservices Architecture & Communication</h5>
                                 <p class="mb-0">
-                                    Splits functionality into smaller Go microservices. Uses gRPC or REST alongside a
+                                    Splits functionality into smaller Go microservices. Uses gRPC(not for now) or REST alongside a
                                     message broker for decoupled, resilient design.
                                 </p>
                             </li>
@@ -43,7 +43,7 @@
                             <li class="list-group-item mb-3">
                                 <h5 class="mb-1">3. Containerization & Orchestration</h5>
                                 <p class="mb-0">
-                                    Docker-based containers deployed to a Kubernetes cluster (EKS, GKE, or self-managed).
+                                    Docker-based containers deployed to a Kubernetes cluster (self-managed K3s on AWS free tier t2.micro).
                                     Helm charts control versioned and repeatable deployments.
                                 </p>
                             </li>
@@ -52,7 +52,7 @@
                             <li class="list-group-item mb-3">
                                 <h5 class="mb-1">4. AWS Infrastructure</h5>
                                 <p class="mb-0">
-                                    Integrates AWS services (ECR, RDS, S3, etc.) and leverages AWS best practices for secure,
+                                    Integrates AWS services (EC2 and RDS) and leverages AWS best practices for secure,
                                     scalable cloud deployments.
                                 </p>
                             </li>
@@ -61,8 +61,8 @@
                             <li class="list-group-item mb-3">
                                 <h5 class="mb-1">5. CI/CD Pipelines</h5>
                                 <p class="mb-0">
-                                    Automates build, test, and deployment processes. Ensures continuous integration and
-                                    delivery with GitHub Actions, GitLab CI, or Jenkins.
+                                    Automates lint, build, test, and deployment processes. Ensures continuous integration and
+                                    delivery with GitHub Actions.
                                 </p>
                             </li>
 
@@ -70,8 +70,7 @@
                             <li class="list-group-item mb-3">
                                 <h5 class="mb-1">6. Comprehensive Testing Strategy</h5>
                                 <p class="mb-0">
-                                    Utilizes Go’s <code>testing</code> package for unit tests, with integration tests
-                                    for APIs and databases. Load/stress testing ensures performance under real-world demands.
+                                    Ensures unit and integration tests.
                                 </p>
                             </li>
 
@@ -88,8 +87,7 @@
                             <li class="list-group-item mb-3">
                                 <h5 class="mb-1">8. Observability & Logging</h5>
                                 <p class="mb-0">
-                                    Implements structured logging (e.g., with <code>zap</code> or <code>logrus</code>)
-                                    and exposes metrics via Prometheus or AWS CloudWatch for real-time insights.
+                                    Implements structured logging and exposes metrics via Prometheus(to be delivered).
                                 </p>
                             </li>
 
@@ -98,18 +96,10 @@
                                 <h5 class="mb-1">9. Security & Authentication</h5>
                                 <p class="mb-0">
                                     Employs JWT or session-based authentication, role-based access, and secure coding
-                                    best practices. Integrates TLS/HTTPS, secret management, and image scanning.
+                                    best practices. Integrates TLS/HTTPS, secret management.
                                 </p>
                             </li>
 
-                            <!-- 10. Documentation & Demo -->
-                            <li class="list-group-item mb-3">
-                                <h5 class="mb-1">10. Documentation & Demo</h5>
-                                <p class="mb-0">
-                                    Offers comprehensive developer docs with setup guides, code overviews,
-                                    and a demo script for rapid local or production deployment.
-                                </p>
-                            </li>
                         </ul>
                     </div>
                 </div>
