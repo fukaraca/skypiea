@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -29,7 +30,7 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		s.AlertUI(c, model.ErrSessionNotFound, ALError)
 		return
 	}
-	msg := storage.Message{
+	msg := &storage.Message{
 		ConvID:      in.ConversationID,
 		ModelID:     model.GPTFurkan,
 		ByUser:      true,
@@ -37,20 +38,16 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		CreatedAt:   time.Now(),
 	}
 
-	msgID, err := s.MessageSvc.ProcessNewMessage(c.Request.Context(), *userID, &msg)
+	msgID, err := s.MessageSvc.ProcessNewMessage(c.Request.Context(), *userID, msg)
 	if err != nil {
 		s.AlertUI(c, err, ALError)
 		return
 	}
 	msg.ID = msgID
-	if in.ConversationID == 0 {
-		c.Status(http.StatusCreated)
-		c.Header(HX_REDIRECT, model.PathMain)
-		return
-	}
 
+	c.Header("HX-Trigger", fmt.Sprintf(`{"chat:new":{"conv_id":%d}}`, msg.ConvID))
 	c.HTML(http.StatusOK, "chat-post-post", gin.H{
-		"Messages": []*storage.Message{&msg},
+		"Messages": []*storage.Message{msg},
 		"MsgID":    msg.ID,
 		"ConvID":   msg.ConvID,
 	})

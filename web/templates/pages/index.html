@@ -149,6 +149,10 @@
 </div>
 
 <script>
+    document.body.addEventListener('chat:new', e => { // get Conv ID on new conversation
+        const newConvID = e.detail.conv_id
+        document.getElementById('conv_id_input').value = newConvID
+    })
 
     document.getElementById('chatInput').addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
