@@ -6,7 +6,7 @@ metadata:
     {{- include "skypiea-ai.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker
 spec:
-  replicas: {{ .Values.server.replicas }}
+  replicas: {{ .Values.worker.replicas }}
   selector:
     matchLabels:
       {{- include "skypiea-ai.selectorLabels" . | nindent 6 }}

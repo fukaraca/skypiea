@@ -1,0 +1,19 @@
+# /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    additionalArguments:
+      - "--certificatesresolvers.default.acme.email=xxx@example.com" #change
+      - "--certificatesresolvers.default.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.default.acme.httpchallenge.entrypoint=web"
+    ports:
+      web:
+        exposedPort: 80
+        port: 80
+      websecure:
+        exposedPort: 443
+        port: 443
