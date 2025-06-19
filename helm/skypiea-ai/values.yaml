@@ -73,9 +73,9 @@ ingress:
 resources:
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 64Mi
   limits:
-    cpu: 200m
+    cpu: 400m
     memory: 256Mi
 
 livenessProbe:
@@ -111,7 +111,7 @@ server:
   address: ""
   port: "8080"
   maxBodySizeMB: 25
-  ginMode: "debug" # test, release, debug
+  ginMode: "release" # test, release, debug
   sessionTimeout: 10m
   defaultRequestTimeout: 30s
 
@@ -120,7 +120,7 @@ worker:
   intervalTicker: 10s
 
 log:
-  level: "debug"
+  level: "info"
   addSource: false
 
 jwt:

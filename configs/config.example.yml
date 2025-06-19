@@ -8,7 +8,7 @@ server:
 worker:
   intervalTicker: 10s
 log:
-  level: "debug"
+  level: "info"
   addSource: false
 jwt:
   secret: "secret"

@@ -40,7 +40,7 @@ func LoggerMw(logger *slog.Logger) gin.HandlerFunc {
 	return sloggin.NewWithConfig(logger, sloggin.Config{
 		WithUserAgent: true,
 		WithRequestID: true,
-		Filters:       []sloggin.Filter{filterToSkipLog},
+		Filters:       []sloggin.Filter{doNotLogIfNoErr("/healthz")},
 	})
 }
 
@@ -55,9 +55,11 @@ func GetGinCtxFromContext(ctx context.Context) *gin.Context {
 	return ctx.Value(GinCtx).(*gin.Context)
 }
 
-var filterToSkipLog sloggin.Filter = func(ctx *gin.Context) bool {
-	if ctx.FullPath() != "/healthz" || ctx.Errors != nil {
+func doNotLogIfNoErr(url string) sloggin.Filter {
+	return func(ctx *gin.Context) bool {
+		if ctx.FullPath() == url && len(ctx.Errors) == 0 {
+			return false
+		}
 		return true
 	}
-	return false
 }
