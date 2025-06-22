@@ -2,7 +2,9 @@
 ![Skypiea AI logo](./web/static/img/skypiea-ai-logo.svg)
 <br>
 
-> **Skypiea AI** is a *cloud‑native reference application* that shows how to design, test, ship, and operate a Go service at production scale. Feel free to clone, reuse and feedback. 
+> **Skypiea AI** is a *cloud‑native reference application* that shows how to design, test, ship, and operate a Go service at production scale. Feel free to clone, reuse and feedback.
+
+> It also wraps the Gemini API to expose a built‑in chatbot interface. You can test it, it is free tier though...
 >
 Built with ❤️ in San Francisco
 
