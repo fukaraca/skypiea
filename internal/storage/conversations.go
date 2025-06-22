@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"html/template"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,7 +36,7 @@ type Message struct {
 	ConvID      int
 	ModelID     string
 	ByUser      bool
-	MessageText *string
+	MessageText *template.HTML
 	Metadata    *string
 	CreatedAt   time.Time
 	ResponseTo  *int

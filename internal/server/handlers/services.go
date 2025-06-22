@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"html/template"
 
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/fukaraca/skypiea/pkg/session"
@@ -23,4 +24,5 @@ type MessageService interface {
 	GetMessage(ctx context.Context, msgID int) (*storage.Message, error)
 	GetAllConversations(ctx context.Context, userID uuid.UUID) ([]*storage.Conversation, error)
 	DeleteConversation(ctx context.Context, convID int) error
+	Sanitize(txt string) *template.HTML
 }

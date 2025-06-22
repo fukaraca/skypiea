@@ -35,7 +35,7 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		ConvID:      in.ConversationID,
 		ModelID:     in.Model,
 		ByUser:      true,
-		MessageText: &in.MessageText,
+		MessageText: s.MessageSvc.Sanitize(in.MessageText),
 		CreatedAt:   time.Now(),
 	}
 

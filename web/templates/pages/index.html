@@ -35,12 +35,12 @@
                 <div class="d-flex justify-content-between align-items-center mb-2"
                      id="conv-{{ .ID }}">
                     <a href="#"
-                       class="text-white flex-grow-1 text-truncate conv-link"
+                       class="text-white flex-grow-1 marquee-hover conv-link"
                        hx-get="/conversations/{{ .ID }}/messages"
                        data-conv-id="{{ .ID }}"
                        hx-target="#chatMessages"
                        hx-swap="innerHTML">
-                        {{ .Title }}
+                        <span>{{ .Title }}</span>
                     </a>
                     <div class="dropdown">
                         <button class="btn btn-sm text-white" data-bs-toggle="dropdown">…</button>
@@ -72,12 +72,12 @@
             <div class="d-flex justify-content-between align-items-center mb-2"
                  id="conv-{{ .ID }}">
                 <a href="#"
-                   class="text-white flex-grow-1 text-truncate conv-link"
+                   class="text-white flex-grow-1 marquee-hover conv-link"
                    hx-get="/conversations/{{ .ID }}/messages"
                    data-conv-id="{{ .ID }}"
                    hx-target="#chatMessages"
                    hx-swap="innerHTML">
-                    {{ .Title }}
+                    <span>{{ .Title }}</span>
                 </a>
                 <div class="dropdown">
                     <button class="btn btn-sm text-white" data-bs-toggle="dropdown">…</button>

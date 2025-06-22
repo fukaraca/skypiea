@@ -55,3 +55,20 @@
 .skill-badge:hover {
     transform: scale(1.1);
 }
+
+.marquee-hover {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.marquee-hover > span {
+    display: inline-block;
+    white-space: nowrap;
+    transition: transform 15s linear;
+}
+
+.marquee-hover:hover > span {
+    transform: translateX(calc(100% - 100vw));
+}

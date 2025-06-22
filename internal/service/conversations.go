@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"html/template"
 	"log/slog"
 	"strings"
 	"time"
@@ -15,15 +16,25 @@ import (
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/yuin/goldmark"
 )
+
+const summarizer = `You are a summarization engine. Read the following text and return only a single sentence that serves as a conversation title.
+Each word must start with a capital letter. Do not include any punctuation marks at all. Only return the title, nothing else.
+Text:
+%s`
 
 func (s *Service) ProcessNewMessage(ctx context.Context, userID uuid.UUID, message *storage.Message) (int, error) {
 	logger := middlewares.GetLoggerFromContext(ctx)
 	var err error
 	if message.ConvID == 0 {
 		// New conversation >> find some title
+		title, err := s.GenerateTitle(ctx, string(*message.MessageText)) // nolint:govet
+		if err != nil {
+			title = TitleFromString(string(*message.MessageText), 2, 16)
+		}
 		err = s.Repositories.DoInTx(ctx, logger, func(reg *storage.Registry) error {
-			message.ConvID, err = reg.Conversations.NewConversation(ctx, userID, TitleFromString(*message.MessageText, 2, 16), "")
+			message.ConvID, err = reg.Conversations.NewConversation(ctx, userID, title, "")
 			return err
 		})
 		if err != nil {
@@ -120,7 +131,7 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 		return nil, err
 	}
 
-	response, err := s.GeminiClient.AskToGemini(ctx, *message.MessageText, message.ModelID)
+	response, err := s.GeminiClient.AskToGemini(ctx, string(*message.MessageText), message.ModelID)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +140,7 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 		ConvID:      convID,
 		ModelID:     message.ModelID,
 		ByUser:      false,
-		MessageText: &response,
+		MessageText: s.Sanitize(response),
 		Metadata:    nil,
 		CreatedAt:   time.Now(),
 		ResponseTo:  &msgID,
@@ -156,6 +167,12 @@ func (s *Service) DeleteConversation(ctx context.Context, convID int) error {
 	return s.Repositories.DoInTx(ctx, middlewares.GetLoggerFromContext(ctx), func(reg *storage.Registry) error {
 		return reg.Conversations.DeleteConversation(ctx, convID)
 	})
+}
+
+func (s *Service) GenerateTitle(ctx context.Context, msg string) (string, error) {
+	msg = fmt.Sprintf(summarizer, msg)
+	title, err := s.GeminiClient.AskToGemini(ctx, msg, "")
+	return title, err
 }
 
 func TitleFromString(input string, maxWords, maxLen int) string {
@@ -195,4 +212,15 @@ func TitleFromString(input string, maxWords, maxLen int) string {
 		truncated = strings.TrimSpace(truncated)
 	}
 	return fmt.Sprintf("%s-%s", truncated, uuid.New().String()[:8])
+}
+
+func (s *Service) Sanitize(txt string) *template.HTML {
+	var sb strings.Builder
+	template.HTMLEscaper()
+	err := goldmark.Convert([]byte(s.policy.Sanitize(txt)), &sb)
+	if err != nil {
+		return nil
+	}
+	temp := template.HTML(sb.String()) //nolint:gosec
+	return &temp
 }

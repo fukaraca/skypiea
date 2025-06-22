@@ -6,6 +6,8 @@ import (
 	"google.golang.org/genai"
 )
 
+const defaultModel = "gemini-2.0-flash-lite"
+
 type Config struct {
 	*genai.ClientConfig
 	SupportedModels []string
@@ -26,6 +28,9 @@ func NewClient(cfg *Config) (*Client, error) {
 }
 
 func (c *Client) AskToGemini(ctx context.Context, msg, model string) (string, error) {
+	if model == "" {
+		model = defaultModel
+	}
 	result, err := c.Models.GenerateContent(
 		ctx,
 		model,
