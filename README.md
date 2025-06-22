@@ -4,7 +4,7 @@
 
 > **Skypiea AI** is a *cloud‑native reference application* that shows how to design, test, ship, and operate a Go service at production scale. Feel free to clone, reuse and feedback.
 
-> It also wraps the Gemini API to expose a built‑in chatbot interface. You can test it, it is free tier though...
+> It also wraps the Gemini API to expose a built‑in chatbot interface. You can test it, free tier though...
 >
 Built with ❤️ in San Francisco
 
@@ -21,7 +21,7 @@ Hosted on an EC2 `t2.micro`, secured by Cloudflare, served through Traefik with 
 Skypiea AI is **not** a traditional SaaS product that solves a single business problem. Instead, it is a living laboratory for modern backend engineering practices:
 
 - **Scalable** – containerised, stateless by default, ready to autoscale in Kubernetes.
-- **Testable** – unit, integration, and functional test layers.
+- **Testable** – unit, integration tests.
 - **Maintainable** – layered architecture, and uniform logging, managed database migrations on startup, run on local easily with little dependency.
 - **Secure** – AuthN/Z implementation of JWT and session and similar sensitivity on prod; HTTPS and secrets stored encrypted on k8s/DB etc...
 - **Automated** – full CI/CD pipeline that lints → tests → builds → pushes → deploys on every `git push`.
