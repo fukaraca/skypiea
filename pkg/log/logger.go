@@ -7,8 +7,8 @@ import (
 
 type LogLevel string
 type Config struct {
-	Level     LogLevel `yaml:"log.level"`
-	AddSource bool     `yaml:"log.addSource"`
+	Level     LogLevel `mapstructure:"level"`
+	AddSource bool     `mapstructure:"addSource"`
 }
 
 func (l LogLevel) Int() slog.Level {

@@ -13,6 +13,7 @@ type UserService interface {
 	RegisterNewUser(ctx context.Context, user *storage.User) error
 	ChangePassword(ctx context.Context, email, newPass string) error
 	GetUser(ctx context.Context, userID uuid.UUID) (*storage.User, error)
+	SupportedModels(ctx context.Context, userID uuid.UUID) []string
 }
 
 type MessageService interface {

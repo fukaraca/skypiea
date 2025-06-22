@@ -24,18 +24,18 @@ const (
 )
 
 type Database struct {
-	Dialect    Dialect          `yaml:"dialect"`
-	PostgreSQL PostgreSQLConfig `yaml:"postgresql"`
+	Dialect    Dialect          `mapstructure:"dialect"`
+	PostgreSQL PostgreSQLConfig `mapstructure:"postgresql"`
 }
 
 type PostgreSQLConfig struct {
-	Host     string        `yaml:"host"`
-	Port     string        `yaml:"port"`
-	Username string        `yaml:"username"`
-	Password string        `yaml:"password"`
-	Database string        `yaml:"database"`
-	SSLMode  string        `yaml:"sslmode"`
-	Timeout  time.Duration `yaml:"timeout"`
+	Host     string        `mapstructure:"host"`
+	Port     string        `mapstructure:"port"`
+	Username string        `mapstructure:"username"`
+	Password string        `mapstructure:"password"`
+	Database string        `mapstructure:"database"`
+	SSLMode  string        `mapstructure:"sslmode"`
+	Timeout  time.Duration `mapstructure:"timeout"`
 }
 
 type DB struct {

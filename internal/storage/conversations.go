@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	getConversationsByUserIDPG  = `SELECT * FROM conversations WHERE user_uuid = $1 ORDER BY updated_at DESC;`
+	getConversationsByUserIDPG  = `SELECT * FROM conversations WHERE user_uuid = $1 ORDER BY updated_at DESC LIMIT $2;`
 	getConversationByIDPG       = `SELECT * FROM messages WHERE conv_id = $1 ORDER BY created_at ASC;`
 	getMessageByIDPG            = `SELECT * FROM messages WHERE id = $1;`
 	getResponseByIdPG           = `SELECT * FROM messages WHERE response_to = $1;`
@@ -71,7 +71,8 @@ func NewConversationsRepo(dia Dialect, conn dbConn) *conversationsRepoPgx {
 
 func (c *conversationsRepoPgx) GetConversationsByUserUUID(ctx context.Context, userID uuid.UUID) ([]*Conversation, error) {
 	out := make([]*Conversation, 0)
-	rows, err := c.Query(ctx, getConversationsByUserIDPG, userID.String())
+	limit := 20
+	rows, err := c.Query(ctx, getConversationsByUserIDPG, userID.String(), limit)
 	if err != nil {
 		return nil, err
 	}

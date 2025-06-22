@@ -22,7 +22,10 @@ func Start(cfg *config.Config) error {
 	if err != nil {
 		return err
 	}
-	server := NewServer(cfg, router, db, logger)
+	server, err := NewServer(cfg, router, db, logger)
+	if err != nil {
+		return err
+	}
 	server.bindRoutes()
 	session.Cache = session.NewManager(cfg.JWT, server.Repo.Users, cfg.Server.SessionTimeout)
 

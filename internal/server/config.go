@@ -3,6 +3,7 @@ package server
 import (
 	"log/slog"
 
+	"github.com/fukaraca/skypiea/internal/api/gemini"
 	"github.com/fukaraca/skypiea/internal/service"
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/gin-gonic/gin"
@@ -20,14 +21,18 @@ type Server struct {
 	Service *service.Service
 }
 
-func NewServer(cfg *config.Config, engine *gin.Engine, db *storage.DB, logger *slog.Logger) *Server {
+func NewServer(cfg *config.Config, engine *gin.Engine, db *storage.DB, logger *slog.Logger) (*Server, error) {
 	repo := storage.NewRegistry(db.Dialect, db.Pool)
-	srv := service.New(repo)
+	apiClient, err := gemini.NewClient(cfg.Gemini)
+	if err != nil {
+		return nil, err
+	}
+	srv := service.New(repo, apiClient)
 	return &Server{
 		Config:  cfg,
 		Logger:  logger,
 		engine:  engine,
 		Repo:    repo,
 		Service: srv,
-	}
+	}, nil
 }

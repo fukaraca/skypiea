@@ -50,6 +50,7 @@ spec:
           imagePullPolicy: {{ .Values.image.server.pullPolicy }}
           env:
             {{- include "skypiea-ai.secret.db.env" . | nindent 12 }}
+            {{- include "skypiea-ai.secret.gemini.env" . | nindent 12 }}
           command:
             - "/app/skypiea-ai/server"
             - "--config"

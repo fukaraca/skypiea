@@ -1,14 +1,18 @@
 package service
 
-import "github.com/fukaraca/skypiea/internal/storage"
+import (
+	"github.com/fukaraca/skypiea/internal/storage"
+)
 
 // Service is main implementor of service layer. Bad naming tho
 type Service struct {
 	Repositories *storage.Registry
+	GeminiClient GeminiAPI
 }
 
-func New(reg *storage.Registry) *Service {
+func New(reg *storage.Registry, geminiClient GeminiAPI) *Service {
 	return &Service{
 		Repositories: reg,
+		GeminiClient: geminiClient,
 	}
 }

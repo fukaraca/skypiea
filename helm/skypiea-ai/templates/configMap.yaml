@@ -22,3 +22,4 @@ data:
     log: {{ toYaml .Values.log | nindent 6 }}
     database: {{ toYaml .Values.database | nindent 6 }}
     jwt: {{ toYaml .Values.jwt | nindent 6 }}
+    gemini: {{ toYaml .Values.gemini | nindent 6 }}

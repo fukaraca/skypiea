@@ -123,13 +123,23 @@
             <!-- Sticky Input -->
             <div class="border-top w-100 bg-body" style="position:sticky;bottom:0;z-index:10;">
                 <form id="chatForm"
-                      class="d-flex p-3"
-                      style="max-width:700px;margin:auto;"
+                      class="d-flex p-3 flex-column flex-md-row align-items-start"
+                      style="width: 90%;margin-left: auto;margin-right: auto;"
                       hx-post="/message"
                       hx-target="#chatMessages"
                       hx-swap="beforeend"
-                      hx-on:htmx:after-request="this.reset(); document.getElementById('chatInput').style.height='auto';"
+                      hx-on:htmx:after-request="document.getElementById('chatInput').value=''; document.getElementById('chatInput').style.height='auto';"
                       hx-indicator=".loading-indicator">
+
+                    <select id="modelSelect"
+                            name="llmodel"
+                    class="form-select mb-2 mb-md-0 me-md-2 flex-shrink-0"
+                    style="width:110px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis">
+                    {{ range .LLModels }}
+                    <option value="{{ . }}">{{ . }}</option>
+                    {{ end }}
+                    </select>
+
                     <input type="hidden" name="conv_id" id="conv_id_input" value="{{ if .CurrentConv }}{{ .CurrentConv.ID }}{{ end }}">
                     <textarea id="chatInput"
                               name="messageText"
@@ -149,6 +159,21 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modelSel = document.getElementById("modelSelect");
+
+        if (modelSel) {
+            const saved = localStorage.getItem("active_model");
+            if (saved && [...modelSel.options].some(o => o.value === saved)) {
+                modelSel.value = saved;
+            }
+
+            modelSel.addEventListener("change", () => {
+                localStorage.setItem("active_model", modelSel.value);
+            });
+        }
+    });
+
     document.body.addEventListener('chat:new', e => { // get Conv ID on new conversation
         const newConvID = e.detail.conv_id
         document.getElementById('conv_id_input').value = newConvID

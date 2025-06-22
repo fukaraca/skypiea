@@ -18,8 +18,8 @@ type Manager interface {
 }
 
 type Config struct {
-	Secret string `yaml:"jwt.secret"`
-	Domain string `yaml:"jwt.domain"`
+	Secret string `mapstructure:"secret"`
+	Domain string `mapstructure:"domain"`
 }
 
 type Service struct {

@@ -3,6 +3,7 @@ package config
 import (
 	"time"
 
+	"github.com/fukaraca/skypiea/internal/api/gemini"
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	logg "github.com/fukaraca/skypiea/pkg/log"
@@ -20,19 +21,20 @@ type Config struct {
 	Log         logg.Config
 	Database    *storage.Database
 	JWT         *gwt.Config
+	Gemini      *gemini.Config
 }
 
 type Server struct {
-	Address               string        `yaml:"server.address"`
-	Port                  string        `yaml:"server.port"`
-	MaxBodySizeMB         int           `yaml:"server.maxBodySizeMB"`
-	GinMode               string        `yaml:"server.ginMode"`
-	SessionTimeout        time.Duration `yaml:"sessionTimeout"`
-	DefaultRequestTimeout time.Duration `yaml:"defaultRequestTimeout"`
+	Address               string        `mapstructure:"address"`
+	Port                  string        `mapstructure:"port"`
+	MaxBodySizeMB         int           `mapstructure:"maxBodySizeMB"`
+	GinMode               string        `mapstructure:"ginMode"`
+	SessionTimeout        time.Duration `mapstructure:"sessionTimeout"`
+	DefaultRequestTimeout time.Duration `mapstructure:"defaultRequestTimeout"`
 	Version               string
 }
 
 type Worker struct {
-	IntervalTicker time.Duration `yaml:"intervalTicker"`
+	IntervalTicker time.Duration `mapstructure:"intervalTicker"`
 	Version        string
 }

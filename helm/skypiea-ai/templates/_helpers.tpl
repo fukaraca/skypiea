@@ -76,3 +76,14 @@ Database secrets
       name: {{ .Values.db_secret }}
       key: {{ .Values.database.dialect | lower }}_password
 {{- end -}}
+
+{{/*
+Gemini API secrets
+*/}}
+{{- define "skypiea-ai.secret.gemini.env" -}}
+- name: GEMINI_CLIENTCONFIG_APIKEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.gemini.secret }}
+      key: api_key
+{{- end -}}

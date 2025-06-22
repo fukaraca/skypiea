@@ -161,6 +161,12 @@ jobs:
             --from-literal=postgres_password='${{ secrets.PG_PASS }}' \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Sync Gemini API creds
+        run: |
+          kubectl -n skypiea create secret generic skypiea-ai-secret-gemini \
+            --from-literal=api_key='${{ secrets.GEMINI_API_KEY }}' \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Helm upgrade
         run: |
           helm upgrade --install --debug --wait --atomic --timeout 5m --namespace skypiea skypiea \

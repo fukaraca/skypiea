@@ -15,6 +15,7 @@ import (
 
 type SendMessageReq struct {
 	MessageText    string `form:"messageText" binding:"required"`
+	Model          string `form:"llmodel"`
 	ConversationID int    `form:"conv_id"`
 }
 
@@ -32,7 +33,7 @@ func (s *Strict) PostMessage(c *gin.Context) {
 	}
 	msg := &storage.Message{
 		ConvID:      in.ConversationID,
-		ModelID:     model.GPTFurkan,
+		ModelID:     in.Model,
 		ByUser:      true,
 		MessageText: &in.MessageText,
 		CreatedAt:   time.Now(),

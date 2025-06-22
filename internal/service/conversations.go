@@ -108,29 +108,35 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 		return nil, model.ErrMessageCouldNotGet.WithError(errors.New("conversation is not for this user"))
 	}
 
-	message, err := s.Repositories.Conversations.GetResponseByID(ctx, msgID)
+	found, err := s.Repositories.Conversations.GetResponseByID(ctx, msgID)
 	switch {
 	case err == nil:
-		return message, nil
+		return found, nil
 	case !errors.Is(err, pgx.ErrNoRows):
 		return nil, err
 	}
+	message, err := s.Repositories.Conversations.GetMessageByID(ctx, msgID)
+	if err != nil {
+		return nil, err
+	}
 
-	time.Sleep(2 * time.Second)
-	// take it like i'm thinking hard
-	msgTxt := fmt.Sprintf("This is auto generated response for message %d.\nLets see maybe we link it to Gemini or something cheaper in the future just for fun.. ", msgID) //nolint: lll
-	message = &storage.Message{
+	response, err := s.GeminiClient.AskToGemini(ctx, *message.MessageText, message.ModelID)
+	if err != nil {
+		return nil, err
+	}
+
+	messageToSave := &storage.Message{
 		ConvID:      convID,
-		ModelID:     model.GPTFurkan,
+		ModelID:     message.ModelID,
 		ByUser:      false,
-		MessageText: &msgTxt,
+		MessageText: &response,
 		Metadata:    nil,
 		CreatedAt:   time.Now(),
 		ResponseTo:  &msgID,
 	}
 
-	message.ID, err = s.ProcessNewMessage(ctx, userID, message)
-	return message, err
+	messageToSave.ID, err = s.ProcessNewMessage(ctx, userID, messageToSave)
+	return messageToSave, err
 }
 
 func (s *Service) GetAllConversations(ctx context.Context, userID uuid.UUID) ([]*storage.Conversation, error) {

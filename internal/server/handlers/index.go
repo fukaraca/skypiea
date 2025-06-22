@@ -29,13 +29,16 @@ func (h *View) Index(c *gin.Context) {
 		h.AlertUI(c, model.ErrConversationCouldNotGet, ALError)
 		return
 	}
+	llModel := h.UserSvc.SupportedModels(c.Request.Context(), *userID)
 
+	// TODO markdown support or convert to HTML?
 	c.HTML(http.StatusOK, "index", gin.H{
-		"Title":         "Home",
+		"Title":         "Chat with AI",
 		"CSSFile":       "index.css",
 		"LoggedIn":      true,
 		"Conversations": convs,
 		"CurrentConv":   nil,
 		"Messages":      nil,
+		"LLModels":      llModel,
 	})
 }

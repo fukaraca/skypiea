@@ -16,6 +16,7 @@ var envs = []string{
 	"database.postgresql.username",
 	"database.postgresql.password",
 	"database.postgresql.database",
+	"gemini.clientconfig.apikey",
 }
 
 func (c *Config) Load(filename, path string) error {

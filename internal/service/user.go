@@ -60,3 +60,8 @@ func (s *Service) ChangePassword(ctx context.Context, email, newPass string) err
 		return reg.Users.ChangePassword(ctx, uuid.MustParse(u.UserUUID), hPass)
 	})
 }
+
+func (s *Service) SupportedModels(ctx context.Context, userID uuid.UUID) []string {
+	// TODO user tier based supported model...
+	return s.GeminiClient.GetAllSupportedModels()
+}
