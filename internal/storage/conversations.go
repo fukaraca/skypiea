@@ -176,7 +176,7 @@ func (c *conversationsRepoPgx) VerifyUserForConversation(ctx context.Context, us
 
 func (c *conversationsRepoPgx) VerifyUserForMessage(ctx context.Context, userUUID uuid.UUID, msgID int) (bool, error) {
 	var ok bool
-	err := c.QueryRow(ctx, verifyUserForConversation, msgID, userUUID.String()).Scan(&ok)
+	err := c.QueryRow(ctx, verifyUserForMessage, msgID, userUUID.String()).Scan(&ok)
 	if err != nil {
 		return ok, err
 	}

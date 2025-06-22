@@ -18,8 +18,9 @@ type User struct {
 	ID                  int
 	UUID                uuid.UUID
 	Firstname, Lastname string
-	Email               string
+	Email, PhoneNumber  string
 	Role, Status        string
+	AboutMe, Summary    string
 	CreatedAt           time.Time
 }
 

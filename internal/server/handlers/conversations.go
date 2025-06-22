@@ -35,7 +35,7 @@ func (s *Strict) PostMessage(c *gin.Context) {
 		ConvID:      in.ConversationID,
 		ModelID:     in.Model,
 		ByUser:      true,
-		MessageText: s.MessageSvc.Sanitize(in.MessageText),
+		MessageText: s.MessageSvc.Sanitize(in.MessageText, true), // do not trust user input
 		CreatedAt:   time.Now(),
 	}
 

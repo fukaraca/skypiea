@@ -14,21 +14,31 @@
                                     <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 40px;" />
                                 </div>
                                 <h5 class="fw-normal mb-3 text-center" style="letter-spacing: 1px;">Update Your Details</h5>
-                                <form id="updateDetailsForm" hx-post="/profile/update" hx-target="#profileStatus" hx-swap="innerHTML" class="needs-validation" novalidate>
+                                <form id="updateDetailsForm" hx-put="/profile/update" hx-target="#profileStatus" hx-swap="innerHTML" class="needs-validation" novalidate>
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="{{.Name}}" required />
+                                        <input type="text" class="form-control" id="name" name="name" value="{{.Name}}" placeholder="{{.Name}}" required />
                                         <div class="invalid-feedback">Please provide a valid name.</div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="surname" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" id="surname" name="surname" placeholder="{{.Surname}}" required />
+                                        <input type="text" class="form-control" id="surname" name="surname" value="{{.Surname}}" placeholder="{{.Surname}}" required />
                                         <div class="invalid-feedback">Please provide a valid surname.</div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="phone" class="form-label">Phone</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="{{.PhoneNumber}}" required />
+                                        <input type="tel" class="form-control" id="phone" name="phone" value="{{.PhoneNumber}}" placeholder="{{.PhoneNumber}}"/>
                                         <div class="invalid-feedback">Please provide a valid phone number.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="about_me" class="form-label">About Me</label>
+                                        <textarea class="form-control auto-resize"
+                                                  id="about_me"
+                                                  name="about_me"
+                                                  placeholder="{{ .AboutMe }}"
+                                                  rows="3"
+                                                  style="overflow:hidden; resize:none;">{{ .AboutMe }}</textarea>
+                                        <div class="invalid-feedback">Please tell us a bit about yourself.</div>
                                     </div>
                                     <div class="mb-3 pt-2">
                                         <button type="submit" class="btn btn-primary w-100">Update Details</button>

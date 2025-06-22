@@ -40,6 +40,9 @@ func prepareDB(ctx context.Context, cfg *storage.Database,
 	t.Log(connStr, cfg.PostgreSQL)
 	t.Run("migration", func(t *testing.T) {
 		err = migration.RunMigration(cfg, migrate.Up)
+		if err != nil {
+			t.Logf("Migration error: %v", err)
+		}
 		require.NoError(t, err)
 	})
 	db, err := cfg.GetDBConn()

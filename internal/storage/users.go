@@ -9,11 +9,15 @@ import (
 	"github.com/fukaraca/skypiea/pkg/encryption"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const (
-	addUserPG = `INSERT INTO users(user_uuid,firstname,lastname,email,role,status,password)
-					VALUES ($1,$2,$3,$4,$5,$6,$7);`
+	addUserPG = `INSERT INTO users(user_uuid,firstname,lastname,email,role,status,password, phone_number)
+					VALUES ($1,$2,$3,$4,$5,$6,$7,$8);`
+	updateUserPG = `UPDATE users SET firstname = $1, lastname = $2, status = $3, 
+                 	phone_number = $4, about_me = $5, summary = $6
+					WHERE id = $7;`
 	getUserByUUIDPG  = `SELECT * FROM users WHERE user_uuid = $1;`
 	getUserByEmailPG = `SELECT * FROM users WHERE email = $1;`
 	getPassPG        = `SELECT password FROM users WHERE email = $1;`
@@ -29,31 +33,38 @@ type UsersRepo interface {
 	GetHPassword(ctx context.Context, username string) (string, error)
 	ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error
 	DeleteUsersByUUID(context.Context, uuid.UUID) error
+	UpdateUser(ctx context.Context, user *User) error
 }
 
 type User struct {
-	ID        int
-	UserUUID  string
-	Firstname string
-	Lastname  string
-	Email     string
-	Role      string
-	Status    string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time // TODO: maybe not needed for now but nullable types matter for pgx>> pgtype..
+	ID          int
+	UserUUID    string
+	Firstname   string
+	Lastname    string
+	Email       string
+	PhoneNumber pgtype.Text
+	AboutMe     pgtype.Text
+	Summary     pgtype.Text
+	Role        string
+	Status      string
+	Password    string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time // TODO: maybe not needed for now but nullable types matter for pgx>> pgtype..
 }
 
 func (u *User) Convert() *model.User {
 	return &model.User{
-		ID:        u.ID,
-		UUID:      uuid.MustParse(u.UserUUID),
-		Firstname: u.Firstname,
-		Lastname:  u.Lastname,
-		Email:     u.Email,
-		Role:      u.Role,
-		Status:    u.Status,
-		CreatedAt: u.CreatedAt,
+		ID:          u.ID,
+		UUID:        uuid.MustParse(u.UserUUID),
+		Firstname:   u.Firstname,
+		Lastname:    u.Lastname,
+		Email:       u.Email,
+		PhoneNumber: u.PhoneNumber.String,
+		AboutMe:     u.AboutMe.String,
+		Summary:     u.Summary.String,
+		Role:        u.Role,
+		Status:      u.Status,
+		CreatedAt:   u.CreatedAt,
 	}
 }
 
@@ -78,7 +89,7 @@ func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (uuid.UUID, erro
 	uid := uuid.New()
 
 	_, err = u.Exec(ctx, addUserPG, uid.String(),
-		user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password)
+		user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password, user.PhoneNumber)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
@@ -90,7 +101,7 @@ func (u *usersRepoPgx) GetUserByUUID(ctx context.Context, userID uuid.UUID) (*Us
 	var out User
 	row := u.QueryRow(ctx, getUserByUUIDPG, userID.String())
 	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
-		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
+		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt, &out.PhoneNumber, &out.AboutMe, &out.Summary); err != nil {
 		return nil, err
 	}
 	return &out, nil
@@ -100,7 +111,7 @@ func (u *usersRepoPgx) GetUserByEmail(ctx context.Context, email string) (*User,
 	var out User
 	row := u.QueryRow(ctx, getUserByEmailPG, email)
 	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
-		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt); err != nil {
+		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt, &out.PhoneNumber, &out.AboutMe, &out.Summary); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, model.ErrNoSuchEmail
 		}
@@ -117,6 +128,11 @@ func (u *usersRepoPgx) GetHPassword(ctx context.Context, email string) (string, 
 
 func (u *usersRepoPgx) ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error {
 	_, err := u.Exec(ctx, updatePasswordPG, hPassword, userID.String())
+	return err
+}
+
+func (u *usersRepoPgx) UpdateUser(ctx context.Context, user *User) error {
+	_, err := u.Exec(ctx, updateUserPG, user.Firstname, user.Lastname, user.Status, user.PhoneNumber, user.AboutMe, user.Summary, user.ID)
 	return err
 }
 

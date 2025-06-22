@@ -16,11 +16,12 @@ func (h *View) Signup(c *gin.Context) {
 }
 
 type SignUpReq struct {
-	Password  string `form:"password" binding:"required"`
-	Firstname string `form:"firstName" binding:"required"`
-	Lastname  string `form:"lastName" binding:"required"`
-	Email     string `form:"email" binding:"required,email"`
-	Role      string `form:"role" binding:"-"`
+	Password    string `form:"password" binding:"required"`
+	Firstname   string `form:"firstName" binding:"required"`
+	Lastname    string `form:"lastName" binding:"required"`
+	Email       string `form:"email" binding:"required,email"`
+	PhoneNumber string `form:"phoneNumber"`
+	Role        string `form:"role" binding:"-"`
 }
 
 // TODO use passed role
@@ -30,14 +31,16 @@ func (h *Open) SignUp(c *gin.Context) {
 		h.AlertUI(c, err, ALError)
 		return
 	}
+	in.Role = model.RoleUserStd
 	user := &storage.User{
 		Firstname: in.Firstname,
 		Lastname:  in.Lastname,
 		Email:     in.Email,
 		Password:  in.Password,
-		Role:      model.RoleAdmin,
+		Role:      in.Role,
 		Status:    model.StatusNew,
 	}
+	user.PhoneNumber.Scan(in.PhoneNumber)
 
 	err := h.UserSvc.RegisterNewUser(c.Request.Context(), user)
 	if err != nil {

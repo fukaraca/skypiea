@@ -4,9 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"html/template"
 	"log/slog"
-	"strings"
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/model"
@@ -16,7 +14,6 @@ import (
 	"github.com/fukaraca/skypiea/pkg/session"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/yuin/goldmark"
 )
 
 const summarizer = `You are a summarization engine. Read the following text and return only a single sentence that serves as a conversation title.
@@ -109,7 +106,7 @@ func (s *Service) GetMessage(ctx context.Context, msgID int) (*storage.Message, 
 	return message, err
 }
 
-// GetResponseByMessageID is a temporary BS(#!$%) method instead of maintaining an API to GPT
+// GetResponseByMessageID returns the response from either DB or asistant.
 func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, msgID, convID int) (*storage.Message, error) {
 	ok, err := s.Repositories.Conversations.VerifyUserForConversation(ctx, userID, convID)
 	switch {
@@ -131,7 +128,19 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 		return nil, err
 	}
 
-	response, err := s.GeminiClient.AskToGemini(ctx, string(*message.MessageText), message.ModelID)
+	history, err := s.Repositories.Conversations.GetConversationByID(ctx, message.ConvID)
+	if err != nil {
+		return nil, err
+	}
+
+	u, err := s.Repositories.Users.GetUserByUUID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	question := BuildPrompt(&u.AboutMe.String, &u.Summary.String, history, message)
+
+	response, err := s.GeminiClient.AskToGemini(ctx, question, message.ModelID)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +149,7 @@ func (s *Service) GetResponseByMessageID(ctx context.Context, userID uuid.UUID, 
 		ConvID:      convID,
 		ModelID:     message.ModelID,
 		ByUser:      false,
-		MessageText: s.Sanitize(response),
+		MessageText: s.Sanitize(response, false),
 		Metadata:    nil,
 		CreatedAt:   time.Now(),
 		ResponseTo:  &msgID,
@@ -173,54 +182,4 @@ func (s *Service) GenerateTitle(ctx context.Context, msg string) (string, error)
 	msg = fmt.Sprintf(summarizer, msg)
 	title, err := s.GeminiClient.AskToGemini(ctx, msg, "")
 	return title, err
-}
-
-func TitleFromString(input string, maxWords, maxLen int) string {
-	input = strings.TrimSpace(input)
-	if input == "" {
-		return fmt.Sprintf("untitled-%s", uuid.New().String()[:8])
-	}
-
-	words := strings.Fields(input)
-	var selected []string
-	currLen := 0
-
-	for i, w := range words {
-		if i >= maxWords {
-			break
-		}
-
-		addLen := len(w)
-		if len(selected) > 0 {
-			addLen++
-		}
-		if currLen+addLen > maxLen {
-			break
-		}
-		selected = append(selected, w)
-		currLen += addLen
-	}
-
-	if len(selected) > 0 {
-		return strings.Join(selected, " ")
-	}
-
-	// fallback for giant first word: take a prefix of the raw input
-	truncated := input
-	if len(truncated) > maxLen {
-		truncated = truncated[:maxLen]
-		truncated = strings.TrimSpace(truncated)
-	}
-	return fmt.Sprintf("%s-%s", truncated, uuid.New().String()[:8])
-}
-
-func (s *Service) Sanitize(txt string) *template.HTML {
-	var sb strings.Builder
-	template.HTMLEscaper()
-	err := goldmark.Convert([]byte(s.policy.Sanitize(txt)), &sb)
-	if err != nil {
-		return nil
-	}
-	temp := template.HTML(sb.String()) //nolint:gosec
-	return &temp
 }

@@ -65,3 +65,18 @@ func (s *Service) SupportedModels(ctx context.Context, userID uuid.UUID) []strin
 	// TODO user tier based supported model...
 	return s.GeminiClient.GetAllSupportedModels()
 }
+
+func (s *Service) UpdateUserProfile(ctx context.Context, userNew *storage.User) error {
+	userOld, err := s.Repositories.Users.GetUserByUUID(ctx, uuid.MustParse(userNew.UserUUID))
+	if err != nil {
+		return err
+	}
+	userOld.Firstname = userNew.Firstname
+	userOld.Lastname = userNew.Lastname
+	userOld.PhoneNumber = userNew.PhoneNumber
+	userOld.AboutMe = userNew.AboutMe
+
+	return s.Repositories.DoInTx(ctx, middlewares.GetLoggerFromContext(ctx), func(reg *storage.Registry) error {
+		return reg.Users.UpdateUser(ctx, userOld)
+	})
+}

@@ -15,6 +15,7 @@ type UserService interface {
 	ChangePassword(ctx context.Context, email, newPass string) error
 	GetUser(ctx context.Context, userID uuid.UUID) (*storage.User, error)
 	SupportedModels(ctx context.Context, userID uuid.UUID) []string
+	UpdateUserProfile(ctx context.Context, userNew *storage.User) error
 }
 
 type MessageService interface {
@@ -24,5 +25,5 @@ type MessageService interface {
 	GetMessage(ctx context.Context, msgID int) (*storage.Message, error)
 	GetAllConversations(ctx context.Context, userID uuid.UUID) ([]*storage.Conversation, error)
 	DeleteConversation(ctx context.Context, convID int) error
-	Sanitize(txt string) *template.HTML
+	Sanitize(txt string, safe bool) *template.HTML
 }
