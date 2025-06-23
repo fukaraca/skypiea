@@ -16,12 +16,14 @@ const (
 	addUserPG = `INSERT INTO users(user_uuid,firstname,lastname,email,role,status,password, phone_number)
 					VALUES ($1,$2,$3,$4,$5,$6,$7,$8);`
 	updateUserPG = `UPDATE users SET firstname = $1, lastname = $2, status = $3, 
-                 	phone_number = $4, about_me = $5, summary = $6
+                 	phone_number = $4, about_me = $5, summary = $6, updated_at = NOW()
 					WHERE id = $7;`
 	getUserByUUIDPG  = `SELECT * FROM users WHERE user_uuid = $1;`
+	getUsersPG       = `SELECT * FROM users ORDER BY updated_at DESC;`
 	getUserByEmailPG = `SELECT * FROM users WHERE email = $1;`
 	getPassPG        = `SELECT password FROM users WHERE email = $1;`
-	updatePasswordPG = `UPDATE users SET password = $1 where user_uuid = $2;` //nolint: gosec
+	updatePasswordPG = `UPDATE users SET password = $1, updated_at = NOW() where user_uuid = $2;` //nolint: gosec
+	updateUserRolePG = `UPDATE users SET role = $1, updated_at = NOW() where user_uuid = $2;`     //nolint: gosec
 	deleteUserByUUID = `DELETE FROM users WHERE user_uuid = $1;`
 )
 
@@ -30,10 +32,13 @@ type UsersRepo interface {
 	AddUser(context.Context, *User) (uuid.UUID, error)
 	GetUserByUUID(context.Context, uuid.UUID) (*User, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
+	GetAllUsers(ctx context.Context) ([]*User, error)
 	GetHPassword(ctx context.Context, username string) (string, error)
 	ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error
 	DeleteUsersByUUID(context.Context, uuid.UUID) error
 	UpdateUser(ctx context.Context, user *User) error
+	ChangeRole(ctx context.Context, userID uuid.UUID, role string) error
+	GetAdoptionStatistics(ctx context.Context) ([]*AdoptionStat, error)
 }
 
 type User struct {
@@ -107,6 +112,24 @@ func (u *usersRepoPgx) GetUserByUUID(ctx context.Context, userID uuid.UUID) (*Us
 	return &out, nil
 }
 
+func (u *usersRepoPgx) GetAllUsers(ctx context.Context) ([]*User, error) {
+	out := make([]*User, 0)
+	rows, err := u.Query(ctx, getUsersPG)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return nil, err
+	}
+	for rows.Next() {
+		var t User
+		err = rows.Scan(&t.ID, &t.UserUUID, &t.Firstname, &t.Lastname, &t.Email, &t.Password, &t.Role, &t.Status, &t.CreatedAt, &t.UpdatedAt, &t.PhoneNumber, &t.AboutMe, &t.Summary)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, &t)
+	}
+
+	return out, nil
+}
+
 func (u *usersRepoPgx) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	var out User
 	row := u.QueryRow(ctx, getUserByEmailPG, email)
@@ -128,6 +151,11 @@ func (u *usersRepoPgx) GetHPassword(ctx context.Context, email string) (string, 
 
 func (u *usersRepoPgx) ChangePassword(ctx context.Context, userID uuid.UUID, hPassword string) error {
 	_, err := u.Exec(ctx, updatePasswordPG, hPassword, userID.String())
+	return err
+}
+
+func (u *usersRepoPgx) ChangeRole(ctx context.Context, userID uuid.UUID, role string) error {
+	_, err := u.Exec(ctx, updateUserRolePG, role, userID.String())
 	return err
 }
 

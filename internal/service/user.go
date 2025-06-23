@@ -47,6 +47,10 @@ func (s *Service) GetUser(ctx context.Context, userID uuid.UUID) (*storage.User,
 	return user, err
 }
 
+func (s *Service) GetAllUsers(ctx context.Context) ([]*storage.User, error) {
+	return s.Repositories.Users.GetAllUsers(ctx)
+}
+
 func (s *Service) ChangePassword(ctx context.Context, email, newPass string) error {
 	return s.Repositories.DoInTx(ctx, middlewares.GetLoggerFromContext(ctx), func(reg *storage.Registry) error {
 		u, err := reg.Users.GetUserByEmail(ctx, email)
@@ -58,6 +62,12 @@ func (s *Service) ChangePassword(ctx context.Context, email, newPass string) err
 			return err
 		}
 		return reg.Users.ChangePassword(ctx, uuid.MustParse(u.UserUUID), hPass)
+	})
+}
+
+func (s *Service) UpdateRole(ctx context.Context, userUUID, role string) error {
+	return s.Repositories.DoInTx(ctx, middlewares.GetLoggerFromContext(ctx), func(reg *storage.Registry) error {
+		return reg.Users.ChangeRole(ctx, uuid.MustParse(userUUID), role)
 	})
 }
 
@@ -79,4 +89,8 @@ func (s *Service) UpdateUserProfile(ctx context.Context, userNew *storage.User) 
 	return s.Repositories.DoInTx(ctx, middlewares.GetLoggerFromContext(ctx), func(reg *storage.Registry) error {
 		return reg.Users.UpdateUser(ctx, userOld)
 	})
+}
+
+func (s *Service) GetAdoptionStatistics(ctx context.Context) ([]*storage.AdoptionStat, error) {
+	return s.Repositories.Users.GetAdoptionStatistics(ctx)
 }

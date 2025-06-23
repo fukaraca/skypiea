@@ -66,7 +66,7 @@ func (s *Service) Sanitize(txt string, safe bool) *template.HTML {
 func BuildPrompt(aboutMe *string, summary *string, conversations []*storage.Message, newQuestion *storage.Message) string {
 	var b strings.Builder
 
-	b.WriteString("You are an assistant helping the user with general questions.\n\n")
+	b.WriteString("You are an assistant helping the user with general questions. \n\n")
 
 	if aboutMe != nil && strings.TrimSpace(*aboutMe) != "" {
 		b.WriteString("## About the user:\n")

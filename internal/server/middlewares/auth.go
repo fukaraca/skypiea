@@ -22,19 +22,16 @@ func StrictAuthMw() gin.HandlerFunc {
 				c.AbortWithError(http.StatusUnauthorized, model.ErrInvalidToken)
 				return
 			}
-			c.Header(model.HxRedirect, model.PathLogin)
-			c.Status(http.StatusFound)
+			c.Redirect(http.StatusFound, model.PathLogin)
 			c.Abort()
 			return
 		} else if sCookie.Valid() != nil {
-			c.Header(model.HxRedirect, model.PathLogin)
-			c.Status(http.StatusFound)
+			c.Redirect(http.StatusFound, model.PathLogin)
 			c.Abort()
 			return
 		}
 		if sess, ok := session.Cache.ValidateSession(sCookie.Value); !ok || sess == nil {
-			c.Header(model.HxRedirect, model.PathLogin)
-			c.Status(http.StatusFound)
+			c.Redirect(http.StatusFound, model.PathLogin)
 			c.Abort()
 			return
 		} else {
@@ -74,11 +71,39 @@ func NonAuthMw() gin.HandlerFunc {
 			if len(refs) == 0 || refs[0] == "" {
 				refs = []string{model.PathMain}
 			}
-			c.Header(model.HxRedirect, refs[0])
-			c.Status(http.StatusNotModified)
+			c.Redirect(http.StatusNotModified, refs[0])
 			c.Abort()
 			return
 		}
 		c.Next()
+	}
+}
+
+func AdminAuthMw() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sCookie, err := c.Request.Cookie(session.DefaultCookieName)
+		if err != nil {
+			c.Redirect(http.StatusFound, model.PathLogin)
+			c.Abort()
+			return
+		} else if sCookie.Valid() != nil {
+			c.Redirect(http.StatusFound, model.PathLogin)
+			c.Abort()
+			return
+		}
+		sess, ok := session.Cache.ValidateSession(sCookie.Value)
+		if !ok || sess == nil {
+			c.Redirect(http.StatusFound, model.PathLogin)
+			c.Abort()
+			return
+		}
+
+		if tkn := session.Cache.GetJWTBySessionID(sess.ID); tkn != nil && tkn.Role == model.RoleAdmin {
+			c.Next()
+			return
+		}
+		c.Redirect(http.StatusFound, model.PathLogin)
+		c.Abort()
+		return
 	}
 }

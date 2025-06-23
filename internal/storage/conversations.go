@@ -17,7 +17,7 @@ const (
 	addNewMessagePG             = `INSERT INTO messages(conv_id,model_id,by_user,message,metadata,response_to) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id;`
 	updateMessagePG             = `UPDATE messages SET message = $1 WHERE id= $2;`
 	deleteConversationByIDPG    = `DELETE FROM conversations WHERE id = $1;`
-	bumpConversationUpdatedAtPG = `UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1;`
+	bumpConversationUpdatedAtPG = `UPDATE conversations SET updated_at = NOW() WHERE id = $1;`
 	verifyUserForConversation   = `SELECT EXISTS (SELECT 1 FROM conversations WHERE id = $1 AND user_uuid = $2);`
 	verifyUserForMessage        = `SELECT EXISTS (SELECT 1 FROM messages m JOIN conversations c ON c.id = m.conv_id WHERE m.id = $1 AND c.user_uuid = $2);`
 )
