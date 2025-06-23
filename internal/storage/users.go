@@ -120,7 +120,8 @@ func (u *usersRepoPgx) GetAllUsers(ctx context.Context) ([]*User, error) {
 	}
 	for rows.Next() {
 		var t User
-		err = rows.Scan(&t.ID, &t.UserUUID, &t.Firstname, &t.Lastname, &t.Email, &t.Password, &t.Role, &t.Status, &t.CreatedAt, &t.UpdatedAt, &t.PhoneNumber, &t.AboutMe, &t.Summary)
+		err = rows.Scan(&t.ID, &t.UserUUID, &t.Firstname, &t.Lastname, &t.Email, &t.Password, &t.Role,
+			&t.Status, &t.CreatedAt, &t.UpdatedAt, &t.PhoneNumber, &t.AboutMe, &t.Summary)
 		if err != nil {
 			return nil, err
 		}

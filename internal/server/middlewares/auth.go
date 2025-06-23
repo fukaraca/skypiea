@@ -104,6 +104,5 @@ func AdminAuthMw() gin.HandlerFunc {
 		}
 		c.Redirect(http.StatusFound, model.PathLogin)
 		c.Abort()
-		return
 	}
 }
