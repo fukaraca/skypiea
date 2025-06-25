@@ -1,6 +1,6 @@
 apiVersion: v2
 name: skypiea-ai
-description: A Helm chart for Kubernetes
+description: Deploy Skypiea AI, a Golang-based chatbot with REST APIs, PostgreSQL, and server-rendered UI via HTMX, optimized for Kubernetes.
 
 type: application
 

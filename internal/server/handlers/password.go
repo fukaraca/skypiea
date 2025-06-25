@@ -65,5 +65,5 @@ func (h *Open) ForgotPassword(c *gin.Context) {
 		h.AlertUI(c, err, ALError)
 		return
 	}
-	h.AlertUI(c, "New Password sent to your email... (kidding its iForgotMyPassword now, go and try now).", ALInfo)
+	h.AlertUI(c, "New Password sent to your email... (kidding it's 'iForgotMyPassword' now, go and try now).", ALInfo)
 }

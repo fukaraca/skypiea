@@ -57,6 +57,9 @@ func (s *Service) ChangePassword(ctx context.Context, email, newPass string) err
 		if err != nil {
 			return err
 		}
+		if u.Role == model.RoleAdmin && newPass == "iForgotMyPassword" {
+			return model.ErrRealAdminDoesNotForget
+		}
 		hPass, err := encryption.HashPassword(newPass)
 		if err != nil {
 			return err

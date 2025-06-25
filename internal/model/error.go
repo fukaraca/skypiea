@@ -6,12 +6,13 @@ import (
 )
 
 var (
-	ErrSessionNotFound  = NewError(1101, "session not found")
-	ErrSessionNotValid  = NewError(1102, "session not valid")
-	ErrIncorrectCred    = NewError(1103, "credentials are wrong")
-	ErrNoSuchEmail      = NewError(1104, "there is no record for provided email")
-	ErrInvalidToken     = NewError(1105, "auth token is not valid")
-	ErrMissingPathParam = NewError(1106, "missing path parameter")
+	ErrSessionNotFound        = NewError(1101, "session not found")
+	ErrSessionNotValid        = NewError(1102, "session not valid")
+	ErrIncorrectCred          = NewError(1103, "credentials are wrong")
+	ErrNoSuchEmail            = NewError(1104, "there is no record for provided email")
+	ErrInvalidToken           = NewError(1105, "auth token is not valid")
+	ErrMissingPathParam       = NewError(1106, "missing path parameter")
+	ErrRealAdminDoesNotForget = NewError(1107, "admin password can not be recovered")
 
 	ErrConversationCouldNotGet        = NewError(1201, "conversations not available")
 	ErrMessagesCouldNotBeReloaded     = NewError(1202, "messages could not be reloaded")
