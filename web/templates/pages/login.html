@@ -11,7 +11,19 @@
                         <div class="text-center mb-4">
                             <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 50px;" />
                         </div>
-                        <h5 class="fw-normal mb-3" style="letter-spacing: 1px;"> Welcome back! Please login to your account </h5>
+                        <h5 class="fw-normal mb-3"> Welcome back! Please login to your account </h5>
+                        <!-- Recruiter quick login -->
+                        <div class="text-center mt-3">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#recruiterCreds" aria-expanded="false" aria-controls="recruiterCreds">
+                                Are you a recruiter? Click here
+                            </button>
+                            <div class="collapse mt-2" id="recruiterCreds">
+                                <div class="alert alert-info small text-start">
+                                    <strong>Email:</strong> recruiter@example.com<br>
+                                    <strong>Password:</strong> abc123
+                                </div>
+                            </div>
+                        </div>
                         <form id="loginForm"
                               hx-post="/login"
                               hx-target="#loginStatus"
@@ -40,8 +52,7 @@
                             <!-- Forgot Password & Sign Up -->
                             <div class="d-flex justify-content-between">
                                 <a href="/forgot-password" class="small">Forgot password?</a>
-                                <span class="small"> Don’t have an account? <a href="/signup" class="link-primary text-decoration-none">Sign up</a>
-                </span>
+                                <span class="small"> Don’t have an account? <a href="/signup" class="link-primary text-decoration-none">Sign up</a> </span>
                             </div>
                         </form>
                     </div>
