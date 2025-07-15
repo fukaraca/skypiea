@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/fukaraca/skypiea/internal/model"
+	gb "github.com/fukaraca/skypiea/pkg/guest_book"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,10 +14,12 @@ func (s *Strict) GetAdminPage(c *gin.Context) {
 		s.AlertUI(c, model.ErrSessionNotFound, ALError)
 		return
 	}
+	visitors := gb.GuestBook.DumpVisitorMetric()
 	c.HTML(http.StatusOK, "adminship", gin.H{
 		"Title":       "Admin Only",
 		"LoggedIn":    true,
 		"Users":       stats,
+		"Visitors":    visitors,
 		"RoleOptions": []string{model.RoleAdmin, model.RoleUserStd, model.RoleUserVip},
 	})
 }

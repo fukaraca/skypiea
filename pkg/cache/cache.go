@@ -1,6 +1,8 @@
 package cache
 
 import (
+	"iter"
+	"maps"
 	"strings"
 	"sync"
 )
@@ -57,4 +59,10 @@ func (s *Storage) Len() int {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return len(s.data)
+}
+
+func (s *Storage) Keys() iter.Seq[string] {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return maps.Keys(s.data)
 }

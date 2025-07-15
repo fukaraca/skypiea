@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/fukaraca/skypiea/internal/config"
+	gb "github.com/fukaraca/skypiea/pkg/guest_book"
 	logg "github.com/fukaraca/skypiea/pkg/log"
 	"github.com/fukaraca/skypiea/pkg/session"
 )
@@ -28,6 +29,7 @@ func Start(cfg *config.Config) error {
 	}
 	server.bindRoutes()
 	session.Cache = session.NewManager(cfg.JWT, server.Repo.Users, cfg.Server.SessionTimeout)
+	gb.GuestBook = gb.New()
 
 	logger.Info("Server started")
 	httpServer := &http.Server{
