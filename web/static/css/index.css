@@ -72,3 +72,33 @@
 .marquee-hover:hover > span {
     transform: translateX(calc(100% - 100vw));
 }
+
+.invite-chip{
+    --chip-scale: 1;
+    --purp-1: #ea1111;
+    --purp-2: #fabf67;
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding: calc(.25rem * var(--chip-scale)) calc(.7rem * var(--chip-scale));
+    font-weight:600; font-size: calc(.9rem * var(--chip-scale)); line-height:1.1;
+    color:#fff; text-decoration:none; white-space:nowrap;
+    background:linear-gradient(135deg,var(--purp-1),var(--purp-2));
+    border:1px solid rgba(126, 20, 109, 0.55);
+    border-radius:999px;
+    box-shadow:
+            0 calc(2px * var(--chip-scale)) calc(6px * var(--chip-scale)) rgba(178, 0, 0, 0.35),
+            inset 0 1px 0 rgba(140, 122, 122, 0.25);
+    transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.invite-chip:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.06);
+    box-shadow:
+            0 calc(4px * var(--chip-scale)) calc(12px * var(--chip-scale)) rgba(239, 3, 3, 0.45),
+            inset 0 1px 0 rgba(255,255,255,.32);
+}
+.invite-chip:active{ transform:none; filter:brightness(.98); }
+.invite-chip .ext{ font-size:.85em; line-height:1; }
+
+/* 50% bigger */
+.invite-chip.is-lg{ --chip-scale: 1.5; }
+

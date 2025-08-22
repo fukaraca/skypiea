@@ -22,6 +22,7 @@ func (h *View) Profile(c *gin.Context) {
 	if userID == nil {
 		c.HTML(http.StatusInternalServerError, "failure", gin.H{
 			"Title":         "Internal Error",
+			"CSSFile":       "index.css",
 			"LoggedIn":      loggedIn,
 			"StatusCode":    http.StatusInternalServerError,
 			"StatusHead":    "Request not succeeded",
@@ -33,6 +34,7 @@ func (h *View) Profile(c *gin.Context) {
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "failure", gin.H{
 			"Title":         "Internal Error",
+			"CSSFile":       "index.css",
 			"LoggedIn":      loggedIn,
 			"StatusCode":    http.StatusInternalServerError,
 			"StatusHead":    "Request not succeeded",
@@ -42,6 +44,7 @@ func (h *View) Profile(c *gin.Context) {
 	}
 	c.HTML(http.StatusOK, "profile", gin.H{
 		"Title":       "My Profile",
+		"CSSFile":     "index.css",
 		"LoggedIn":    loggedIn,
 		"Name":        u.Firstname,
 		"Surname":     u.Lastname,

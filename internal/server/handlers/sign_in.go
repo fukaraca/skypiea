@@ -11,6 +11,7 @@ func (h *View) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login", gin.H{
 		"Title":    "Login",
 		"LoggedIn": false,
+		"CSSFile":  "index.css",
 	})
 }
 

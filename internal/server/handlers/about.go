@@ -10,6 +10,7 @@ import (
 func (h *View) About(c *gin.Context) {
 	c.HTML(http.StatusOK, "about", gin.H{
 		"Title":    "About",
+		"CSSFile":  "index.css",
 		"LoggedIn": c.GetBool(session.CtxLoggedIn),
 	})
 }

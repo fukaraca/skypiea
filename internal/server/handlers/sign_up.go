@@ -11,6 +11,7 @@ import (
 func (h *View) Signup(c *gin.Context) {
 	c.HTML(http.StatusOK, "signup", gin.H{
 		"Title":    "Sign Up",
+		"CSSFile":  "index.css",
 		"LoggedIn": false,
 	})
 }

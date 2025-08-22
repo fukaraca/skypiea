@@ -18,6 +18,7 @@ func (s *Strict) GetAdminPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "adminship", gin.H{
 		"Title":       "Admin Only",
 		"LoggedIn":    true,
+		"CSSFile":     "index.css",
 		"Users":       stats,
 		"Visitors":    visitors,
 		"RoleOptions": []string{model.RoleAdmin, model.RoleUserStd, model.RoleUserVip},

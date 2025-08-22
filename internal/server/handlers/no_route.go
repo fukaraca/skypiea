@@ -10,6 +10,7 @@ import (
 func NoRoute404(c *gin.Context) {
 	c.HTML(http.StatusNotFound, "failure", gin.H{
 		"Title":         "Page not exist",
+		"CSSFile":       "index.css",
 		"LoggedIn":      c.GetBool(session.CtxLoggedIn),
 		"StatusCode":    http.StatusNotFound,
 		"StatusHead":    "Page not found.",

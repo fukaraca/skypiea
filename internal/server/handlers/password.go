@@ -17,6 +17,7 @@ type ChangePasswordReq struct {
 func (h *View) ForgotPassword(c *gin.Context) {
 	c.HTML(http.StatusOK, "forgot-password", gin.H{
 		"Title":    "Recover your password",
+		"CSSFile":  "index.css",
 		"LoggedIn": c.GetBool(session.CtxLoggedIn),
 	})
 }
