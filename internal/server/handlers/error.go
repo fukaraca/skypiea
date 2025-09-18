@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Common) AlertUI(c *gin.Context, message any, level AlertLevel) {
+func (h *Common) AlertUI(c *gin.Context, message any, level AlertLevel, optStatus ...int) {
 	if level == ALError {
 		v, ok := message.(error)
 		if ok {
@@ -14,7 +14,11 @@ func (h *Common) AlertUI(c *gin.Context, message any, level AlertLevel) {
 			message = v.Error()
 		}
 	}
-	c.HTML(http.StatusOK, "alerts", gin.H{
+	status := http.StatusOK
+	if len(optStatus) > 0 {
+		status = optStatus[0]
+	}
+	c.HTML(status, "alerts", gin.H{
 		"AlertMessage": message,
 		"AlertStyle":   level,
 		"ShowAlert":    true,

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+	"golang.org/x/oauth2/google"
 )
 
 func NewConfig() *Config {
@@ -17,6 +18,8 @@ var envs = []string{
 	"database.postgresql.password",
 	"database.postgresql.database",
 	"gemini.clientconfig.apikey",
+	"oauth2.google.clientid",
+	"oauth2.google.clientsecret",
 }
 
 func (c *Config) Load(filename, path string) error {
@@ -46,5 +49,6 @@ func (c *Config) Load(filename, path string) error {
 		return err
 	}
 
+	c.Oauth2.Google.Endpoint = google.Endpoint
 	return nil
 }

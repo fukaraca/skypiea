@@ -51,6 +51,7 @@ spec:
           env:
             {{- include "skypiea-ai.secret.db.env" . | nindent 12 }}
             {{- include "skypiea-ai.secret.gemini.env" . | nindent 12 }}
+            {{- include "skypiea-ai.secret.google-oauth.env" . | nindent 12 }}
           command:
             - "/app/skypiea-ai/server"
             - "--config"

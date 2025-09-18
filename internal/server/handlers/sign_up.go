@@ -39,6 +39,7 @@ func (h *Open) SignUp(c *gin.Context) {
 		Email:     in.Email,
 		Password:  in.Password,
 		Role:      in.Role,
+		AuthType:  model.AuthTypePassword,
 		Status:    model.StatusNew,
 	}
 	user.PhoneNumber.Scan(in.PhoneNumber)

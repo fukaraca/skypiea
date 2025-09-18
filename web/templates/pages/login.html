@@ -12,6 +12,33 @@
                             <img src="/web/static/img/skypiea-ai-logo.svg" alt="Skypiea AI Logo" style="height: 50px;" />
                         </div>
                         <h5 class="fw-normal mb-3"> Welcome back! Please login to your account </h5>
+                        <!-- Oauth2 login -->
+                        <div class="mb-3">
+                            <a hx-get="/auth/google/start"
+                               href="/auth/google/start"
+                               class="btn btn-light w-100 border position-relative d-flex align-items-center justify-content-center py-2 ps-5 overflow-hidden"
+                               rel="nofollow" hx-swap="none">
+                                <!-- Left icon, padded and vertically centered -->
+                                <span class="position-absolute top-50 start-0 translate-middle-y ms-3 d-inline-flex">
+                                  <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path fill="#EA4335" d="M24 9.5c3.7 0 7 1.3 9.6 3.8l7.2-7.2C36.8 2.2 30.8 0 24 0 14.6 0 6.5 5.4 2.6 13.2l8.8 6.8C13.5 14.3 18.3 9.5 24 9.5z"/>
+                                    <path fill="#34A853" d="M46.5 24.5c0-1.5-.1-3-.4-4.5H24v8.6h12.7c-.6 3.1-2.5 5.7-5.3 7.4l8.1 6.3c4.7-4.4 7-10.8 7-17.8z"/>
+                                    <path fill="#4A90E2" d="M10.9 28.2c-.5-1.5-.8-3.1-.8-4.7s.3-3.2.8-4.7l-8.8-6.8C.7 14.5 0 19.1 0 23.5 0 28 0.8 32.2 2.6 36l8.3-7.8z"/>
+                                    <path fill="#FBBC05" d="M24 47c6.3 0 11.7-2.1 15.6-5.8l-8.1-6.3c-2.2 1.4-5 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.2l-8.3 7.8C6.5 42.6 14.6 47 24 47z"/>
+                                  </svg>
+                                </span>
+
+                                <!-- Centered label stays centered -->
+                                <span>Continue with Google</span>
+                            </a>
+                        </div>
+
+                        <div class="d-flex align-items-center my-3">
+                            <hr class="flex-grow-1" />
+                            <span class="mx-2 text-muted small">or</span>
+                            <hr class="flex-grow-1" />
+                        </div>
+
                         <!-- Recruiter quick login -->
                         <div class="text-center mt-3">
                             <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#recruiterCreds" aria-expanded="false" aria-controls="recruiterCreds">

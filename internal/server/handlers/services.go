@@ -30,3 +30,8 @@ type MessageService interface {
 	DeleteConversation(ctx context.Context, convID int) error
 	Sanitize(txt string, safe bool) *template.HTML
 }
+
+type AuthService interface {
+	Start(ctx context.Context, isSignUp bool) string
+	Callback(ctx context.Context, code, state string) (*session.Cookie, error)
+}

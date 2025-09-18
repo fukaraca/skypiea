@@ -27,7 +27,7 @@ func NewServer(cfg *config.Config, engine *gin.Engine, db *storage.DB, logger *s
 	if err != nil {
 		return nil, err
 	}
-	srv := service.New(repo, apiClient)
+	srv := service.New(repo, apiClient, cfg.Oauth2)
 	return &Server{
 		Config:  cfg,
 		Logger:  logger,

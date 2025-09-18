@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	addUserPG = `INSERT INTO users(user_uuid,firstname,lastname,email,role,status,password, phone_number)
-					VALUES ($1,$2,$3,$4,$5,$6,$7,$8);`
+	addUserPG = `INSERT INTO users(user_uuid,firstname,lastname,email,role,status,password, phone_number, picture, auth_type)
+					VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10);`
 	updateUserPG = `UPDATE users SET firstname = $1, lastname = $2, status = $3, 
                  	phone_number = $4, about_me = $5, summary = $6, updated_at = NOW()
 					WHERE id = $7;`
@@ -50,6 +50,8 @@ type User struct {
 	PhoneNumber pgtype.Text
 	AboutMe     pgtype.Text
 	Summary     pgtype.Text
+	Picture     pgtype.Text
+	AuthType    string
 	Role        string
 	Status      string
 	Password    string
@@ -65,6 +67,8 @@ func (u *User) Convert() *model.User {
 		Lastname:    u.Lastname,
 		Email:       u.Email,
 		PhoneNumber: u.PhoneNumber.String,
+		Picture:     u.Picture.String,
+		AuthType:    u.AuthType,
 		AboutMe:     u.AboutMe.String,
 		Summary:     u.Summary.String,
 		Role:        u.Role,
@@ -94,7 +98,7 @@ func (u *usersRepoPgx) AddUser(ctx context.Context, user *User) (uuid.UUID, erro
 	uid := uuid.New()
 
 	_, err = u.Exec(ctx, addUserPG, uid.String(),
-		user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password, user.PhoneNumber)
+		user.Firstname, user.Lastname, user.Email, user.Role, user.Status, user.Password, user.PhoneNumber, user.Picture, user.AuthType)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
@@ -106,7 +110,7 @@ func (u *usersRepoPgx) GetUserByUUID(ctx context.Context, userID uuid.UUID) (*Us
 	var out User
 	row := u.QueryRow(ctx, getUserByUUIDPG, userID.String())
 	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
-		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt, &out.PhoneNumber, &out.AboutMe, &out.Summary); err != nil {
+		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt, &out.PhoneNumber, &out.AboutMe, &out.Summary, &out.Picture, &out.AuthType); err != nil {
 		return nil, err
 	}
 	return &out, nil
@@ -121,7 +125,7 @@ func (u *usersRepoPgx) GetAllUsers(ctx context.Context) ([]*User, error) {
 	for rows.Next() {
 		var t User
 		err = rows.Scan(&t.ID, &t.UserUUID, &t.Firstname, &t.Lastname, &t.Email, &t.Password, &t.Role,
-			&t.Status, &t.CreatedAt, &t.UpdatedAt, &t.PhoneNumber, &t.AboutMe, &t.Summary)
+			&t.Status, &t.CreatedAt, &t.UpdatedAt, &t.PhoneNumber, &t.AboutMe, &t.Summary, &t.Picture, &t.AuthType)
 		if err != nil {
 			return nil, err
 		}
@@ -135,7 +139,8 @@ func (u *usersRepoPgx) GetUserByEmail(ctx context.Context, email string) (*User,
 	var out User
 	row := u.QueryRow(ctx, getUserByEmailPG, email)
 	if err := row.Scan(&out.ID, &out.UserUUID, &out.Firstname, &out.Lastname, &out.Email,
-		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt, &out.PhoneNumber, &out.AboutMe, &out.Summary); err != nil {
+		&out.Password, &out.Role, &out.Status, &out.CreatedAt, &out.UpdatedAt,
+		&out.PhoneNumber, &out.AboutMe, &out.Summary, &out.Picture, &out.AuthType); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, model.ErrNoSuchEmail
 		}

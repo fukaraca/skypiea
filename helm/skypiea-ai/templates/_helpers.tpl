@@ -87,3 +87,19 @@ Gemini API secrets
       name: {{ .Values.gemini.secret }}
       key: api_key
 {{- end -}}
+
+{{/*
+Google Auth secrets
+*/}}
+{{- define "skypiea-ai.secret.google-oauth.env" -}}
+- name: OAUTH2_GOOGLE_CLIENTID
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.oauth2.google.secret }}
+      key: client_key
+- name: OAUTH2_GOOGLE_CLIENTSECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.oauth2.google.secret }}
+      key: client_secret
+{{- end -}}

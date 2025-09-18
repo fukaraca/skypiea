@@ -12,6 +12,9 @@ const (
 	RoleUserVip = "user_vip"
 
 	StatusNew = "New"
+
+	AuthTypePassword = "password"
+	AuthTypeOauth2   = "oauth2"
 )
 
 type User struct {
@@ -20,6 +23,7 @@ type User struct {
 	Firstname, Lastname string
 	Email, PhoneNumber  string
 	Role, Status        string
+	Picture, AuthType   string
 	AboutMe, Summary    string
 	CreatedAt           time.Time
 }

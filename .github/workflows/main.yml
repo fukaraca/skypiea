@@ -171,6 +171,13 @@ jobs:
             --from-literal=api_key='${{ secrets.GEMINI_API_KEY }}' \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Sync Google Oauth2 creds
+        run: |
+          kubectl -n skypiea create secret generic skypiea-ai-secret-google-oauth \
+            --from-literal=client_key='${{ secrets.GOOGLE_OAUTH_KEY }}' \
+            --from-literal=client_secret='${{ secrets.GOOGLE_OAUTH_SECRET }}' \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Helm upgrade
         run: |
           helm upgrade --install --debug --wait --atomic --timeout 5m --namespace skypiea skypiea \

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/fukaraca/skypiea/internal/config"
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/yuin/goldmark"
@@ -9,14 +10,16 @@ import (
 
 // Service is main implementor of service layer. Bad naming tho
 type Service struct {
+	Oauth            *config.Oauth2Config
 	Repositories     *storage.Registry
 	GeminiClient     GeminiAPI
 	policy           *bluemonday.Policy
 	MDSafe, MDUnsafe goldmark.Markdown
 }
 
-func New(reg *storage.Registry, geminiClient GeminiAPI) *Service {
+func New(reg *storage.Registry, geminiClient GeminiAPI, oauth *config.Oauth2Config) *Service {
 	return &Service{
+		Oauth:        oauth,
 		Repositories: reg,
 		GeminiClient: geminiClient,
 		policy:       bluemonday.UGCPolicy(),

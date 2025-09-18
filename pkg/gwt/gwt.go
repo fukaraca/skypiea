@@ -27,8 +27,13 @@ type Service struct {
 }
 
 type Token struct {
-	UserID string `json:"user_id"`
-	Role   string `json:"role"`
+	UserID    string `json:"user_id"`
+	Role      string `json:"role"`
+	Email     string `json:"email"`
+	Name      string `json:"name"`
+	GivenName string `json:"given_name"`
+	Surname   string `json:"family_name"`
+	Picture   string `json:"picture"`
 	jwt.RegisteredClaims
 }
 

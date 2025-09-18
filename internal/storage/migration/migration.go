@@ -27,6 +27,7 @@ func bindMigrations() []*migrate.Migration {
 		Mig0001CreateInitialTables,
 		Mig0002AddMessagesAndConversationsTables,
 		Mig0003AddAboutMeColumnsUsersTable,
+		Mig0004AddOauth2FieldsForUsers,
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"github.com/fukaraca/skypiea/internal/storage"
 	"github.com/fukaraca/skypiea/pkg/gwt"
 	logg "github.com/fukaraca/skypiea/pkg/log"
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -22,6 +23,7 @@ type Config struct {
 	Database    *storage.Database
 	JWT         *gwt.Config
 	Gemini      *gemini.Config
+	Oauth2      *Oauth2Config
 }
 
 type Server struct {
@@ -37,4 +39,8 @@ type Server struct {
 type Worker struct {
 	IntervalTicker time.Duration `mapstructure:"intervalTicker"`
 	Version        string
+}
+
+type Oauth2Config struct {
+	Google oauth2.Config
 }

@@ -43,10 +43,11 @@ func NewViewHandler(c *Common, msgSvc MessageService, userSvc UserService) *View
 type Open struct {
 	*Common
 	UserSvc UserService
+	Auth    AuthService
 }
 
-func NewOpenHandler(c *Common, userSvc UserService) *Open {
-	return &Open{Common: c, UserSvc: userSvc}
+func NewOpenHandler(c *Common, userSvc UserService, authSvc AuthService) *Open {
+	return &Open{Common: c, UserSvc: userSvc, Auth: authSvc}
 }
 
 type Strict struct {
