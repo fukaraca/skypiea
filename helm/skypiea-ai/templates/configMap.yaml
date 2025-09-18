@@ -12,6 +12,7 @@ data:
   configFile: |
     server:
       address: ""
+      origin: "https://chat.skypiea-ai.xyz"
       port: "{{ .Values.server.port }}"
       maxBodySizeMB: 25
       ginMode: "{{ .Values.server.ginMode }}"

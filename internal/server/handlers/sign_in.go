@@ -49,7 +49,7 @@ func (h *Open) OAuth2Start(c *gin.Context) {
 	redirect := h.Auth.Start(c, isSignup)
 	c.Header(model.HxRedirect, redirect)
 	c.Header("Access-Control-Expose-Headers", model.HxRedirect)
-	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Origin", h.origin)
 	c.String(http.StatusOK, "Redirecting")
 }
 

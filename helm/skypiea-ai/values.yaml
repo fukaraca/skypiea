@@ -109,6 +109,7 @@ volumeMounts:
 server:
   replicas: 1
   address: ""
+  origin: "https://chat.skypiea-ai.xyz"
   port: "8080"
   maxBodySizeMB: 25
   ginMode: "release" # test, release, debug

@@ -28,6 +28,7 @@ type Config struct {
 
 type Server struct {
 	Address               string        `mapstructure:"address"`
+	Origin                string        `mapstructure:"origin"`
 	Port                  string        `mapstructure:"port"`
 	MaxBodySizeMB         int           `mapstructure:"maxBodySizeMB"`
 	GinMode               string        `mapstructure:"ginMode"`

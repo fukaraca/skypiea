@@ -19,6 +19,7 @@ const (
 type AlertLevel string
 
 type Common struct {
+	origin     string
 	reqTimeout time.Duration
 }
 
@@ -27,7 +28,7 @@ func NewCommonHandler(s *config.Config) *Common {
 	if s.Server.DefaultRequestTimeout > time.Second {
 		timeout = s.Server.DefaultRequestTimeout
 	}
-	return &Common{reqTimeout: timeout}
+	return &Common{reqTimeout: timeout, origin: s.Server.Origin}
 }
 
 type View struct {
