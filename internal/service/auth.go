@@ -78,11 +78,11 @@ func (s *Service) Callback(ctx context.Context, code, state string) (*session.Co
 		if errIn != nil {
 			return nil, errIn
 		}
-		user, errIn := s.Repositories.Users.GetUserByEmail(ctx, token.Email)
+		user2, errIn := s.Repositories.Users.GetUserByEmail(ctx, token.Email)
 		if errIn != nil {
 			return nil, errIn
 		}
-		sess := session.Cache.NewSession(ctx, uuid.MustParse(user.UserUUID))
+		sess := session.Cache.NewSession(ctx, uuid.MustParse(user2.UserUUID))
 		session.Cache.Set(sess)
 		return session.NewCookie(sess.ID), nil
 	}
